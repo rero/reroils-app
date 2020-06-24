@@ -1,0 +1,48 @@
+{# -*- coding: utf-8 -*-
+
+  RERO ILS
+  Copyright (C) 2019 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+
+{% extends 'rero_ils/page.html' %}
+
+{% from "invenio_oauthclient/_macros.html" import render_field, form_errors %}
+
+{% block body %}
+<div class="row">
+  {%- block signup_panel %}
+  <div class="m-auto col-6">
+    {%- block signup_header %}
+      {%- block signup_app_icon %}
+        {% if app_icon -%}
+          <span class="pull-right"><i class="{{app_icon}} fa-5x"></i></span>
+        {%- endif %}
+      {%- endblock %}
+      <h3> {{ _('Sign-up with %(title)s!', title=app_title) }}</h3>
+      <p>{{ _('Fill in your details to complete your registration. You only have to do this once.') }}</p>
+      <hr />
+    {% endblock %}
+    {%- block signup_form %}
+    <form name="edit" method="post" role="form">
+      {%- for field in form %}
+        {{ render_field(field) }}
+      {%- endfor %}
+    </form>
+    {%- endblock %}
+  </div>
+  {%- endblock %}
+</div>
+{% endblock %}

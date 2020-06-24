@@ -1,0 +1,38 @@
+{# -*- coding: utf-8 -*-
+
+  RERO ILS
+  Copyright (C) 2019 RERO
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, version 3 of the License.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+#}
+{%- extends config.OAUTHCLIENT_LOGIN_USER_TEMPLATE_PARENT %}
+
+{% macro oauth_button(name, icon, next=None) %}
+  <a class="btn btn-default btn-lg btn-block"
+     href="{{url_for('invenio_oauthclient.login', remote_app=name, next=next or request.referrer)}}">
+    <i class="{{icon}}"></i> {{
+      _('Sign in with %(title)s', title=config.OAUTHCLIENT_REMOTE_APPS[name]['title'])
+    }}
+  </a>
+{% endmacro %}
+
+{%- block form_outer %}
+  {% if config.OAUTHCLIENT_REMOTE_APPS %}
+    {% for name in config.OAUTHCLIENT_REMOTE_APPS.keys() %}
+      {{ oauth_button(name, config.OAUTHCLIENT_REMOTE_APPS[name].icon, next=request.args.get('next')) }}
+    {% endfor %}
+    <h3 class="text-center">{{_('&mdash; OR &mdash;')}}</h3>
+  {% endif %}
+  {{ super () }}
+{% endblock %}

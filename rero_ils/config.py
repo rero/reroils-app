@@ -38,6 +38,7 @@ from invenio_circulation.transitions.transitions import CreatedToPending, \
     ItemAtDeskToItemOnLoan, ItemOnLoanToItemInTransitHouse, \
     ItemOnLoanToItemOnLoan, PendingToItemAtDesk, \
     PendingToItemInTransitPickup, ToItemOnLoan
+from invenio_oauthclient.contrib import github, orcid
 from invenio_records_rest.utils import allow_all, deny_all
 
 from .modules.acq_accounts.api import AcqAccount
@@ -1740,3 +1741,26 @@ WIKI_MARKDOWN_EXTENSIONS = set((
     'extra',
     'markdown_captions'
 ))
+
+# OAuth
+# =====
+OAUTHCLIENT_LOGIN_USER_TEMPLATE = 'rero_ils/oauth_login_user.html'
+OAUTHCLIENT_SIGNUP_TEMPLATE = 'rero_ils/oauth_signup.html'
+# TODO: remove this when https://github.com/inveniosoftware/
+# invenio-oauthclient/pull/211 will be integrated
+orcid.REMOTE_APP['params']['access_token_url'] = \
+    'https://pub.orcid.org/oauth/token'
+OAUTHCLIENT_REMOTE_APPS = dict(
+    github=github.REMOTE_APP,
+    orcid=orcid.REMOTE_APP
+)
+
+GITHUB_APP_CREDENTIALS = dict(
+    consumer_key=os.environ.get('GITHUB_CONSUMER_KEY'),
+    consumer_secret=os.environ.get('GITHUB_CONSUMER_SECRET')
+)
+
+ORCID_APP_CREDENTIALS = dict(
+    consumer_key=os.environ.get('ORCID_CONSUMER_KEY'),
+    consumer_secret=os.environ.get('ORCID_CONSUMER_SECRET'),
+)

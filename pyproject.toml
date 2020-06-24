@@ -69,6 +69,7 @@ markdown-captions = "*"
 invenio-logging = { version = ">=1.2.0,<1.3.0", extras = ["sentry-sdk", "sentry"] }
 lxml = ">=3.5.0,<4.2.6"
 python-dotenv = "^0.13.0"
+invenio-oauthclient = {version = ">=1.1.3,<1.2", extras = ["orcid", "github", "admin"]}
 
 [tool.poetry.dev-dependencies]
 ## Python packages development dependencies (order matters)
