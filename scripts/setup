@@ -76,6 +76,21 @@ invert_warning_option() {
   fi
 }
 
+check_virtualenv() {
+  # real_prefix exists: no doubt, you're in a Virtual Environment!
+  REAL_PREFIX=`python -c "import sys; print(1) if hasattr(sys, 'real_prefix') else print(0)"`
+  if [ "${REAL_PREFIX}" == 1 ]; then
+    return 1
+  fi
+  # Sometimes (in Docker i.e.), real_prefix doesn't exist. We found another way
+  # sys.base_prefix should be different from sys.prefix
+  PREFIX_DIFFERENT=`python -c "import sys; print(sys.base_prefix != sys.prefix)"`
+  if [ "${PREFIX_DIFFERENT}" == "True" ]; then
+    return 1
+  fi
+  return 0
+}
+
 
 DEPLOYMENT=false
 LOADPERSONS=false

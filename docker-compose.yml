@@ -18,18 +18,38 @@
 version: '2.3'
 services:
   cache:
-    extends:
-      file: docker-services.yml
-      service: cache
+    image: redis
+    restart: "always"
+    read_only: true
+    ports:
+      - "6379:6379"
   db:
-    extends:
-      file: docker-services.yml
-      service: db
+    image: postgres:9-alpine
+    restart: "always"
+    environment:
+      - "POSTGRES_USER=rero-ils"
+      - "POSTGRES_PASSWORD=rero-ils"
+      - "POSTGRES_DB=rero-ils"
+    ports:
+      - "5432:5432"
   mq:
-    extends:
-      file: docker-services.yml
-      service: mq
+    image: rabbitmq:3-management-alpine
+    restart: "always"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
   es:
-    extends:
-      file: docker-services.yml
-      service: es
+    build: ./docker/elasticsearch/
+    image: elasticsearch-icu
+    restart: "always"
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms800m -Xmx800m"
+      - "discovery.type=single-node"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+      - "9300:9300"

@@ -148,12 +148,12 @@ You can build the documentation with:
 Production environment
 ----------------------
 You can use simulate a full production environment using the
-``docker-compose.full.yml``. You can start it like this:
+``prod.docker-compose.yml`` file. You can start it like this:
 
 .. code-block:: console
 
-    $ docker build --rm -t rero/rero-ils-base:latest -f Dockerfile.base .
-    $ docker-compose -f docker-compose.full.yml up -d
+    $ docker-compose -f prod.docker-compose.yml up -d
+    $ docker-compose -f prod.docker-compose.yml exec web-ui bash -c "poetry run setup -w"
 
 In addition to the normal ``docker-compose.yml``, this one will start:
 

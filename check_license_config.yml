@@ -58,9 +58,10 @@ directories:
 files:
   py:
     - Dockerfile
-    - Dockerfile.base
     - docker/haproxy/Dockerfile
+    - docker.prod/haproxy/Dockerfile
     - docker/nginx/Dockerfile
+    - docker.prod/nginx/Dockerfile
   sh:
     - scripts/bootstrap
     - scripts/console

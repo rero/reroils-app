@@ -1,0 +1,176 @@
+# -*- coding: utf-8 -*-
+#
+# RERO ILS
+# Copyright (C) 2019 RERO
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+# This file is an example of what an RERO ILS production environment would look like.
+# Here you can find a HAProxy load balancer which redirects the traffic to the web frontend, based on nginx.
+# UI application and REST API are separate.
+# There are also a celery worker backend, which can be monitored using Flower, and basics services such as
+# a Redis cache, a database, a message broker (RabbitMQ) and ElasticSearch.
+
+version: '2.3'
+services:
+  app:
+    build:
+      context: ./
+    image: rero-ils
+    environment:
+      - "INVENIO_ENV='production'"
+      - "INVENIO_STATIC_FOLDER=/invenio/var/instance/static"
+      - "INVENIO_SESSION_COOKIE_SECURE=True"
+      - "INVENIO_ASSETS_AUTO_BUILD=''" # to disable build of templates
+      - "INVENIO_SQLALCHEMY_POOL_RECYCLE=90"
+      - "INVENIO_RERO_ILS_MEF_HOST='mef.rero.ch'" # MEF server
+      - "INVENIO_RERO_ILS_MEF_URL='https://mef.rero.ch/api/mef/'"
+      - "INVENIO_COLLECT_STORAGE='flask_collect.storage.file'"
+      - "INVENIO_ACCOUNTS_SESSION_REDIS_URL=redis://cache:6379/1"
+      - "INVENIO_BROKER_URL=amqp://guest:guest@mq:5672/"
+      - "INVENIO_CACHE_REDIS_URL=redis://cache:6379/0"
+      - "INVENIO_CACHE_TYPE=redis"
+      - "INVENIO_CELERY_BROKER_URL=amqp://guest:guest@mq:5672/"
+      - "INVENIO_CELERY_RESULT_BACKEND=redis://cache:6379/2"
+      - "INVENIO_SEARCH_ELASTIC_HOSTS=['es:9200']"
+      - "INVENIO_SECRET_KEY=CHANGE_ME"
+      - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://rero-ils:rero-ils@db/rero-ils"
+      - "INVENIO_WSGI_PROXIES=2"
+      - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
+  # Load balancer (HAproxy)
+  lb:
+    build: ./docker.prod/haproxy/
+    image: rero-ils-lb
+    restart: "always"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080"
+    links:
+      - frontend
+  # Frontend (nginx)
+  frontend:
+    build: ./docker.prod/nginx/
+    image: rero-ils-frontend
+    restart: "always"
+    ports:
+      - "80"
+      - "443"
+    volumes:
+      - static:/invenio/var/instance/static:ro
+    links:
+      - web-ui
+      - web-api
+  # UI application (RERO-ils + uwsgi_ui.ini)
+  web-ui:
+    extends: app
+    command: ["poetry", "run", "uwsgi", "/invenio/var/instance/uwsgi_web-ui.ini"]
+    image: rero-ils-web-ui
+    ports:
+       - "5000"
+    volumes:
+       - static:/invenio/var/instance/static
+    links:
+       - cache
+       - es
+       - mq
+       - db
+  # API Rest Application (RERO-ils + uwsgi_rest.ini)
+  web-api:
+    extends: app
+    command: ["poetry", "run", "uwsgi", "/invenio/var/instance/uwsgi_web-api.ini"]
+    image: rero-ils-web-api
+    ports:
+       - "5000"
+    volumes:
+       - static:/invenio/var/instance/static:ro
+    links:
+       - cache
+       - es
+       - mq
+       - db
+  # Worker (RERO-ils + celery worker)
+  worker:
+    extends: app
+    restart: "always"
+    command: "poetry run celery worker -A invenio_app.celery --loglevel=INFO"
+    image: rero-ils-worker
+    links:
+      - cache
+      - es
+      - mq
+      - db
+  # Beat (RERO-ils + celery beat)
+  beat:
+    extends: app
+    restart: "always"
+    command: "poetry run celery beat -A invenio_app.celery --loglevel=INFO"
+    image: rero-ils-beat
+    links:
+      - cache
+      - es
+      - mq
+      - db
+  # Base services
+  cache:
+    image: redis:alpine
+    restart: "always"
+    read_only: true
+    ports:
+      - "6379"
+  db:
+    image: postgres:9-alpine
+    restart: "always"
+    environment:
+      - "POSTGRES_USER=rero-ils"
+      - "POSTGRES_PASSWORD=rero-ils"
+      - "POSTGRES_DB=rero-ils"
+    ports:
+      - "5432"
+  mq:
+    image: rabbitmq:3-management-alpine
+    restart: "always"
+    ports:
+      - "15672"
+      - "5672"
+  es:
+    build: ./docker/elasticsearch/
+    image: elasticsearch-icu
+    restart: "always"
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200"
+      - "9300"
+  # Monitoring
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.8.6
+    environment:
+      - "ELASTICSEARCH_URL=http://es:9200"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "5601"
+  flower:
+    image: mher/flower
+    command: --broker=amqp://guest:guest@mq:5672/ --broker_api=http://guest:guest@mq:15672/api/
+    ports:
+      - "5555"
+    links:
+      - mq
+volumes:
+  static:

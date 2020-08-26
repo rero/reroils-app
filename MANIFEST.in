@@ -20,10 +20,12 @@ include .coveragerc
 include .dockerignore
 include .editorconfig
 include .tx/config
-include docker/haproxy/Dockerfile
-include docker/nginx/Dockerfile
-include docker/postgres/Dockerfile
-include docker/elasticsearch/Dockerfile
+graft docker.prod
+prune docker/haproxy
+prune docker/nginx
+prune docker/postgres
+prune docker/elasticsearch
+prune docker/wait-for-services.sh
 include Dockerfile
 exclude scripts/all_year_days
 include scripts/bootstrap

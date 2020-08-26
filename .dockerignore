@@ -18,3 +18,11 @@ docker-compose-dev.yml
 
 Procfile*
 ui/node_modules
+
+
+dist/*
+docs/*
+pytest.ini
+rero_ils.egg-info
+run-tests.sh
+tests/*
