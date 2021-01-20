@@ -9,7 +9,7 @@
       "type": "string",
       "minLength": 3,
       "form": {
-        "placeholder": "RDA recommended terms: illustrations, maps, photographs, portraits, ..."
+        "placeholder": "RDA recommended terms: illustrations, maps, photographs, portraits..."
       }
     },
     "form": {

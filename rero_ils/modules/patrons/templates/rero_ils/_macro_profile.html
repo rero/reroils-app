@@ -70,7 +70,7 @@
               {% endif %}
               <div class="row">
                   <div class="col-lg-2 col-sm-2 label-title">
-                    <b>{{ _('Loan started at') }}</b>
+                    <b>{{ _('Loan started') }}</b>
                   </div>
                   <div class="col-lg-10 col-sm-10">
                     {{ fee.loan.transaction_date|format_date(
@@ -87,7 +87,7 @@
           </section>
         </div>
         <div class="mt-2">
-            <h6>{{ _('Transactions history') }}</h6>
+            <h6>{{ _('Transaction history') }}</h6>
             {% for event in fee.events %}
             <div class="events-timeline">
                 <div class="row pl-2 pr-2 align-items-start timeline-event">

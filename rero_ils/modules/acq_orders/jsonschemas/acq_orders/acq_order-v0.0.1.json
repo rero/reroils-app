@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "title": "Acquisition order",
-  "description": "JSON schema for Acquisition Order.",
+  "description": "JSON schema for acquisition order.",
   "additionalProperties": false,
   "propertiesOrder": [
     "vendor",
@@ -26,13 +26,13 @@
   "properties": {
     "$schema": {
       "title": "Schema",
-      "description": "Schema to validate Acquisition Order records against.",
+      "description": "Schema to validate acquisition order records against.",
       "type": "string",
       "default": "https://ils.rero.ch/schemas/acq_orders/acq_order-v0.0.1.json",
       "pattern": "^https://ils.rero.ch/schemas/acq_orders/acq_order-v([0-9]+?\\.){3}json$"
     },
     "pid": {
-      "title": "AcqOrder ID",
+      "title": "Acquisition order ID",
       "type": "string",
       "minLength": 1
     },
@@ -48,7 +48,7 @@
             }
           },
           "messages": {
-            "alreadyTakenMessage": "The order number is already taken."
+            "alreadyTakenMessage": "This order number is already in use."
           }
         }
       }
@@ -143,7 +143,7 @@
       }
     },
     "currency": {
-      "title": "Order currency",
+      "title": "Currency",
       "type": "string",
       "enum": [
         "CHF",
@@ -156,7 +156,7 @@
       "default": "CHF"
     },
     "order_date": {
-      "title": "Order date",
+      "title": "Date",
       "type": "string",
       "format": "date",
       "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$",

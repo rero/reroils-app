@@ -73,7 +73,7 @@
     },
     "visibility": {
       "title": "Visibility",
-      "description": "Public templates are visible by all users of the organisation. Private templates are visible only by its creator (you).",
+      "description": "Public templates are visible to all users of the organisation. Private templates are only visable to their creator (you).",
       "type": "string",
       "default": "private",
       "enum": [

@@ -144,7 +144,7 @@ class Holding(IlsRecord):
             self.get('document').get('$ref'))
         document = Document.get_record_by_pid(document_pid)
         if not document:
-            return _('Document does not exist {pid}.'.format(pid=document_pid))
+            return _('The document {pid} does not exist.'.format(pid=document_pid))
         is_serial = self.holdings_type == 'serial'
         if is_serial:
             patterns = self.get('patterns', {})
@@ -159,7 +159,7 @@ class Holding(IlsRecord):
         if (is_serial and not is_issuance) \
                 or (document.harvested ^ is_electronic):
             msg = _('Holding is not attached to the correct document type.'
-                    ' document: {pid}')
+                    ' Document: {pid}')
             return _(msg.format(pid=document_pid))
         # the enumeration and chronology optional fields are only allowed for
         # serial holdings
@@ -210,7 +210,7 @@ class Holding(IlsRecord):
 
     @property
     def location_pid(self):
-        """Shortcut for location pid of the holding."""
+        """Shortcut for location PID of the holding."""
         return self.replace_refs()['location']['pid']
 
     @property
@@ -220,7 +220,7 @@ class Holding(IlsRecord):
 
     @property
     def organisation_pid(self):
-        """Get organisation pid for holding."""
+        """Get organisation PID for holding."""
         return Location.get_record_by_pid(self.location_pid).organisation_pid
 
     @property
@@ -263,12 +263,12 @@ class Holding(IlsRecord):
         """Return notes related to this holding.
 
         :return an array of all notes related to the holding. Each note should
-                have two keys : `type` and `content`.
+                have two keys: `type` and `content`.
         """
         return self.get('notes', [])
 
     def get_note(self, note_type):
-        """Return an holdings note by its type.
+        """Return a holdings note by its type.
 
         :param note_type: the type of note (see ``HoldingNoteTypes``)
         :return the content of the note, None if note type is not found
@@ -287,7 +287,7 @@ class Holding(IlsRecord):
 
     @property
     def get_items_count_by_holding_pid(self):
-        """Returns items count from holding pid."""
+        """Returns items count from holding PID."""
         results = ItemsSearch()\
             .filter('term', holding__pid=self.pid)\
             .source(['pid']).count()
@@ -295,13 +295,13 @@ class Holding(IlsRecord):
 
     @classmethod
     def get_document_pid_by_holding_pid(cls, holding_pid):
-        """Returns document pid for a holding pid."""
+        """Returns document pid for a holding PID."""
         holding = cls.get_record_by_pid(holding_pid).replace_refs()
         return holding.get('document', {}).get('pid')
 
     @classmethod
     def get_holdings_type_by_holding_pid(cls, holding_pid):
-        """Returns holdings type for a holding pid."""
+        """Returns holdings type for a holding PID."""
         holding = cls.get_record_by_pid(holding_pid)
         if holding:
             return holding.holdings_type
@@ -309,7 +309,7 @@ class Holding(IlsRecord):
 
     @classmethod
     def get_holdings_pid_by_document_pid(cls, document_pid):
-        """Returns holding pids attached for a given document pid."""
+        """Returns holding pids attached for a given document PID."""
         results = HoldingsSearch()\
             .filter('term', document__pid=document_pid)\
             .source(['pid']).scan()
@@ -318,7 +318,7 @@ class Holding(IlsRecord):
 
     @classmethod
     def get_holdings_pid_by_document_pid_by_org(cls, document_pid, org_pid):
-        """Returns holding pids attached for a given document pid."""
+        """Returns holding pids attached for a given document PID."""
         results = HoldingsSearch()\
             .filter('term', document__pid=document_pid)\
             .filter('term', organisation__pid=org_pid)\
@@ -328,7 +328,7 @@ class Holding(IlsRecord):
 
     @classmethod
     def get_holdings_by_document_by_view_code(cls, document_pid, viewcode):
-        """Returns holding pids by document and view code."""
+        """Returns holding PIDs by document and view code."""
         es_query = HoldingsSearch()\
             .filter('term', document__pid=document_pid)\
             .source(['pid'])
@@ -396,7 +396,7 @@ class Holding(IlsRecord):
         return cannot_delete
 
     def get_holding_loan_conditions(self):
-        """Returns loan conditions for a given holding."""
+        """Returns lending conditions for a given holding."""
         from ..circ_policies.api import CircPolicy
         from ..item_types.api import ItemType
         from ..patrons.api import current_patron
@@ -652,14 +652,14 @@ def create_holding(
         notes=[], vendor_pid=None):
     """Create a new holdings record from a given list of fields.
 
-    :param document_pid: the document pid.
-    :param location_pid: the location pid.
-    :param item_type_pid: the item type pid.
+    :param document_pid: the document PID.
+    :param location_pid: the location PID.
+    :param item_type_pid: the item type PID.
     :param electronic_location: the location for online items.
     :param holdings_type: the type of holdings record.
     :param patterns: the patterns and chronology for the holdings.
-    :param enumerationAndChronology: the Enumeration and Chronology.
-    :param supplementaryContent: the Supplementary Content.
+    :param enumerationAndChronology: the enumeration and chronology.
+    :param supplementaryContent: the supplementary content.
     :param index: the index of the holdings.
     :param missing_issues: the missing issues.
     :param notes: the notes of the holdings record.

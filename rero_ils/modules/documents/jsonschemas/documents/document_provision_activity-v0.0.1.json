@@ -126,7 +126,6 @@
           "items": {
             "type": "object",
             "title": "Statement",
-            "description": "Statement of place and agent of the provision activity.",
             "propertiesOrder": [
               "type",
               "label"
@@ -210,7 +209,7 @@
         },
         "startDate": {
           "title": "Date 1",
-          "description": "Normalised date used for sorting and filtering options (MARC 008). A free text date (transcripted) can be added in the field \"Statements\".",
+          "description": "Normalised date used for sorting and filtering options (MARC 008). A free text date (transcripted) can be added in the field \\"Statements\\".",
           "type": "integer",
           "minimum": -9999,
           "maximum": 2050,
@@ -225,7 +224,7 @@
         },
         "endDate": {
           "title": "Date 2",
-          "description": "Normalised end date if the provision activity covers more than one year, and used for sorting and filtering options (MARC 008). A free text date (transcripted) can be added in the field \"Statements\"",
+          "description": "Normalised end date if the provision activity covers more than one year, and used for sorting and filtering options (MARC 008). A free text date (transcripted) can be added in the field \\"Statements\\".",
           "type": "integer",
           "minimum": -9999,
           "maximum": 2050,

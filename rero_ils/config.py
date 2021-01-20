@@ -1645,7 +1645,7 @@ RECORDS_REST_FACETS = dict(
             )
         ),
         filters={
-            _('location'): and_term_filter('location.pid'),
+            _('Location'): and_term_filter('location.pid'),
             _('library'): and_term_filter('library.pid'),
             _('item_type'): and_term_filter('item_type.pid'),
             _('vendor'): and_term_filter('vendor.pid'),

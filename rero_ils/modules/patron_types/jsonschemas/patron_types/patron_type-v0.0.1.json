@@ -31,7 +31,6 @@
     },
     "name": {
       "title": "Name",
-      "description": "The name of the patron type",
       "type": "string",
       "minLength": 2,
       "form": {
@@ -50,7 +49,6 @@
     },
     "description": {
       "title": "Description",
-      "description": "The description of the patron type.",
       "type": "string"
     },
     "organisation": {
@@ -168,7 +166,7 @@
             ],
             "templateOptions": {
               "toggle-switch": {
-                "label": "Limit by checkouts"
+                "label": "Limit (per checkout)"
               }
             }
           }

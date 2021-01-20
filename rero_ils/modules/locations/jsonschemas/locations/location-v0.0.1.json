@@ -141,7 +141,7 @@
     },
     "send_notification": {
       "title": "Send notification",
-      "description": "Send a email notification when an item of the location has been requested.",
+      "description": "Send an e-mail notification when an item of the location has been requested.",
       "type": "boolean",
       "default": false,
       "form": {
@@ -152,8 +152,8 @@
       }
     },
     "notification_email": {
-      "title": "Notification email",
-      "description": "Specify a generic email address used for notification.",
+      "title": "Notification e-mail",
+      "description": "Specify a generic e-mail address used for notification.",
       "type": "string",
       "format": "email",
       "pattern": "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,})+$",
@@ -170,14 +170,14 @@
         },
         "validation": {
           "messages": {
-            "patternMessage": "The email is not valid."
+            "patternMessage": "The e-mail is not valid."
           }
         }
       }
     },
     "restrict_pickup_to": {
       "title": "Restrict pickup to",
-      "description": "Select locations where items linked to the current location could be requested.",
+      "description": "Select authorised pickup locations for items linked to this location.",
       "type": "array",
       "minItems": 1,
       "uniqueItems": true,

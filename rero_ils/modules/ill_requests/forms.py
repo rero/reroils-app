@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Forms definitions about ILL request in public view."""
+"""Forms definitions about ILLrequest in public view."""
 
 from datetime import datetime
 
@@ -46,11 +46,11 @@ class ILLRequestDocumentSource(FlaskForm):
     )
     volume = StringField(
         description=_('Volume'),
-        render_kw={'placeholder': '1, 2, ...'}
+        render_kw={'placeholder': '1, 2, …'}
     )
     number = StringField(
-        description=_('Number'),
-        render_kw={'placeholder': '1, January, ...'}
+        description=_('Issue'),
+        render_kw={'placeholder': '1, January, …'}
     )
 
 
@@ -97,7 +97,7 @@ class ILLRequestDocumentForm(FlaskForm):
     identifier = StringField(
         label=_('Identifier'),
         description=_('Example: 978-0-901690-54-6 (ISBN), '
-                      '2049-3630 (ISSN), ...'),
+                      '2049-3630 (ISSN), …'),
         render_kw={'placeholder': _('ISBN, ISSN')}
     )
     source = FormField(
@@ -119,7 +119,7 @@ class ILLRequestSourceForm(FlaskForm):
     )
     url = URLField(
         description=_('Link of the document'),
-        render_kw={'placeholder': 'https://...'}
+        render_kw={'placeholder': 'https://…'}
     )
 
     def validate(self):
@@ -144,7 +144,7 @@ class ILLRequestForm(FlaskForm):
         label=_('Scope'),
         choices=[(0, _('Loan')), (1, _('Copy'))],
         default=0,
-        description=_('Define if the request is for a copy or full document.')
+        description=_('Define if the request is for a copy or an actual document.')
     )
     pages = StringField(
         label=_('Pages')
@@ -163,7 +163,7 @@ class ILLRequestForm(FlaskForm):
                      # be given inside app_context
         validate_choice=False,
         description=_('Select the location where this request will be '
-                      'operated')
+                      'operated.')
     )
 
     def validate(self):
@@ -176,7 +176,7 @@ class ILLRequestForm(FlaskForm):
             custom_validate = False
             self.pages.errors.append(
                 _('As you request a document part, you need to specify '
-                  'requested pages')
+                  'requested pages.')
             )
 
         return form_validate and custom_validate

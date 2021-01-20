@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "title": "Holding",
+  "title": "Holdings",
   "description": "JSON schema for holdings.",
   "additionalProperties": false,
   "required": [
@@ -102,7 +102,6 @@
     },
     "electronic_location": {
       "title": "Electronic locations",
-      "description": "Information needed to locate and access to an electronic resource.",
       "type": "array",
       "minItems": 1,
       "items": {
@@ -160,8 +159,8 @@
       "additionalProperties": false,
       "properties": {
         "template": {
-          "title": "Issue display template",
-          "description": "This template define how a prediction is displayed. i.e. year 2020; vol.1, iss. 4. It should contains the variable field between {{}} with the corresponding pattern and level name.",
+          "title": "Template for the enumeration and chronology of the issue",
+          "description": "This template defines how a prediction is displayed. i.e. year 2020; vol.1, iss. 4. It should contain the variable field between {{}} with the corresponding pattern and level name.",
           "type": "string",
           "minLength": 3,
           "pattern": ".*?\\{\\{.*?\\}\\}.*?",
@@ -169,7 +168,7 @@
             "placeholder": "Example: Vol. {{numbering.volume}}, {{expected_date.year}}",
             "validation": {
               "messages": {
-                "patternMessage": "Should contains at least one variable between {{ }}."
+                "patternMessage": "Should contain at least one variable between {{ }}."
               }
             }
           }
@@ -366,7 +365,7 @@
                       }
                     },
                     {
-                      "title": "List based prediction (used for seasons, months...)",
+                      "title": "List based prediction (used for seasons, months…)",
                       "required": [
                         "list_name",
                         "mapping_values"
@@ -391,7 +390,7 @@
                           "minItems": 1,
                           "items": {
                             "title": "Value",
-                            "description": "Use a value instead of a number. i.e. january, 2nd, quarter.",
+                            "description": "Use a value instead of a number. i.e. January, 2nd, quarter.",
                             "type": "string",
                             "minLength": 1
                           }
@@ -412,7 +411,7 @@
         },
         "max_number_of_claims": {
           "title": "Maximum number of claims",
-          "description": "After this number, no further claims will be sent. 0 means that no claims will be sent.",
+          "description": "After this number, no further claims will be sent. 0 means no claims will be sent.",
           "type": "integer",
           "minimum": 0,
           "default": 3
@@ -425,7 +424,7 @@
           "default": 7
         },
         "days_before_next_claim": {
-          "title": "Number of days before next claims",
+          "title": "Number of days before next claim",
           "description": "If the item is not received, this defines the number of days from the last claim date after which it is claimed again.",
           "type": "integer",
           "minimum": 1,
@@ -466,7 +465,7 @@
     },
     "enumerationAndChronology": {
       "title": "Available collection",
-      "description": "Textual description of the basic bibliographic unit of the holding.",
+      "description": "Textual description of the basic bibliographic unit of the holdings.",
       "type": "string",
       "minLength": 1
     },

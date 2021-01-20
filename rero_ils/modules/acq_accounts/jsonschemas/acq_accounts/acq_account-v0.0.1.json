@@ -26,7 +26,7 @@
       "default": "https://ils.rero.ch/schemas/acq_accounts/acq_account-v0.0.1.json"
     },
     "pid": {
-      "title": "Account ID",
+      "title": "Account PID",
       "type": "string"
     },
     "name": {
@@ -47,7 +47,6 @@
     "budget": {
       "title": "Budget",
       "type": "object",
-      "description": "The acquisition account belongs to which budget.",
       "properties": {
         "$ref": {
           "title": "Budget URI",

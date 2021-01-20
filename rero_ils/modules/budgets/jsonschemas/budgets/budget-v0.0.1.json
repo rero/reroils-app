@@ -30,7 +30,7 @@
       "minLength": 1
     },
     "name": {
-      "title": "Budget name",
+      "title": "Name",
       "description": "Name of the budget.",
       "type": "string",
       "minLength": 1,
@@ -43,7 +43,7 @@
             }
           },
           "messages": {
-            "alreadyTakenMessage": "The budget name is already taken."
+            "alreadyTakenMessage": "This budget name is already in use."
           }
         }
       }

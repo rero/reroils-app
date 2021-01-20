@@ -55,19 +55,19 @@ class ItemRecord(IlsRecord):
         holding_pid = extracted_data_from_ref(self.get('holding').get('$ref'))
         holding = Holding.get_record_by_pid(holding_pid)
         if not holding:
-            return _('Holding does not exist: {pid}.'.format(pid=holding_pid))
+            return _('Holdings does not exist: {pid}.'.format(pid=holding_pid))
         is_serial = holding.holdings_type == 'serial'
         if is_serial and self.get('type') == 'standard':
-            return _('Standard item can not attached to a journal.')
+            return _('Standard item can not be attached to a journal.')
         issue = self.get('issue', {})
         if issue and self.get('type') == 'standard':
-            return _('Standard item can not have a issue field.')
+            return _('Standard item can not have an issue field.')
         if self.get('type') == 'issue':
             if not issue:
                 return _('Issue item must have an issue field.')
             if not self.get('enumerationAndChronology'):
                 return _('enumerationAndChronology field is required '
-                         'for an issue item')
+                         'for an issue item.')
         note_types = [note.get('type') for note in self.get('notes', [])]
         if len(note_types) != len(set(note_types)):
             return _('Can not have multiple notes of same type.')
@@ -238,7 +238,7 @@ class ItemRecord(IlsRecord):
 
     @classmethod
     def get_items_pid_by_holding_pid(cls, holding_pid):
-        """Returns item pids from holding pid."""
+        """Returns item pids from holding PID."""
         from . import ItemsSearch
         results = ItemsSearch() \
             .params(preserve_order=True)\
@@ -250,21 +250,21 @@ class ItemRecord(IlsRecord):
 
     @property
     def holding_pid(self):
-        """Shortcut for item holding pid."""
+        """Shortcut for item holding PID."""
         if self.replace_refs().get('holding'):
             return self.replace_refs()['holding']['pid']
         return None
 
     @property
     def document_pid(self):
-        """Shortcut for item document pid."""
+        """Shortcut for item document PID."""
         if self.replace_refs().get('document'):
             return self.replace_refs()['document']['pid']
         return None
 
     @classmethod
     def get_document_pid_by_item_pid(cls, item_pid):
-        """Returns document pid from item pid."""
+        """Returns document pid from item PID."""
         item = cls.get_record_by_pid(item_pid).replace_refs()
         return item.get('document', {}).get('pid')
 
@@ -274,7 +274,7 @@ class ItemRecord(IlsRecord):
 
         :param item_pid: the item_pid object
         :type item_pid: object
-        :return: the document pid
+        :return: the document PID
         :rtype: str
         """
         item = cls.get_record_by_pid(item_pid.get('value')).replace_refs()
@@ -282,7 +282,7 @@ class ItemRecord(IlsRecord):
 
     @classmethod
     def get_items_pid_by_document_pid(cls, document_pid):
-        """Returns item pisd from document pid."""
+        """Returns item pisd from document PID."""
         from . import ItemsSearch
         results = ItemsSearch()\
             .filter('term', document__pid=document_pid)\
@@ -295,11 +295,11 @@ class ItemRecord(IlsRecord):
         """Get item by barcode.
 
         :param barcode: the item barcode.
-        :param organisation_pid: the organisation pid. As barcode could be
+        :param organisation_pid: the organisation PID. As barcode could be
                                  shared between items from multiple
-                                 organisations we need to filter result by
-                                 organisation.pid
-        :return The item corresponding to the barcode if exists or None.
+                                 organisations, the result must be
+                                 filtered by organisation PID.
+        :return the item corresponding to the barcode if it exists, or "None".
         """
         from . import ItemsSearch
         results = ItemsSearch()\
@@ -337,7 +337,7 @@ class ItemRecord(IlsRecord):
 
     @property
     def item_type_pid(self):
-        """Shortcut for item type pid."""
+        """Shortcut for item type PID."""
         item_type_pid = None
         item_type = self.replace_refs().get('item_type')
         if item_type:
@@ -351,7 +351,7 @@ class ItemRecord(IlsRecord):
 
     @property
     def holding_circulation_category_pid(self):
-        """Shortcut for holding circulation category pid of an item."""
+        """Shortcut for holding circulation category PID of an item."""
         from ...holdings.api import Holding
         circulation_category_pid = None
         if self.holding_pid:
@@ -374,7 +374,7 @@ class ItemRecord(IlsRecord):
 
     @property
     def location_pid(self):
-        """Shortcut for item location pid."""
+        """Shortcut for item location PID."""
         location_pid = None
         location = self.replace_refs().get('location')
         if location:
@@ -383,7 +383,7 @@ class ItemRecord(IlsRecord):
 
     @property
     def holding_location_pid(self):
-        """Shortcut for holding location pid of an item."""
+        """Shortcut for holding location PID of an item."""
         from ...holdings.api import Holding
         location_pid = None
         if self.holding_pid:
@@ -393,13 +393,13 @@ class ItemRecord(IlsRecord):
 
     @property
     def library_pid(self):
-        """Shortcut for item library pid."""
+        """Shortcut for item library PID."""
         location = Location.get_record_by_pid(self.location_pid).replace_refs()
         return location.get('library').get('pid')
 
     @property
     def holding_library_pid(self):
-        """Shortcut for holding library pid of an item."""
+        """Shortcut for holding library PID of an item."""
         library_pid = None
         if self.holding_location_pid:
             location = Location.get_record_by_pid(
@@ -409,7 +409,7 @@ class ItemRecord(IlsRecord):
 
     @property
     def organisation_pid(self):
-        """Get organisation pid for item."""
+        """Get organisation PID for item."""
         library = Library.get_record_by_pid(self.library_pid)
         return library.organisation_pid
 
@@ -422,7 +422,7 @@ class ItemRecord(IlsRecord):
     def get_owning_pickup_location_pid(self):
         """Returns the pickup location for the item owning location.
 
-        :return the pid of the item owning item location.
+        :return the PID of the item owning item location.
         """
         library = self.get_library()
         return library.get_pickup_location_pid()
@@ -440,7 +440,7 @@ class ItemRecord(IlsRecord):
         """Return an item note by its type.
 
         :param note_type: the type of note (see ``ItemNoteTypes``)
-        :return the content of the note, None if note type is not found
+        :return the content of the note, "None" if note type is not found
         """
         notes = [note.get('content') for note in self.notes
                  if note.get('type') == note_type]
@@ -450,7 +450,7 @@ class ItemRecord(IlsRecord):
     def is_new_acquisition(self):
         """Is this item should be considered as a new acquisition.
 
-        :return True if Item is a new acquisition, False otherwise
+        :return "True" if the item is a new acquisition, "False" otherwise
         """
         acquisition_date = self.get('acquisition_date')
         if acquisition_date:

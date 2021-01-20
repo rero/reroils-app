@@ -67,15 +67,14 @@ class ItemType(IlsRecord):
     model_cls = ItemTypeMetadata
 
     def extended_validation(self, **kwargs):
-        """Validate record against schema.
-
-        and extended validation to allow only one item type of type online
+        """Validate record against schema
+        and extended validation to allow only one item type of type "online"
         per organisation.
         """
         online_type_pid = self.get_organisation().online_circulation_category()
         if self.get('type') == 'online' and online_type_pid and \
                 self.pid != online_type_pid:
-            return _('Another online item type exists in this organisation')
+            return _('Another online item type exists in this organisation.')
         return True
 
     def get_organisation(self):
@@ -86,7 +85,7 @@ class ItemType(IlsRecord):
 
     @classmethod
     def get_pid_by_name(cls, name):
-        """Get pid by name."""
+        """Get PID by name."""
         pid = None
         try:
             pids = [

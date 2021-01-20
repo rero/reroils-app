@@ -205,7 +205,7 @@ def init_menu_profile():
         # AnonymousUser
         except AttributeError:
             session.pop('user_name', None)
-    account = session.get('user_name', _('My Account'))
+    account = session.get('user_name', _('My account'))
     if len(account) > 30:
         account = account[:30] + '…'
 
@@ -367,7 +367,7 @@ def index_with_view_code(viewcode):
 def set_language():
     """Set language in session.
 
-    The call should be a POST or a PUT HTTP request with a JSON body as follow:
+    The call should be a HTTP POST or PUT request with a JSON body as follows:
 
     .. code-block:: json
 

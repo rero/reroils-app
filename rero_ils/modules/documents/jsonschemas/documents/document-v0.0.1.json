@@ -128,13 +128,12 @@
     },
     "harvested": {
       "title": "Harvested",
-      "description": "Document is harvested or not, will disable record edition or similar.",
+      "description": "Whether the document is harvested or not, will disable record edition or similar.",
       "type": "boolean",
       "default": false
     },
     "_draft": {
       "title": "Draft",
-      "description": "Document is a draft record or not, will disable record validation.",
       "type": "boolean",
       "default": false,
       "form": {

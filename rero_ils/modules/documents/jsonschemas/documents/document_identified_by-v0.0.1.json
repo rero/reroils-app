@@ -143,7 +143,6 @@
         },
         "value": {
           "title": "Identifier value",
-          "description": "Identifier value.",
           "type": "string",
           "minLength": 1,
           "form": {
@@ -154,7 +153,6 @@
         },
         "note": {
           "title": "Note",
-          "description": "Note of the identifier.",
           "type": "string",
           "minLength": 1,
           "form": {
@@ -166,7 +164,6 @@
         },
         "qualifier": {
           "title": "Qualifier",
-          "description": "Qualifier of the identifier.",
           "type": "string",
           "minLength": 1,
           "form": {
@@ -190,7 +187,6 @@
         },
         "source": {
           "title": "Source",
-          "description": "Source of the identifier.",
           "type": "string",
           "minLength": 1,
           "form": {

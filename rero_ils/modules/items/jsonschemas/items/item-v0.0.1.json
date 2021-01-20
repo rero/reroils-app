@@ -202,7 +202,7 @@
         },
         "received_date": {
           "format": "date",
-          "title": "Date of reception",
+          "title": "Date of receipt",
           "type": "string",
           "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$",
           "validationMessage": "Should be in the following format: 2022-12-31 (YYYY-MM-DD).",
@@ -302,8 +302,7 @@
       }
     },
     "holding": {
-      "title": "Holding",
-      "description": "Holding record for the item.",
+      "title": "Holdings",
       "type": "object",
       "properties": {
         "$ref": {

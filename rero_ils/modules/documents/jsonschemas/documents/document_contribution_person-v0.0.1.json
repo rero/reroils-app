@@ -87,8 +87,8 @@
       }
     },
     "fuller_form_of_name": {
-      "title": "Fuller form of Name",
-      "description": "Used only for import. Fuller form of a name represented only by an initial, abbreviation, or other variant not included in the form chosen as the preferred name",
+      "title": "Fuller form of name",
+      "description": "Used only for import. The fuller form of a name represented only by an initial, abbreviation, or other variant not included in the form chosen as the preferred name.",
       "type": "string",
       "minLength": 1,
       "form": {
