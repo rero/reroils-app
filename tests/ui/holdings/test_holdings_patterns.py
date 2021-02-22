@@ -319,6 +319,25 @@ def test_bimonthly_every_two_months_two_levels(
     issues = holding.prediction_issues_preview(13)
     assert issues[-1]['issue'] == 'Jg 57 Nr 3 Mai 2026'
 
+def test_daily_no_weekend(
+        holding_lib_martigny_w_patterns,
+        pattern_daily_no_weekend_data):
+    """Test pattern test_daily_no_weekend."""
+    holding = holding_lib_martigny_w_patterns
+    holding = Holding.get_record_by_pid(holding.pid)
+    holding['patterns'] = \
+        pattern_daily_no_weekend_data['patterns']
+    # test first issue
+    assert holding.next_issue_display_text == 'issue: Monday 1-2-2010'
+    holding.increment_next_prediction()
+    assert holding.next_issue_display_text == 'issue: Tuesday 2-2-2010'
+    for r in range(25):
+        holding.increment_next_prediction()
+    assert holding.next_issue_display_text == 'issue: Monday 1-3-2010'
+    # test preview
+    issues = holding.prediction_issues_preview(13)
+    assert issues[-1]['issue'] == 'issue: Wednesday 19-3-2010'
+
 
 def test_holding_validate_next_expected_date(
         client, librarian_martigny_no_email,
@@ -557,7 +576,7 @@ def test_regular_issue_creation_update_delete_api(
         lib_martigny):
     """Test create, update and delete of a regular issue API."""
     holding = holding_lib_martigny_w_patterns
-    issue_display, expected_date = holding._get_next_issue_display_text(
+    issue_display, expected_date, gaps = holding._get_next_issue_display_text(
                         holding.get('patterns'))
     issue = holding.receive_regular_issue(dbcommit=True, reindex=True)
     item = deepcopy(issue)

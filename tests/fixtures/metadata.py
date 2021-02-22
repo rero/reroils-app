@@ -815,6 +815,11 @@ def pattern_bimonthly_every_two_months_two_levels_data(holdings):
     del holdings['pattern10']['template_name']
     return deepcopy(holdings.get('pattern10'))
 
+@pytest.fixture(scope="module")
+def pattern_daily_no_weekend_data(holdings):
+    """Load patterns of martigny library scope function."""
+    del holdings['pattern11']['template_name']
+    return deepcopy(holdings.get('pattern11'))
 
 @pytest.fixture(scope='module')
 def ebooks_1_xml():

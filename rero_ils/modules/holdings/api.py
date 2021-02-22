@@ -420,6 +420,40 @@ class Holding(IlsRecord):
             return self._get_next_issue_display_text(self.patterns)[0]
 
     @classmethod
+    def _order_patterns_values_by_mapping(cls, patterns):
+        """Order patterns values by mapping values having enabled gaps."""
+        values_with_gaps = []
+        values_without_gaps = []
+        values = patterns.get('values', [])
+        for value in values:
+            found_gap = False
+            levels = value.get('levels', [])
+            for level in levels:
+                mapping_values = level.get('mapping_values', [])
+                if mapping_values:
+                    for mapping in mapping_values:
+                        if mapping.get('gap') is True:
+                            found_gap = True
+            if found_gap:
+               values_with_gaps.append(value)
+            else:
+               values_without_gaps.append(value)
+        values = values_with_gaps + values_without_gaps
+        return values
+
+    @classmethod
+    def _update_next_expected_date(cls, patterns):
+        """Update the next expected date."""
+        frequency = patterns.get('frequency')
+        interval = cls.frequencies[frequency]
+        next_expected_date = datetime.strptime(
+            patterns.get('next_expected_date'), '%Y-%m-%d')        
+        next_expected_date = next_expected_date + interval
+        patterns['next_expected_date'] = \
+        next_expected_date.strftime('%Y-%m-%d')
+        return patterns
+
+    @classmethod
     def _get_next_issue_display_text(cls, patterns):
         """Display the text for the next predicted issue.
 
@@ -427,25 +461,51 @@ class Holding(IlsRecord):
         :return: A display text of the next predicted issue.
         """
         issue_data = {}
-        for pattern in patterns.get('values', []):
+        values = cls._order_patterns_values_by_mapping(patterns)
+        for pattern in values:
+            issue_gap = 0
             pattern_name = pattern.get('name', '')
             level_data = {}
             for level in pattern.get('levels', []):
-                text_value = level.get('next_value', level.get(
+                next_index = level.get('next_value', level.get(
                     'starting_value', 1))
+                next_index = next_index + issue_gap
                 mapping = level.get('mapping_values')
+                level_gap = 0
+                
                 if mapping:
-                    text_value = mapping[text_value - 1]
+                    len_mapping = len(mapping)
+                    repeat = True
+                    no_mapping, next_index = divmod(next_index,len_mapping)
+                    # removing one because list index starts with 0
+                    next_index = next_index -1
+                    while repeat:
+                        next_index_value = mapping[next_index]
+                        if next_index_value.get('gap') is False:
+                            next_index = next_index_value.get('value')
+                            repeat = False
+                        elif next_index_value.get('gap') is True:
+                            next_index = next_index + 1
+                            no_mapping, next_index = divmod(
+                                next_index,len_mapping)
+                            level_gap = level_gap + 1
+                            if level_gap >= issue_gap:
+                                issue_gap = issue_gap + 1
+                
                 level_data.update({
                     level.get(
                         'number_name', level.get('list_name')
-                    ): str(text_value)
+                    ): str(next_index)
                 })
             issue_data[pattern_name] = level_data
-
+        
         # TODO: inform the PO about the use of filter format_date_filter
         # for additional manipulation of the expected date
         tmpl = JINJA_ENV.from_string(patterns.get('template'))
+        # change expected date for as many gaps you have
+        if issue_gap:
+            for counter in range(0, issue_gap):
+                patterns = cls._update_next_expected_date(patterns)
 
         next_expected_date = patterns.get('next_expected_date')
         # send the expected date info with the issue data
@@ -456,7 +516,7 @@ class Holding(IlsRecord):
                     'month': expected_date.month,
                     'year': expected_date.year
                 }
-        return tmpl.render(**issue_data), next_expected_date
+        return tmpl.render(**issue_data), next_expected_date, issue_gap
 
     def increment_next_prediction(self):
         """Increment next prediction."""
@@ -466,7 +526,8 @@ class Holding(IlsRecord):
         return self
 
     @classmethod
-    def _increment_next_prediction(cls, patterns):
+    def _increment_next_prediction(
+            cls, patterns, calculate_expected_date=True):
         """Increment the next predicted issue.
 
         Predicts the next value and next_expected_date for the given patterns.
@@ -487,14 +548,10 @@ class Holding(IlsRecord):
                 else:
                     level['next_value'] = next_value + 1
                     break
-        frequency = patterns.get('frequency')
-        if frequency:
-            next_expected_date = datetime.strptime(
-                patterns.get('next_expected_date'), '%Y-%m-%d')
-            interval = cls.frequencies[frequency]
-            next_expected_date = next_expected_date + interval
-            patterns['next_expected_date'] = \
-                next_expected_date.strftime('%Y-%m-%d')
+        if calculate_expected_date:
+            frequency = patterns.get('frequency')
+            if frequency:
+                patterns = cls._update_next_expected_date(patterns)
         return patterns
 
     def prediction_issues_preview(self, predictions=1):
@@ -507,11 +564,15 @@ class Holding(IlsRecord):
         if self.patterns and self.patterns.get('values'):
             patterns = deepcopy(self.patterns)
             for r in range(predictions):
-                issue, expected_date = self._get_next_issue_display_text(
+                issue, expected_date, gaps = self._get_next_issue_display_text(
                     patterns)
                 issue_data = self._prepare_issue_data(issue, expected_date)
                 text.append(issue_data)
                 patterns = self._increment_next_prediction(patterns)
+                if gaps > 0:
+                    for counter in range(0, gaps):
+                        patterns = self._increment_next_prediction(
+                            patterns, calculate_expected_date=False)
         return text
 
     @classmethod
@@ -526,11 +587,14 @@ class Holding(IlsRecord):
         text = []
         if patterns and patterns.get('values'):
             for r in range(number_of_predictions):
-                issue, expected_date = cls._get_next_issue_display_text(
+                issue, expected_date, gaps = cls._get_next_issue_display_text(
                     patterns)
                 issue_data = cls._prepare_issue_data(issue, expected_date)
                 text.append(issue_data)
                 patterns = Holding._increment_next_prediction(patterns)
+                for gap in range(0, gaps):
+                    patterns = Holding._increment_next_prediction(
+                        patterns, calculate_expected_date=False)
         return text
 
     @staticmethod
@@ -591,7 +655,7 @@ class Holding(IlsRecord):
                 'patterns', {}).get('frequency') == 'rdafr:1016':
             raise RegularReceiveNotAllowed()
 
-        issue_display, expected_date = self._get_next_issue_display_text(
+        issue_display, expected_date, gaps = self._get_next_issue_display_text(
                     self.get('patterns'))
 
         data = self._prepare_issue_record(

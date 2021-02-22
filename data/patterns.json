@@ -51,10 +51,22 @@
             {
               "list_name": "level_2",
               "mapping_values": [
-                "mars",
-                "juin",
-                "sept.",
-                "d\u00e9c."
+                {
+                  "value": "mars",
+                  "gap": false
+                },
+                {
+                  "value": "juin",
+                  "gap": false
+                },
+                {
+                  "value": "sept.",
+                  "gap": false
+                },
+                {
+                  "value": "d\u00e9c.",
+                  "gap": false
+                }
               ]
             }
           ]
@@ -182,8 +194,14 @@
               "list_name": "level_2",
               "next_value": 2,
               "mapping_values": [
-                "M\u00e4rz",
-                "Nov."
+                {
+                  "value": "M\u00e4rz",
+                  "gap": false
+                },
+                {
+                  "value": "Nov.",
+                  "gap": false
+                }
               ]
             }
           ]
@@ -301,10 +319,22 @@
             {
               "list_name": "level_2",
               "mapping_values": [
-                "printemps",
-                "\u00e9t\u00e9",
-                "automne",
-                "hiver"
+                {
+                  "value": "printemps",
+                  "gap": false
+                },
+                {
+                  "value": "\u00e9t\u00e9",
+                  "gap": false
+                },
+                {
+                  "value": "automne",
+                  "gap": false
+                },
+                {
+                  "value": "hiver.",
+                  "gap": false
+                }
               ]
             }
           ]
@@ -343,8 +373,14 @@
             {
               "list_name": "level_2",
               "mapping_values": [
-                "printemps",
-                "automne"
+                {
+                  "value": "printemps",
+                  "gap": false
+                },
+                {
+                  "value": "automne",
+                  "gap": false
+                }
               ]
             }
           ]
@@ -383,12 +419,30 @@
             {
               "list_name": "level_2",
               "mapping_values": [
-                "jan./f\u00e9v.",
-                "mars/avril",
-                "mai/juin",
-                "juil./ao\u00fbt",
-                "sept./oct.",
-                "nov./d\u00e9c."
+                {
+                  "value": "jan./f\u00e9v.",
+                  "gap": false
+                },
+                {
+                  "value": "mars/avril",
+                  "gap": false
+                },
+                {
+                  "value": "mai/juin",
+                  "gap": false
+                },
+                {
+                  "value": "juil./ao\u00fbt",
+                  "gap": false
+                },
+                {
+                  "value": "sept./oct.",
+                  "gap": false
+                },
+                {
+                  "value": "nov./d\u00e9c.",
+                  "gap": false
+                }
               ]
             }
           ]
@@ -440,8 +494,14 @@
             {
               "list_name": "level_2",
               "mapping_values": [
-                "June",
-                "Dec."
+                {
+                  "value": "June",
+                  "gap": false
+                },
+                {
+                  "value": "Dec.",
+                  "gap": false
+                }
               ]
             }
           ]
@@ -493,12 +553,30 @@
             {
               "list_name": "level_2",
               "mapping_values": [
-                "Jan.",
-                "M\u00e4rz",
-                "Mai",
-                "Juli",
-                "Sept.",
-                "Nov."
+                {
+                  "value": "Jan.",
+                  "gap": false
+                },
+                {
+                  "value": "M\u00e4rz",
+                  "gap": false
+                },
+                {
+                  "value": "Mai",
+                  "gap": false
+                },
+                {
+                  "value": "Juli",
+                  "gap": false
+                },
+                {
+                  "value": "Sept.",
+                  "gap": false
+                },
+                {
+                  "value": "Nov.",
+                  "gap": false
+                }
               ]
             }
           ]

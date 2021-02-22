@@ -99,7 +99,14 @@
                     "type": "integer"
                   },
                   "mapping_values": {
-                    "type": "keyword"
+                    "properties": {
+                      "value": {
+                        "type": "keyword"
+                      },
+                      "gap": {
+                        "type": "boolean"
+                      }
+                    }
                   }
                 }
               }

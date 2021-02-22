@@ -93,7 +93,7 @@ def create_issues_from_holding(holding, min=3, max=9):
     count = 0
     for issue_number in range(0, random.randint(min, max)):
         # prepare some fields for the issue to ensure a variable recv dates.
-        issue_display, expected_date = holding._get_next_issue_display_text(
+        issue_display, expected_date, gaps = holding._get_next_issue_display_text(
                     holding.get('patterns'))
         item = {
             'issue': {

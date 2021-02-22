@@ -416,10 +416,28 @@
                           "uniqueItems": true,
                           "minItems": 1,
                           "items": {
+                            "type": "object",
                             "title": "Value",
                             "description": "Use a value instead of a number. i.e. january, 2nd, quarter.",
-                            "type": "string",
-                            "minLength": 1
+                            "propertiesOrder": [
+                              "value",
+                              "gap"
+                            ],
+                            "required": [
+                              "value",
+                              "gap"
+                            ],
+                            "properties": {
+                              "gap": {
+                                "type": "boolean",
+                                "title": "Gap",
+                                "default": false
+                              },
+                              "value": {
+                                "type": "string",
+                                "title": "Value"
+                              }
+                            }
                           }
                         },
                         "next_value": {

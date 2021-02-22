@@ -1900,10 +1900,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv./mars",
-                  "avril/juin",
-                  "juil./sept.",
-                  "oct./dec."
+                  {
+                    "value": "janv./mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril/juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil./sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct./dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 3
               }
@@ -1945,10 +1957,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -1999,10 +2023,22 @@
               {
                 "list_name": "saison",
                 "mapping_values": [
-                  "printemps",
-                  "\u00e9t\u00e9",
-                  "automne",
-                  "hivers"
+                  {
+                    "value": "printemps",
+                    "gap": false
+                  },
+                  {
+                    "value": "\u00e9t\u00e9",
+                    "gap": false
+                  },
+                  {
+                    "value": "automne",
+                    "gap": false
+                  },
+                  {
+                    "value": "hivers",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -2054,10 +2090,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "fev.",
-                  "mai",
-                  "ao\u00fbt",
-                  "nov."
+                  {
+                    "value": "fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "ao\u00fbt",
+                    "gap": false
+                  },
+                  {
+                    "value": "nov.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 4
               }
@@ -2117,10 +2165,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -2138,10 +2198,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -2192,10 +2264,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "mars",
-                  "juin",
-                  "sept.",
-                  "dec."
+                  {
+                    "value": "mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 4
               }
@@ -2246,10 +2330,22 @@
               {
                 "list_name": "trimestre",
                 "mapping_values": [
-                  "1er",
-                  "2e",
-                  "3e",
-                  "4e"
+                  {
+                    "value": "1er",
+                    "gap": false
+                  },
+                  {
+                    "value": "2e",
+                    "gap": false
+                  },
+                  {
+                    "value": "3e",
+                    "gap": false
+                  },
+                  {
+                    "value": "4e",
+                    "gap": false
+                  }
                 ],
                 "next_value": 4
               }
@@ -2299,10 +2395,22 @@
               {
                 "list_name": "trimestre",
                 "mapping_values": [
-                  "1er",
-                  "2e",
-                  "3e",
-                  "4e"
+                  {
+                    "value": "1er",
+                    "gap": false
+                  },
+                  {
+                    "value": "2e",
+                    "gap": false
+                  },
+                  {
+                    "value": "3e",
+                    "gap": false
+                  },
+                  {
+                    "value": "4e",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -2319,10 +2427,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "mars",
-                  "juin",
-                  "septembre",
-                  "decembre"
+                  {
+                    "value": "mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "septembre",
+                    "gap": false
+                  },
+                  {
+                    "value": "decembre",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -2372,10 +2492,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -2393,10 +2525,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -2446,8 +2590,14 @@
               {
                 "list_name": "demi_annee",
                 "mapping_values": [
-                  "first",
-                  "second"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -2465,8 +2615,14 @@
               {
                 "list_name": "demi_annee",
                 "mapping_values": [
-                  "first",
-                  "second"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -2483,8 +2639,14 @@
               {
                 "list_name": "demi_annee",
                 "mapping_values": [
-                  "first",
-                  "second"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -2534,8 +2696,14 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Aug.",
-                  "Dez."
+                  {
+                    "value": "Aug.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dez.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 2
               }
@@ -2552,8 +2720,14 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Aug.",
-                  "Dez."
+                  {
+                    "value": "Aug.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dez.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 2
               }
@@ -2595,8 +2769,14 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "juin",
-                  "nov."
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "nov.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -2647,16 +2827,46 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Fev.",
-                  "Mars",
-                  "Avril",
-                  "Mai",
-                  "Juin",
-                  "Juil.",
-                  "Sept.",
-                  "Oct.",
-                  "Nov.",
-                  "Dec."
+                  {
+                    "value": "Fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "Avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Nov.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 7
               }
@@ -2707,17 +2917,50 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Janv.",
-                  "Fev.",
-                  "Mars",
-                  "Avril",
-                  "Mai",
-                  "Juin",
-                  "Juil./Ao\u00fbt",
-                  "Sept.",
-                  "Oct.",
-                  "Nov.",
-                  "Dec."
+                  {
+                    "value": "Janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "Avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juil./Ao\u00fbt",
+                    "gap": false
+                  },
+                  {
+                    "value": "Sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Nov.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 3
               }
@@ -2768,18 +3011,54 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Janv.",
-                  "Fev.",
-                  "Mars",
-                  "Avril",
-                  "Mai",
-                  "Juin",
-                  "Juil.",
-                  "Ao\u00fbt",
-                  "Sept.",
-                  "Oct.",
-                  "Nov.",
-                  "Dec."
+                  {
+                    "value": "Janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "Avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Ao\u00fbt",
+                    "gap": false
+                  },
+                  {
+                    "value": "Sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Nov.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 9
               }
@@ -2840,12 +3119,30 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 2
               }
@@ -2863,12 +3160,30 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 2
               }
@@ -2919,12 +3234,30 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "fev./mars",
-                  "avril/mai",
-                  "juin/juil.",
-                  "ao\u00fbt/sept.",
-                  "oct./nov.",
-                  "dec./janv."
+                  {
+                    "value": "fev./mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril/mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin/juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "ao\u00fbt/sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct./nov.",
+                    "gap": false
+                  },
+                  {
+                    "value": "dec./janv.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 3,
                 "completion_value": 6
@@ -2986,12 +3319,30 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -3042,9 +3393,18 @@
               {
                 "list_name": "saisons",
                 "mapping_values": [
-                  "printemps",
-                  "\u00e9t\u00e9",
-                  "automne/hiver"
+                  {
+                    "value": "printemps",
+                    "gap": false
+                  },
+                  {
+                    "value": "\u00e9t\u00e9",
+                    "gap": false
+                  },
+                  {
+                    "value": "automne/hiver",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -3062,9 +3422,18 @@
               {
                 "list_name": "saisons",
                 "mapping_values": [
-                  "printemps",
-                  "\u00e9t\u00e9",
-                  "automne/hiver"
+                  {
+                    "value": "printemps",
+                    "gap": false
+                  },
+                  {
+                    "value": "\u00e9t\u00e9",
+                    "gap": false
+                  },
+                  {
+                    "value": "automne/hiver",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -3115,9 +3484,18 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -3135,9 +3513,18 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -3228,14 +3615,38 @@
               {
                 "list_name": "semaines",
                 "mapping_values": [
-                  "first",
-                  "snd",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth",
-                  "sevth",
-                  "eighth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sevth",
+                    "gap": false
+                  },
+                  {
+                    "value": "eighth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -3287,19 +3698,58 @@
               {
                 "list_name": "semaines",
                 "mapping_values": [
-                  "first",
-                  "snd",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth",
-                  "sevth",
-                  "eighth",
-                  "nineth",
-                  "tenth",
-                  "elvnth",
-                  "twlth",
-                  "thirtnth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sevth",
+                    "gap": false
+                  },
+                  {
+                    "value": "eighth",
+                    "gap": false
+                  },
+                  {
+                    "value": "nineth",
+                    "gap": false
+                  },
+                  {
+                    "value": "tenth",
+                    "gap": false
+                  },
+                  {
+                    "value": "elvnth",
+                    "gap": false
+                  },
+                  {
+                    "value": "twlth",
+                    "gap": false
+                  },
+                  {
+                    "value": "thirtnth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -3422,16 +3872,46 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv",
-                  "fev.",
-                  "mars",
-                  "avril",
-                  "mai",
-                  "juin",
-                  "juil./ao\u00fbt.",
-                  "sept.",
-                  "oct.",
-                  "nov./dec."
+                  {
+                    "value": "janv",
+                    "gap": false
+                  },
+                  {
+                    "value": "fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil./ao\u00fbt",
+                    "gap": false
+                  },
+                  {
+                    "value": "sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "nov./dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -3580,16 +4060,46 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "dec./janv",
-                  "fev.",
-                  "mars",
-                  "avril",
-                  "mai",
-                  "juin",
-                  "juil./ao\u00fbt.",
-                  "sept.",
-                  "oct.",
-                  "nov."
+                  {
+                    "value": "dec./janv",
+                    "gap": false
+                  },
+                  {
+                    "value": "fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil./ao\u00fbt.",
+                    "gap": false
+                  },
+                  {
+                    "value": "sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "nov.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -3951,10 +4461,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv./mars",
-                  "avril/juin",
-                  "juil./sept.",
-                  "oct./dec."
+                  {
+                    "value": "janv./mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril/juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil./sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct./dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 3
               }
@@ -3996,10 +4518,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -4050,10 +4584,22 @@
               {
                 "list_name": "saison",
                 "mapping_values": [
-                  "printemps",
-                  "\u00e9t\u00e9",
-                  "automne",
-                  "hivers"
+                  {
+                    "value": "printemps",
+                    "gap": false
+                  },
+                  {
+                    "value": "\u00e9t\u00e9",
+                    "gap": false
+                  },
+                  {
+                    "value": "automne",
+                    "gap": false
+                  },
+                  {
+                    "value": "hivers",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -4105,10 +4651,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "fev.",
-                  "mai",
-                  "ao\u00fbt",
-                  "nov."
+                  {
+                    "value": "fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "ao\u00fbt",
+                    "gap": false
+                  },
+                  {
+                    "value": "nov.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 4
               }
@@ -4168,10 +4726,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -4189,10 +4759,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -4243,10 +4825,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "mars",
-                  "juin",
-                  "sept.",
-                  "dec."
+                  {
+                    "value": "mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "septembre",
+                    "gap": false
+                  },
+                  {
+                    "value": "decembre",
+                    "gap": false
+                  }
                 ],
                 "next_value": 4
               }
@@ -4297,10 +4891,22 @@
               {
                 "list_name": "trimestre",
                 "mapping_values": [
-                  "1er",
-                  "2e",
-                  "3e",
-                  "4e"
+                  {
+                    "value": "1er",
+                    "gap": false
+                  },
+                  {
+                    "value": "2e",
+                    "gap": false
+                  },
+                  {
+                    "value": "3e",
+                    "gap": false
+                  },
+                  {
+                    "value": "4e",
+                    "gap": false
+                  }
                 ],
                 "next_value": 4
               }
@@ -4350,10 +4956,22 @@
               {
                 "list_name": "trimestre",
                 "mapping_values": [
-                  "1er",
-                  "2e",
-                  "3e",
-                  "4e"
+                  {
+                    "value": "1er",
+                    "gap": false
+                  },
+                  {
+                    "value": "2e",
+                    "gap": false
+                  },
+                  {
+                    "value": "3e",
+                    "gap": false
+                  },
+                  {
+                    "value": "4e",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -4370,10 +4988,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "mars",
-                  "juin",
-                  "septembre",
-                  "decembre"
+                  {
+                    "value": "mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "septembre",
+                    "gap": false
+                  },
+                  {
+                    "value": "decembre",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -4423,10 +5053,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -4444,10 +5086,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -4497,8 +5151,14 @@
               {
                 "list_name": "demi_annee",
                 "mapping_values": [
-                  "first",
-                  "second"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -4516,8 +5176,14 @@
               {
                 "list_name": "demi_annee",
                 "mapping_values": [
-                  "first",
-                  "second"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -4534,8 +5200,14 @@
               {
                 "list_name": "demi_annee",
                 "mapping_values": [
-                  "first",
-                  "second"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -4585,8 +5257,14 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Aug.",
-                  "Dez."
+                  {
+                    "value": "Aug.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dez.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 2
               }
@@ -4603,8 +5281,14 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Aug.",
-                  "Dez."
+                  {
+                    "value": "Aug.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dez.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 2
               }
@@ -4646,8 +5330,14 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "juin",
-                  "nov."
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "nov.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -4698,16 +5388,46 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Fev.",
-                  "Mars",
-                  "Avril",
-                  "Mai",
-                  "Juin",
-                  "Juil.",
-                  "Sept.",
-                  "Oct.",
-                  "Nov.",
-                  "Dec."
+                  {
+                    "value": "Fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "Avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Nov.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 7
               }
@@ -4758,17 +5478,50 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Janv.",
-                  "Fev.",
-                  "Mars",
-                  "Avril",
-                  "Mai",
-                  "Juin",
-                  "Juil./Ao\u00fbt",
-                  "Sept.",
-                  "Oct.",
-                  "Nov.",
-                  "Dec."
+                  {
+                    "value": "Janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "Avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juil./Ao\u00fbt",
+                    "gap": false
+                  },
+                  {
+                    "value": "Sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Nov.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 3
               }
@@ -4819,18 +5572,54 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Janv.",
-                  "Fev.",
-                  "Mars",
-                  "Avril",
-                  "Mai",
-                  "Juin",
-                  "Juil.",
-                  "Ao\u00fbt",
-                  "Sept.",
-                  "Oct.",
-                  "Nov.",
-                  "Dec."
+                  {
+                    "value": "Janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "Avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Ao\u00fbt",
+                    "gap": false
+                  },
+                  {
+                    "value": "Sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Nov.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 9
               }
@@ -4891,12 +5680,30 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 2
               }
@@ -4914,12 +5721,30 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 2
               }
@@ -4970,12 +5795,30 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "fev./mars",
-                  "avril/mai",
-                  "juin/juil.",
-                  "ao\u00fbt/sept.",
-                  "oct./nov.",
-                  "dec./janv."
+                  {
+                    "value": "fev./mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril/mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin/juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "ao\u00fbt/sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct./nov.",
+                    "gap": false
+                  },
+                  {
+                    "value": "dec./janv.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 3,
                 "completion_value": 6
@@ -5037,12 +5880,30 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -5093,9 +5954,18 @@
               {
                 "list_name": "saisons",
                 "mapping_values": [
-                  "printemps",
-                  "\u00e9t\u00e9",
-                  "automne/hiver"
+                  {
+                    "value": "printemps",
+                    "gap": false
+                  },
+                  {
+                    "value": "\u00e9t\u00e9",
+                    "gap": false
+                  },
+                  {
+                    "value": "automne/hiver",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -5113,9 +5983,18 @@
               {
                 "list_name": "saisons",
                 "mapping_values": [
-                  "printemps",
-                  "\u00e9t\u00e9",
-                  "automne/hiver"
+                  {
+                    "value": "printemps",
+                    "gap": false
+                  },
+                  {
+                    "value": "\u00e9t\u00e9",
+                    "gap": false
+                  },
+                  {
+                    "value": "automne/hiver",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -5166,9 +6045,18 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -5186,9 +6074,18 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -5279,14 +6176,38 @@
               {
                 "list_name": "semaines",
                 "mapping_values": [
-                  "first",
-                  "snd",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth",
-                  "sevth",
-                  "eighth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sevth",
+                    "gap": false
+                  },
+                  {
+                    "value": "eighth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -5338,19 +6259,58 @@
               {
                 "list_name": "semaines",
                 "mapping_values": [
-                  "first",
-                  "snd",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth",
-                  "sevth",
-                  "eighth",
-                  "nineth",
-                  "tenth",
-                  "elvnth",
-                  "twlth",
-                  "thirtnth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sevth",
+                    "gap": false
+                  },
+                  {
+                    "value": "eighth",
+                    "gap": false
+                  },
+                  {
+                    "value": "nineth",
+                    "gap": false
+                  },
+                  {
+                    "value": "tenth",
+                    "gap": false
+                  },
+                  {
+                    "value": "elvnth",
+                    "gap": false
+                  },
+                  {
+                    "value": "twlth",
+                    "gap": false
+                  },
+                  {
+                    "value": "thirtnth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -5473,16 +6433,46 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv",
-                  "fev.",
-                  "mars",
-                  "avril",
-                  "mai",
-                  "juin",
-                  "juil./ao\u00fbt.",
-                  "sept.",
-                  "oct.",
-                  "nov./dec."
+                  {
+                    "value": "janv",
+                    "gap": false
+                  },
+                  {
+                    "value": "fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil./ao\u00fbt.",
+                    "gap": false
+                  },
+                  {
+                    "value": "sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "nov./dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -5631,16 +6621,46 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "dec./janv",
-                  "fev.",
-                  "mars",
-                  "avril",
-                  "mai",
-                  "juin",
-                  "juil./ao\u00fbt.",
-                  "sept.",
-                  "oct.",
-                  "nov."
+                  {
+                    "value": "dec./janv",
+                    "gap": false
+                  },
+                  {
+                    "value": "fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil./ao\u00fbt.",
+                    "gap": false
+                  },
+                  {
+                    "value": "sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "nov.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -6002,10 +7022,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv./mars",
-                  "avril/juin",
-                  "juil./sept.",
-                  "oct./dec."
+                  {
+                    "value": "janv./mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril/juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil./sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct./dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 3
               }
@@ -6047,10 +7079,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -6101,10 +7145,22 @@
               {
                 "list_name": "saison",
                 "mapping_values": [
-                  "printemps",
-                  "\u00e9t\u00e9",
-                  "automne",
-                  "hivers"
+                  {
+                    "value": "printemps",
+                    "gap": false
+                  },
+                  {
+                    "value": "\u00e9t\u00e9",
+                    "gap": false
+                  },
+                  {
+                    "value": "automne",
+                    "gap": false
+                  },
+                  {
+                    "value": "hivers",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -6156,10 +7212,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "fev.",
-                  "mai",
-                  "ao\u00fbt",
-                  "nov."
+                  {
+                    "value": "fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "ao\u00fbt",
+                    "gap": false
+                  },
+                  {
+                    "value": "nov.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 4
               }
@@ -6219,10 +7287,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -6240,10 +7320,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -6294,10 +7386,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "mars",
-                  "juin",
-                  "sept.",
-                  "dec."
+                  {
+                    "value": "mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "septembre",
+                    "gap": false
+                  },
+                  {
+                    "value": "decembre",
+                    "gap": false
+                  }
                 ],
                 "next_value": 4
               }
@@ -6348,10 +7452,22 @@
               {
                 "list_name": "trimestre",
                 "mapping_values": [
-                  "1er",
-                  "2e",
-                  "3e",
-                  "4e"
+                  {
+                    "value": "1er",
+                    "gap": false
+                  },
+                  {
+                    "value": "2e",
+                    "gap": false
+                  },
+                  {
+                    "value": "3e",
+                    "gap": false
+                  },
+                  {
+                    "value": "4e",
+                    "gap": false
+                  }
                 ],
                 "next_value": 4
               }
@@ -6401,10 +7517,22 @@
               {
                 "list_name": "trimestre",
                 "mapping_values": [
-                  "1er",
-                  "2e",
-                  "3e",
-                  "4e"
+                  {
+                    "value": "1er",
+                    "gap": false
+                  },
+                  {
+                    "value": "2e",
+                    "gap": false
+                  },
+                  {
+                    "value": "3e",
+                    "gap": false
+                  },
+                  {
+                    "value": "4e",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -6421,10 +7549,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "mars",
-                  "juin",
-                  "septembre",
-                  "decembre"
+                  {
+                    "value": "mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "septembre",
+                    "gap": false
+                  },
+                  {
+                    "value": "decembre",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -6474,10 +7614,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -6495,10 +7647,22 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv.",
-                  "avril",
-                  "juil.",
-                  "oct."
+                  {
+                    "value": "janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -6548,8 +7712,14 @@
               {
                 "list_name": "demi_annee",
                 "mapping_values": [
-                  "first",
-                  "second"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -6567,8 +7737,14 @@
               {
                 "list_name": "demi_annee",
                 "mapping_values": [
-                  "first",
-                  "second"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -6585,8 +7761,14 @@
               {
                 "list_name": "demi_annee",
                 "mapping_values": [
-                  "first",
-                  "second"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -6636,8 +7818,14 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Aug.",
-                  "Dez."
+                  {
+                    "value": "Aug.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dez.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 2
               }
@@ -6654,8 +7842,14 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Aug.",
-                  "Dez."
+                  {
+                    "value": "Aug.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dez.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 2
               }
@@ -6697,8 +7891,14 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "juin",
-                  "nov."
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "nov.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -6749,16 +7949,46 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Fev.",
-                  "Mars",
-                  "Avril",
-                  "Mai",
-                  "Juin",
-                  "Juil.",
-                  "Sept.",
-                  "Oct.",
-                  "Nov.",
-                  "Dec."
+                  {
+                    "value": "Fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "Avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Nov.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 7
               }
@@ -6809,17 +8039,50 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Janv.",
-                  "Fev.",
-                  "Mars",
-                  "Avril",
-                  "Mai",
-                  "Juin",
-                  "Juil./Ao\u00fbt",
-                  "Sept.",
-                  "Oct.",
-                  "Nov.",
-                  "Dec."
+                  {
+                    "value": "Janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "Avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juil./Ao\u00fbt",
+                    "gap": false
+                  },
+                  {
+                    "value": "Sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Nov.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 3
               }
@@ -6870,18 +8133,54 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "Janv.",
-                  "Fev.",
-                  "Mars",
-                  "Avril",
-                  "Mai",
-                  "Juin",
-                  "Juil.",
-                  "Ao\u00fbt",
-                  "Sept.",
-                  "Oct.",
-                  "Nov.",
-                  "Dec."
+                  {
+                    "value": "Janv.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "Avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "Mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "Juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Ao\u00fbt",
+                    "gap": false
+                  },
+                  {
+                    "value": "Sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Nov.",
+                    "gap": false
+                  },
+                  {
+                    "value": "Dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 9
               }
@@ -6942,12 +8241,30 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 2
               }
@@ -6965,12 +8282,30 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 2
               }
@@ -7021,12 +8356,30 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "fev./mars",
-                  "avril/mai",
-                  "juin/juil.",
-                  "ao\u00fbt/sept.",
-                  "oct./nov.",
-                  "dec./janv."
+                  {
+                    "value": "fev./mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril/mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin/juil.",
+                    "gap": false
+                  },
+                  {
+                    "value": "ao\u00fbt/sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct./nov.",
+                    "gap": false
+                  },
+                  {
+                    "value": "dec./janv.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 3,
                 "completion_value": 6
@@ -7088,12 +8441,30 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -7144,9 +8515,18 @@
               {
                 "list_name": "saisons",
                 "mapping_values": [
-                  "printemps",
-                  "\u00e9t\u00e9",
-                  "automne/hiver"
+                  {
+                    "value": "printemps",
+                    "gap": false
+                  },
+                  {
+                    "value": "\u00e9t\u00e9",
+                    "gap": false
+                  },
+                  {
+                    "value": "automne/hiver",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -7164,9 +8544,18 @@
               {
                 "list_name": "saisons",
                 "mapping_values": [
-                  "printemps",
-                  "\u00e9t\u00e9",
-                  "automne/hiver"
+                  {
+                    "value": "printemps",
+                    "gap": false
+                  },
+                  {
+                    "value": "\u00e9t\u00e9",
+                    "gap": false
+                  },
+                  {
+                    "value": "automne/hiver",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -7217,9 +8606,18 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -7237,9 +8635,18 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "first",
-                  "second",
-                  "third"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -7330,14 +8737,38 @@
               {
                 "list_name": "semaines",
                 "mapping_values": [
-                  "first",
-                  "snd",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth",
-                  "sevth",
-                  "eighth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sevth",
+                    "gap": false
+                  },
+                  {
+                    "value": "eighth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -7389,19 +8820,58 @@
               {
                 "list_name": "semaines",
                 "mapping_values": [
-                  "first",
-                  "snd",
-                  "third",
-                  "fourth",
-                  "fifth",
-                  "sixth",
-                  "sevth",
-                  "eighth",
-                  "nineth",
-                  "tenth",
-                  "elvnth",
-                  "twlth",
-                  "thirtnth"
+                  {
+                    "value": "first",
+                    "gap": false
+                  },
+                  {
+                    "value": "second",
+                    "gap": false
+                  },
+                  {
+                    "value": "third",
+                    "gap": false
+                  },
+                  {
+                    "value": "fourth",
+                    "gap": false
+                  },
+                  {
+                    "value": "fifth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sixth",
+                    "gap": false
+                  },
+                  {
+                    "value": "sevth",
+                    "gap": false
+                  },
+                  {
+                    "value": "eighth",
+                    "gap": false
+                  },
+                  {
+                    "value": "nineth",
+                    "gap": false
+                  },
+                  {
+                    "value": "tenth",
+                    "gap": false
+                  },
+                  {
+                    "value": "elvnth",
+                    "gap": false
+                  },
+                  {
+                    "value": "twlth",
+                    "gap": false
+                  },
+                  {
+                    "value": "thirtnth",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -7524,16 +8994,46 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "janv",
-                  "fev.",
-                  "mars",
-                  "avril",
-                  "mai",
-                  "juin",
-                  "juil./ao\u00fbt.",
-                  "sept.",
-                  "oct.",
-                  "nov./dec."
+                  {
+                    "value": "janv",
+                    "gap": false
+                  },
+                  {
+                    "value": "fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil./ao\u00fbt.",
+                    "gap": false
+                  },
+                  {
+                    "value": "sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "nov./dec.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }
@@ -7682,16 +9182,46 @@
               {
                 "list_name": "mois",
                 "mapping_values": [
-                  "dec./janv",
-                  "fev.",
-                  "mars",
-                  "avril",
-                  "mai",
-                  "juin",
-                  "juil./ao\u00fbt.",
-                  "sept.",
-                  "oct.",
-                  "nov."
+                  {
+                    "value": "dec./janv",
+                    "gap": false
+                  },
+                  {
+                    "value": "fev.",
+                    "gap": false
+                  },
+                  {
+                    "value": "mars",
+                    "gap": false
+                  },
+                  {
+                    "value": "avril",
+                    "gap": false
+                  },
+                  {
+                    "value": "mai",
+                    "gap": false
+                  },
+                  {
+                    "value": "juin",
+                    "gap": false
+                  },
+                  {
+                    "value": "juil./ao\u00fbt.",
+                    "gap": false
+                  },
+                  {
+                    "value": "sept.",
+                    "gap": false
+                  },
+                  {
+                    "value": "oct.",
+                    "gap": false
+                  },
+                  {
+                    "value": "nov.",
+                    "gap": false
+                  }
                 ],
                 "next_value": 1
               }

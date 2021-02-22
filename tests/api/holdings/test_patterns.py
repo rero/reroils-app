@@ -129,7 +129,7 @@ def test_receive_regular_issue_api(
     """Test holdings receive regular issues API."""
     holding = holding_lib_martigny_w_patterns
     holding = Holding.get_record_by_pid(holding.pid)
-    issue_display, expected_date = holding._get_next_issue_display_text(
+    issue_display, expected_date, gaps = holding._get_next_issue_display_text(
                         holding.get('patterns'))
     # not logged users are not authorized
     res, data = postdata(
@@ -323,7 +323,7 @@ def test_irregular_issue_creation_update_delete_api(
         librarian_martigny_no_email):
     """Test create, update and delete of an irregular issue API."""
     holding = holding_lib_martigny_w_patterns
-    issue_display, expected_date = holding._get_next_issue_display_text(
+    issue_display, expected_date, gaps = holding._get_next_issue_display_text(
                         holding.get('patterns'))
 
     login_user_via_session(client, librarian_martigny_no_email.user)
@@ -356,7 +356,7 @@ def test_irregular_issue_creation_update_delete_api(
     assert created_item.get('type') == 'issue'
     assert not created_item.get('issue').get('regular')
     assert created_item.get('enumerationAndChronology') == 'irregular_issue'
-    new_issue_display, new_expected_date = \
+    new_issue_display, new_expected_date, gaps = \
         holding._get_next_issue_display_text(holding.get('patterns'))
     assert new_issue_display == issue_display
     assert new_expected_date == expected_date
