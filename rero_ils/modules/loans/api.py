@@ -557,6 +557,24 @@ def get_any_loans_by_item_pid_by_patron_pid(item_pid, patron_pid):
         item_pid, patron_pid, filter_states)
 
 
+def count_any_loans_by_patron_pid(patron_pid):
+    """Count loans not ITEM_IN_TRANSIT_TO_HOUSE, CREATED for patron.
+
+    :param patron_pid: the patron pid.
+    :return the number of corresponding loans.
+    """
+    filter_states = [
+        LoanState.PENDING,
+        LoanState.ITEM_AT_DESK,
+        LoanState.ITEM_IN_TRANSIT_FOR_PICKUP,
+        LoanState.ITEM_ON_LOAN
+    ]
+    return search_by_patron_item_or_document(
+        patron_pid=patron_pid,
+        filter_states=filter_states,
+    ).source().count()
+
+
 def get_loans_by_item_pid_by_patron_pid(
         item_pid, patron_pid, filter_states=[]):
     """Get loans for item, patron according to the given filter_states.

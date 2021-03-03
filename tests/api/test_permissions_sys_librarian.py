@@ -24,6 +24,8 @@ from flask import url_for
 from invenio_accounts.testutils import login_user_via_session
 from utils import get_json, postdata
 
+from rero_ils.modules.patrons.api import Patron
+from rero_ils.modules.permissions import ALLOW
 from rero_ils.utils import create_user_from_data
 
 
@@ -60,7 +62,10 @@ def test_system_librarian_permissions(
     res = client.get(role_url)
     assert res.status_code == 200
     data = get_json(res)
-    assert 'system_librarian' in data['allowed_roles']
+    permissions = [role for role in data['roles'] if role['name'] ==
+                   Patron.ROLE_SYSTEM_LIBRARIAN][0]
+    assert permissions['permissions']['add']['can'] == ALLOW
+    assert permissions['permissions']['delete']['can'] == ALLOW
 
     # can create all type of users.
     system_librarian = deepcopy(record)

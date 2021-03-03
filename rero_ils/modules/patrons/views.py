@@ -233,11 +233,13 @@ def format_currency_filter(value, currency):
 
 
 @api_blueprint.route('/roles_management_permissions', methods=['GET'])
+@api_blueprint.route('/roles_management_permissions/<patron_pid>',
+                     methods=['GET'])
 @check_permission
-def get_roles_management_permissions():
-    """Get the roles that current logged user could manage."""
+def get_roles_management_permissions(patron_pid=None):
+    """Get the roles that current logged user could manage on a patron."""
     return jsonify({
-        'allowed_roles': get_allowed_roles_management()
+        'roles': get_allowed_roles_management(patron_pid)
     })
 
 

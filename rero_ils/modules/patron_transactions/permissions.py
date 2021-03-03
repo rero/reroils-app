@@ -18,9 +18,12 @@
 
 """Permissions for Patron transaction."""
 
+from flask_babelex import gettext as _
+
 from rero_ils.modules.organisations.api import current_organisation
+from rero_ils.modules.patron_transactions.api import PatronTransaction
 from rero_ils.modules.patrons.api import current_patron, current_user
-from rero_ils.modules.permissions import RecordPermission
+from rero_ils.modules.permissions import AbstractCondition, RecordPermission
 
 
 class PatronTransactionPermission(RecordPermission):
@@ -97,3 +100,23 @@ class PatronTransactionPermission(RecordPermission):
         """
         # Same as update
         return cls.update(user, record)
+
+
+# =============================================================================
+# CONDITIONS
+# =============================================================================
+
+class OpenTransactionCondition(AbstractCondition):
+    """Condition class to check if a patron has current open transactions."""
+
+    message = _('Patron has open transactions')
+
+    def can(self, patron):
+        """Check if the condition is validated.
+
+        :return True if the condition is validate, False otherwise.
+        """
+        if patron:
+            return PatronTransaction.get_transactions_count_for_patron(
+                   patron.pid, status='open') == 0
+        return True

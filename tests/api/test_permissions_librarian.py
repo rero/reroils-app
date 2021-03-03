@@ -25,6 +25,10 @@ from invenio_access import Permission
 from invenio_accounts.testutils import login_user_via_session
 from utils import get_json, postdata
 
+from rero_ils.modules.loans.api import LoanAction
+from rero_ils.modules.loans.permissions import PendingLoansCondition
+from rero_ils.modules.patrons.api import Patron
+from rero_ils.modules.permissions import ALLOW, DENY
 from rero_ils.permissions import librarian_delete_permission_factory
 from rero_ils.utils import create_user_from_data
 
@@ -80,8 +84,14 @@ def test_librarian_permissions(
     res = client.get(role_url)
     assert res.status_code == 200
     data = get_json(res)
-    assert 'librarian' in data['allowed_roles']
-    assert 'system_librarian' not in data['allowed_roles']
+    permissions = [role for role in data['roles'] if role['name'] ==
+                   Patron.ROLE_LIBRARIAN][0]
+    assert permissions['permissions']['add']['can'] == ALLOW
+    assert permissions['permissions']['delete']['can'] == ALLOW
+    permissions = [role for role in data['roles'] if role['name'] ==
+                   Patron.ROLE_SYSTEM_LIBRARIAN][0]
+    assert permissions['permissions']['add']['can'] == DENY
+    assert permissions['permissions']['delete']['can'] == DENY
 
     # can create all type of users except system_librarians
     post_entrypoint = 'invenio_records_rest.ptrn_list'
@@ -188,3 +198,44 @@ def test_librarian_permissions(
 
     res = client.delete(record_url)
     assert res.status_code == 403
+
+
+def test_role_management_api(client, patron_martigny_no_email,
+                             librarian_martigny_no_email, item_lib_martigny,
+                             loc_public_martigny, lib_martigny,
+                             circ_policy_short_martigny):
+    """Test the role management permissions API."""
+    # Login as librarian
+    login_user_via_session(client, librarian_martigny_no_email.user)
+
+    # First checkout - All should be fine.
+    res, data = postdata(client, 'api_item.checkout', dict(
+        item_pid=item_lib_martigny.pid,
+        patron_pid=patron_martigny_no_email.pid,
+        transaction_location_pid=loc_public_martigny.pid,
+        transaction_user_pid=librarian_martigny_no_email.pid,
+    ))
+    assert res.status_code == 200
+    loan_pid = data.get('action_applied')[LoanAction.CHECKOUT].get('pid')
+
+    # Check the role management API
+    role_url = url_for('api_patrons.get_roles_management_permissions',
+                       patron_pid=patron_martigny_no_email.pid)
+    res = client.get(role_url)
+    assert res.status_code == 200
+    data = get_json(res)
+    permissions = [role for role in data['roles'] if role['name'] ==
+                   Patron.ROLE_PATRON][0]
+    assert permissions['permissions']['add']['can'] == ALLOW
+    assert permissions['permissions']['delete']['can'] == DENY
+    assert PendingLoansCondition.message in \
+        permissions['permissions']['delete']['reasons']
+
+    # Reset fixtures - Do checkin
+    res, _ = postdata(client, 'api_item.checkin', dict(
+        item_pid=item_lib_martigny.pid,
+        pid=loan_pid,
+        transaction_location_pid=loc_public_martigny.pid,
+        transaction_user_pid=librarian_martigny_no_email.pid,
+    ))
+    assert res.status_code == 200

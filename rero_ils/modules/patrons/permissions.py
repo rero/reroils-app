@@ -17,10 +17,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Permissions for patrons."""
-from flask import request
+from flask import current_app, request
 
 from rero_ils.modules.organisations.api import current_organisation
-from rero_ils.modules.permissions import RecordPermission
+from rero_ils.modules.permissions import ALLOW, DENY, AbstractCondition, \
+    RecordPermission
 
 from .api import Patron, current_patron
 
@@ -128,16 +129,68 @@ class PatronPermission(RecordPermission):
         return cls.create(user, record)
 
 
-def get_allowed_roles_management():
+def get_allowed_roles_management(patron_pid=None):
     """Get the roles that current logged user could manage.
 
+    :param patron_pid: the patron pid to check
     :return An array of allowed role management.
     """
     allowed_roles = []
-    if current_patron and current_patron.is_librarian:
-        if current_patron.is_librarian:
-            allowed_roles.append(Patron.ROLE_PATRON)
-            allowed_roles.append(Patron.ROLE_LIBRARIAN)
-        if current_patron.is_system_librarian:
-            allowed_roles.append(Patron.ROLE_SYSTEM_LIBRARIAN)
+    patron = Patron.get_record_by_pid(patron_pid) if patron_pid else None
+    restrictions = current_app.config.get('ROLES_MANAGEMENT_PERMISSIONS', {})
+    for role in Patron.ALL_ROLES:
+        # by default, all operations are allowed
+        data = {
+            'name': role,
+            'permissions': {
+                'add': {'can': ALLOW},
+                'delete': {'can': ALLOW}
+            }
+        }
+        # check about role management restrictions to know if one action should
+        # be denied + reasons
+        for name, conditions in restrictions.get(role, {}).items():
+            reasons = [condition.message for condition in conditions
+                       if not condition.can(patron)]
+            # If reasons array isn't empty, the action is denied
+            if reasons:
+                data['permissions'][name]['can'] = DENY
+                data['permissions'][name]['reasons'] = reasons
+        allowed_roles.append(data)
     return allowed_roles
+
+
+# =============================================================================
+# CONDITIONS
+# =============================================================================
+
+class StaffMemberCondition(AbstractCondition):
+    """Condition class to check if the current patron is a staff member.
+
+    To be considerate as a staff member the patron should have one of the
+    role defined into Patron.STAFF_MEMBERS_ROLE.
+    """
+
+    def can(self, *args, **kwargs):
+        """Check if the condition is validated.
+
+        :return True if the condition is validate, False otherwise.
+        """
+        if current_patron:
+            return any(role in Patron.STAFF_MEMBER_ROLES
+                       for role in current_patron.get('roles', []))
+        return False
+
+
+class SystemLibrarianCondition(AbstractCondition):
+    """Condition class to check if the current patron is a system librarian."""
+
+    def can(self, *args, **kwargs):
+        """Check if the condition is validated.
+
+        :return True if the condition is validate, False otherwise.
+        """
+        if current_patron:
+            return Patron.ROLE_SYSTEM_LIBRARIAN in \
+                   current_patron.get('roles', [])
+        return False

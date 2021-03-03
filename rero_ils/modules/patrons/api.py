@@ -96,11 +96,14 @@ class Patron(IlsRecord):
     ROLE_LIBRARIAN = 'librarian'
     ROLE_SYSTEM_LIBRARIAN = 'system_librarian'
 
-    ROLES_HIERARCHY = {
-        ROLE_PATRON: [],
-        ROLE_LIBRARIAN: [],
-        ROLE_SYSTEM_LIBRARIAN: [ROLE_LIBRARIAN]
-    }
+    ALL_ROLES = [ROLE_SYSTEM_LIBRARIAN, ROLE_LIBRARIAN, ROLE_PATRON]
+    STAFF_MEMBER_ROLES = [ROLE_SYSTEM_LIBRARIAN, ROLE_LIBRARIAN]
+
+    # Roles management conditions
+    # is_system_librarian_condition = type(
+    #     'SystemLibrarianCondition', (AbstractCondition,), {
+    #         'can': lambda self, patron: current_patron.is_system_librarian
+    #     })()
 
     minter = patron_id_minter
     fetcher = patron_id_fetcher
@@ -192,7 +195,6 @@ class Patron(IlsRecord):
         :param delete_pid - remove the pid present in the data if True
         :param dbcommit - commit the changes in the db after the creation
         :param reindex - index the record after the creation
-        :param email_notification - send a reset password link to the user
         """
         # remove spaces
         data = trim_patron_barcode_for_record(data=data)
@@ -261,7 +263,7 @@ class Patron(IlsRecord):
     def _update_roles(self):
         """Update user roles."""
         db_roles = self.user.roles
-        for role in self.available_roles:
+        for role in Patron.ALL_ROLES:
             in_db = role in db_roles
             in_record = role in self.get('roles', [])
             if in_record and not in_db:
@@ -272,27 +274,9 @@ class Patron(IlsRecord):
     def _remove_roles(self):
         """Remove roles."""
         db_roles = self.user.roles
-        for role in self.available_roles:
+        for role in Patron.ALL_ROLES:
             if role in db_roles:
                 self.remove_role(role)
-
-    @classmethod
-    def get_reachable_roles(cls, role):
-        """Get list of roles depending on role hierarchy."""
-        if role not in Patron.ROLES_HIERARCHY:
-            return []
-        roles = Patron.ROLES_HIERARCHY[role].copy()
-        roles.append(role)
-        return roles
-
-    @classmethod
-    def get_all_roles_for_role(cls, role):
-        """The list of roles covering given role based on the hierarchy."""
-        roles = [role]
-        for key in Patron.ROLES_HIERARCHY:
-            if role in Patron.ROLES_HIERARCHY[key] and key not in roles:
-                roles.append(key)
-        return roles
 
     @classmethod
     def get_all_pids_for_organisation(cls, organisation_pid):
@@ -431,6 +415,8 @@ class Patron(IlsRecord):
         role = _datastore.find_role(role_name)
         _datastore.remove_role_from_user(self.user, role)
         _datastore.commit()
+        # TODO :: when removing the role 'patron' to a user, we should unlink
+        #         all loans related to this patron.
 
     @property
     def patron(self):
@@ -593,10 +579,12 @@ class Patron(IlsRecord):
 
     def get_valid_subscriptions(self):
         """Get valid subscriptions for a patron."""
+
         def is_subscription_valid(subscription):
             start = datetime.strptime(subscription['start_date'], '%Y-%m-%d')
             end = datetime.strptime(subscription['end_date'], '%Y-%m-%d')
             return start < datetime.now() < end
+
         subs = filter(
             is_subscription_valid,
             self.get('patron', {}).get('subscriptions', []))

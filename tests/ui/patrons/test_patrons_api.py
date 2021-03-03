@@ -138,9 +138,9 @@ def test_patron_create(app, roles, lib_martigny, librarian_martigny_data_tmp,
     ptrn.update({'roles': roles}, dbcommit=True)
     user_roles = [r.name for r in user.roles]
     assert set(user_roles) == set(roles)
-    roles = Patron.available_roles
+    roles = Patron.ALL_ROLES
     data = {
-        'roles': Patron.available_roles,
+        'roles': Patron.ALL_ROLES,
         'patron': {
             'expiration_date': '2023-10-07',
             'barcode': ['2050124311'],
@@ -153,7 +153,7 @@ def test_patron_create(app, roles, lib_martigny, librarian_martigny_data_tmp,
     }
     ptrn.update(data, dbcommit=True)
     user_roles = [r.name for r in user.roles]
-    assert set(user_roles) == set(Patron.available_roles)
+    assert set(user_roles) == set(Patron.ALL_ROLES)
 
     # remove patron
     ptrn.delete()

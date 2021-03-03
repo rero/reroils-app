@@ -17,10 +17,12 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """Permissions for loans."""
-from rero_ils.modules.loans.api import Loan
+from flask_babelex import gettext as _
+
+from rero_ils.modules.loans.api import Loan, count_any_loans_by_patron_pid
 from rero_ils.modules.organisations.api import current_organisation
 from rero_ils.modules.patrons.api import current_patron
-from rero_ils.modules.permissions import RecordPermission
+from rero_ils.modules.permissions import AbstractCondition, RecordPermission
 
 
 class LoanPermission(RecordPermission):
@@ -90,3 +92,22 @@ class LoanPermission(RecordPermission):
         """
         # deny all
         return False
+
+
+# =============================================================================
+# CONDITIONS
+# =============================================================================
+
+class PendingLoansCondition(AbstractCondition):
+    """Condition class to check if a patron has some current pending loans."""
+
+    message = _('Patron has open loans')
+
+    def can(self, patron):
+        """Check if the condition is validated.
+
+        :return True if the condition is validate, False otherwise.
+        """
+        if patron:
+            return count_any_loans_by_patron_pid(patron.pid) == 0
+        return True

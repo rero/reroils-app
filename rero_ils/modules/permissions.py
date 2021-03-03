@@ -18,9 +18,14 @@
 """Permissions for all modules."""
 
 from flask import current_app, jsonify
+from flask_babelex import gettext as _
 from flask_login import current_user
 
 from .utils import get_record_class_and_permissions_from_route
+
+# global permission constants
+ALLOW = 'allow'
+DENY = 'deny'
 
 # Basics access without permission check
 allow_access = type('Allow', (), {'can': lambda self: True})()
@@ -229,3 +234,21 @@ class RecordPermission:
         if user.is_anonymous:
             return False
         return has_superuser_access()
+
+
+class AbstractCondition:
+    """Allow to test a specific condition.
+
+    This `can` method must be override by children class. If the condition
+    isn't satisfied, a information message could be found into the `message`
+    class attribute.
+    """
+
+    message = _('insufficient privilege')
+
+    def can(self, *args, **kwargs):
+        """Check if the condition is reached.
+
+        :return True if the condition is satisfied, False otherwise
+        """
+        raise NotImplementedError

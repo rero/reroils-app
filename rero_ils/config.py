@@ -71,7 +71,7 @@ from .modules.items.utils import item_location_retriever
 from .modules.libraries.api import Library
 from .modules.libraries.permissions import LibraryPermission
 from .modules.loans.api import Loan, LoanState
-from .modules.loans.permissions import LoanPermission
+from .modules.loans.permissions import LoanPermission, PendingLoansCondition
 from .modules.loans.utils import can_be_requested, get_default_loan_duration, \
     get_extension_params, is_item_available_for_checkout, \
     loan_build_document_ref, loan_build_item_ref, loan_build_patron_ref, \
@@ -91,11 +91,12 @@ from .modules.patron_transaction_events.permissions import \
     PatronTransactionEventPermission
 from .modules.patron_transactions.api import PatronTransaction
 from .modules.patron_transactions.permissions import \
-    PatronTransactionPermission
+    OpenTransactionCondition, PatronTransactionPermission
 from .modules.patron_types.api import PatronType
 from .modules.patron_types.permissions import PatronTypePermission
 from .modules.patrons.api import Patron
-from .modules.patrons.permissions import PatronPermission
+from .modules.patrons.permissions import PatronPermission, \
+    StaffMemberCondition, SystemLibrarianCondition
 from .modules.permissions import record_permission_factory
 from .modules.templates.api import Template
 from .modules.templates.permissions import TemplatePermission
@@ -2592,6 +2593,27 @@ CIRCULATION_ACTIONS_VALIDATION = {
         CircPolicy.allow_checkout,
         PatronType.allow_checkout
     ]
+}
+
+# ROLES MANAGEMENT
+# =================
+ROLES_MANAGEMENT_PERMISSIONS = {
+    Patron.ROLE_LIBRARIAN: {
+        'add': [StaffMemberCondition()],
+        'delete': [StaffMemberCondition()]
+    },
+    Patron.ROLE_SYSTEM_LIBRARIAN: {
+        'add': [SystemLibrarianCondition()],
+        'delete': [SystemLibrarianCondition()]
+    },
+    Patron.ROLE_PATRON: {
+        'add': [StaffMemberCondition()],
+        'delete': [
+            StaffMemberCondition(),
+            OpenTransactionCondition(),
+            PendingLoansCondition()
+        ]
+    }
 }
 
 # WIKI

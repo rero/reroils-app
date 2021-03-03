@@ -22,10 +22,11 @@ def item_pid_to_object(item_pid):
     """Build an item_pid object from a given item pid.
 
     :param item_pid: the item pid value
-    :return: the item_pid object
-    :rtype: object
+    :return: the item_pid object or None
+    :rtype: object | None
     """
-    return {'value': item_pid, 'type': 'item'}
+    if item_pid:
+        return {'value': item_pid, 'type': 'item'}
 
 
 def item_location_retriever(item_pid):
