@@ -80,6 +80,7 @@ freezegun = "^1.1.0"
 lazyreader = ">1.0.0"
 jinja2 = ">2.11.2"
 jsonmerge = "^1.8.0"
+dcxml = "^0.1.2"
 
 [tool.poetry.dev-dependencies]
 ## Python packages development dependencies (order matters)

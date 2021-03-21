@@ -17,10 +17,16 @@
 
 """Document serialization."""
 
+from dcxml import simpledc
 from flask import current_app, request
+from invenio_records_rest.serializers.dc import \
+    DublinCoreSerializer as BaseDublinCoreSerializer
 from invenio_records_rest.serializers.response import record_responsify, \
     search_responsify
+from lxml import etree
+from lxml.builder import ElementMaker
 
+from .dojson.contrib.jsontodc import dublincore
 from .utils import create_contributions, filter_document_type_buckets
 from ..documents.api import Document
 from ..documents.utils import title_format_text_head
@@ -169,5 +175,153 @@ class DocumentJSONSerializer(JSONSerializer):
 json_doc = DocumentJSONSerializer(RecordSchemaJSONV1)
 """JSON v1 serializer."""
 
+
+DEFAULT_LANGUAGE = 'en'
+
+
+class DublinCoreSerializer(BaseDublinCoreSerializer):
+    """Dublin Core serializer for records.
+
+    Note: This serializer is not suitable for serializing large number of
+    records.
+    """
+
+    from ..utils import get_base_url
+
+    # Default namespace mapping.
+    namespace = {
+        'dc': 'http://purl.org/dc/elements/1.1/',
+        'xml': 'xml',
+    }
+    # Default container element attributes.
+    # TODO: save local dc schema
+    container_attribs = {
+        '{http://www.w3.org/2001/XMLSchema-instance}schemaLocation':
+        'https://www.loc.gov/standards/sru '
+        'https://www.loc.gov/standards/sru/recordSchemas/dc-schema.xsd',
+    }
+    # Default container element.
+    container_element = 'record'
+
+    def transform_record(self, pid, record, links_factory=None,
+                         language=DEFAULT_LANGUAGE, **kwargs):
+        """Transform record into an intermediate representation."""
+        record = record.replace_refs()
+        contributions = create_contributions(
+            record.get('contribution', [])
+        )
+        if contributions:
+            record['contribution'] = contributions
+        record = dublincore.do(record, language=language)
+        return record
+
+    def transform_search_hit(self, pid, record, links_factory=None,
+                             language=DEFAULT_LANGUAGE, **kwargs):
+        """Transform search result hit into an intermediate representation."""
+        record = Document.get_record_by_pid(pid)
+        return self.transform_record(
+            pid=pid,
+            record=record,
+            links_factory=links_factory,
+            language=language,
+            **kwargs
+        )
+
+    def serialize(self, pid, record, links_factory=None, **kwargs):
+        """Serialize a single record and persistent identifier.
+
+        :param pid: Persistent identifier instance.
+        :param record: Record instance.
+        :param links_factory: Factory function for record links.
+        """
+        language = request.args.get('ln', DEFAULT_LANGUAGE)
+        element_record = simpledc.dump_etree(
+            self.transform_record(
+                pid=pid,
+                record=record,
+                links_factory=links_factory,
+                language=language,
+                **kwargs
+            ),
+            container=self.container_element,
+            nsmap=self.namespace,
+            attribs=self.container_attribs
+        )
+        return etree.tostring(element_record, encoding='utf-8', method='xml',
+                              pretty_print=True)
+
+    def serialize_search(self, pid_fetcher, search_result, links=None,
+                         item_links_factory=None, **kwargs):
+        """Serialize a search result.
+
+        :param pid_fetcher: Persistent identifier fetcher.
+        :param search_result: Elasticsearch search result.
+        :param links: Dictionary of links to add to response.
+        """
+        total = search_result['hits']['total']['value']
+        sru = search_result['hits']['total'].get('sru', {})
+        start_record = sru.get('start_record', 0)
+        maximum_records = sru.get('maximum_records', 0)
+        query = sru.get('query')
+        next_record = start_record + maximum_records + 1
+
+        element = ElementMaker()
+        xml_root = element.searchRetrieveResponse()
+        if sru:
+            xml_root.append(element.version('1.1'))
+        xml_root.append(element.numberOfRecords(str(total)))
+        xml_records = element.records()
+
+        language = request.args.get('ln', DEFAULT_LANGUAGE)
+        for hit in search_result['hits']['hits']:
+            record = hit['_source']
+            pid = record['pid']
+            record = self.transform_search_hit(
+                pid=pid,
+                record=record,
+                links_factory=item_links_factory,
+                language=language,
+                **kwargs
+            )
+
+            element_record = simpledc.dump_etree(
+                record,
+                container=self.container_element,
+                nsmap=self.namespace,
+                attribs=self.container_attribs
+            )
+            xml_records.append(element_record)
+        xml_root.append(xml_records)
+
+        if sru:
+            echoed_search_rr = element.echoedSearchRetrieveRequest()
+            if query:
+                echoed_search_rr.append(element.query(query))
+            if start_record:
+                echoed_search_rr.append(element.startRecord(str(start_record)))
+            if maximum_records:
+                echoed_search_rr.append(element.maximumRecords(
+                    str(maximum_records)))
+            echoed_search_rr.append(element.recordPacking('XML'))
+            xml_root.append(echoed_search_rr)
+        else:
+            xml_links = element.links()
+            self_link = links.get('self')
+            if self_link:
+                xml_links.append(element.self(f'{self_link}&format=dc'))
+            next_link = links.get('next')
+            if next_link:
+                xml_links.append(element.next(f'{next_link}&format=dc'))
+            xml_root.append(xml_links)
+        return etree.tostring(xml_root, encoding='utf-8', method='xml',
+                              pretty_print=True)
+
+
+xml_dc = DublinCoreSerializer(RecordSchemaJSONV1)
+"""JSON v1 serializer."""
+
+
 json_doc_search = search_responsify(json_doc, 'application/rero+json')
 json_doc_response = record_responsify(json_doc, 'application/rero+json')
+json_dc_search = search_responsify(xml_dc, 'application/xml')
+json_dc_response = record_responsify(xml_dc, 'application/xml')

@@ -519,11 +519,15 @@ RECORDS_REST_ENDPOINTS = dict(
             ),
             'application/rero+json': (
                 'rero_ils.modules.documents.serializers:json_doc_response'
+            ),
+            'application/xml+dc': (
+                'rero_ils.modules.documents.serializers:json_dc_response'
             )
         },
         record_serializers_aliases={
             'json': 'application/json',
-            'rero': 'application/rero+json'
+            'rero': 'application/rero+json',
+            'dc': 'application/xml+dc'
         },
         search_serializers={
             'application/json': (
@@ -532,10 +536,14 @@ RECORDS_REST_ENDPOINTS = dict(
             'application/rero+json': (
                 'rero_ils.modules.documents.serializers:json_doc_search'
             ),
+            'application/xml+dc': (
+                'rero_ils.modules.documents.serializers:json_dc_search'
+            )
         },
         search_serializers_aliases={
             'json': 'application/json',
-            'rero': 'application/rero+json'
+            'rero': 'application/rero+json',
+            'dc': 'application/xml+dc'
         },
         record_loaders={
             'application/marcxml+xml':
