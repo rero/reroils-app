@@ -765,7 +765,6 @@ def patron_transaction_overdue_event_sion_data(data):
 
 
 # ------------ Loans and items for circulation actions ----------
-
 @pytest.fixture(scope="module")
 def item_on_shelf_martigny_patron_and_loan_pending(
         app,
