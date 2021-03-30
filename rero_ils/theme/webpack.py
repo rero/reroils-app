@@ -34,8 +34,8 @@ theme = WebpackBundle(
     },
     dependencies={
         'popper.js': '1.16.1',
-        'jquery': '~3.2.1',
-        'bootstrap': '~4.5.3',
+        'jquery': '~3.6.0',
+        'bootstrap': '~4.6.0',
         'font-awesome': '~4.7.0'
     }
 )
