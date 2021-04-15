@@ -501,6 +501,7 @@ def create_contributions(contributions):
             # transform local data for indexing
             agent = {}
             agent['type'] = contribution['agent']['type']
+            agent['preferred_name'] = contribution['agent']['preferred_name']
             authorized_access_point = create_authorized_access_point(
                 contribution['agent']
             )

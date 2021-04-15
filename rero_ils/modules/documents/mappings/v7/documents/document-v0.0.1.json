@@ -279,6 +279,9 @@
               },
               "parallel_access_point": {
                 "type": "text"
+              },
+              "preferred_name": {
+                "type": "text"
               }
             }
           },

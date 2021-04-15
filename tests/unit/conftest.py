@@ -246,3 +246,212 @@ def operation_log_schema(monkeypatch):
         'operation_logs/operation_log-v0.0.1.json'
     )
     return get_schema(monkeypatch, schema_in_bytes)
+
+
+@pytest.fixture()
+def marc21_record():
+    """Marc21 record."""
+    return {
+        'leader': '00000cam a2200000zu 4500',
+        '008': '000000|||||||||xx#|||||||||||||||||||||c',
+    }
+
+
+@pytest.fixture()
+def mef_record_1():
+    """Mef record 1."""
+    return {
+        '$schema': 'https://ils.rero.ch/schemas/'
+                   'contributions/contribution-v0.0.1.json',
+        'idref': {
+            '$schema': 'https://mef.rero.ch/schemas/'
+                       'agents_idref/idref-agent-v0.0.1.json',
+            'authorized_access_point': 'Honnoré, Patrick',
+            'bf:Agent': 'bf:Person',
+            'biographical_information': ['Traduit du japonais en français'],
+            'country_associated': 'fr',
+            'identifier': 'http://www.idref.fr/072277742',
+            'language': ['fre', 'jpn'],
+            'md5': '8f1dda5f37239c65d3b3d0d2252ceffb',
+            'pid': '072277742',
+            'preferred_name': 'Honnoré, Patrick',
+            'relation_pid': {'type': 'redirect_from', 'value': '193601680'}
+        },
+        'pid': '6627670',
+        'rero': {
+            '$schema': 'https://mef.rero.ch/schemas/'
+                       'agents_rero/rero-agent-v0.0.1.json',
+            'authorized_access_point': 'Honnoré, Patrick',
+            'bf:Agent': 'bf:Person',
+            'identifier': 'http://data.rero.ch/02-A009220673',
+            'md5': 'c90fa0c93eac4346910734badb77bdce',
+            'pid': 'A009220673',
+            'preferred_name': 'Honnoré, Patrick'},
+        'sources': ['rero', 'idref'],
+        'type': 'bf:Person',
+        'viaf_pid': '37141584'
+    }
+
+
+@pytest.fixture()
+def mef_record_2():
+    """Mef record 2."""
+    return {
+        '$schema': 'https://mef.rero.ch/schemas/mef/mef-v0.0.1.json',
+        'gnd': {
+            '$schema': 'https://mef.rero.ch/schemas/'
+                       'agents_gnd/gnd-agent-v0.0.1.json',
+            'authorized_access_point': 'Université de Genève',
+            'bf:Agent': 'bf:Organisation',
+            'conference': False,
+            'country_associated': 'sz',
+            'date_of_establishment': '1873',
+            'identifier': 'http://d-nb.info/gnd/1010450-1',
+            'md5': '291d3a468f69af08fa4a0d352ce71ab4',
+            'pid': '004058518',
+            'preferred_name': 'Université de Genève',
+            'variant_access_point': [
+                'Schola Genevensis',
+                'University of Geneva',
+                'Ženevskij Universitet',
+                'Universitet. Genf',
+                'Universität Genf',
+                'Università di Ginevra',
+                'Universidad de Ginebra',
+                'UNIGE. Abkuerzung'
+            ],
+            'variant_name': [
+                'Schola Genevensis',
+                'University of Geneva',
+                'Ženevskij Universitet',
+                'Universitet',
+                'Universität Genf',
+                'Università di Ginevra',
+                'Universidad de Ginebra',
+                'UNIGE'
+            ]
+        },
+        'idref': {
+            '$schema': 'https://mef.rero.ch/schemas/'
+                       'agents_idref/idref-agent-v0.0.1.json',
+            'authorized_access_point': 'Université de Genève',
+            'bf:Agent': 'bf:Organisation',
+            'biographical_information': [
+                "Fondée en 1559, l'académie devint Université en 1872",
+                "3 pl. de l'Université, Genève (Suisse)"
+            ],
+            'conference': False,
+            'country_associated': 'sz',
+            'date_of_establishment': '1559',
+            'identifier': 'http://www.idref.fr/02643136X',
+            'language': ['fre'],
+            'md5': '96a27be2a6ee9741dab983c3f403c3ff',
+            'pid': '02643136X',
+            'preferred_name': 'Université de Genève',
+            'relation_pid': {
+                'type': 'redirect_from',
+                'value': '126899959'
+            },
+            'variant_access_point': [
+                'UNIGE',
+                'Academia Genevensis',
+                'Académie de Genève',
+                'Académie théologique de Genève',
+                'Académie de Calvin ( Genève )',
+                'Schola Genevensis',
+                'Università di Ginevra'
+            ],
+            'variant_name': [
+                'UNIGE',
+                'Academia Genevensis',
+                'Académie de Genève',
+                'Académie théologique de Genève',
+                'Académie de Calvin ( Genève )',
+                'Schola Genevensis',
+                'Università di Ginevra'
+            ]
+        },
+        'pid': '5890765',
+        'viaf_pid': '143949988'
+    }
+
+
+@pytest.fixture()
+def mef_record_3():
+    """Mef record 3."""
+    return {
+        '$schema': 'https://mef.rero.ch/schemas/mef/mef-v0.0.1.json',
+        'gnd': {
+            '$schema': 'https://mef.rero.ch/schemas/'
+                       'agents_gnd/gnd-agent-v0.0.1.json',
+            'authorized_access_point': 'Congrès Ouvrier de France',
+            'bf:Agent': 'bf:Organisation',
+            'conference': True,
+            'identifier': 'http://d-nb.info/gnd/5034321-X',
+            'md5': '21ea03e240e10011305acac0cd731813',
+            'pid': '050343211',
+            'preferred_name': 'Congrès Ouvrier de France'
+        },
+        'idref': {
+            '$schema': 'https://mef.rero.ch/schemas/'
+                       'agents_idref/idref-agent-v0.0.1.json',
+            'authorized_access_point': 'Congrès ouvrier français',
+            'bf:Agent': 'bf:Organisation',
+            'biographical_information': [
+                'L\'ordre des formes exclues suit l\'ordre chronologique des '
+                'publications et correspond à l\'évolution historique '
+                '(Cf. la notice des congrès particuliers) On a gardé '
+                'volontairement la forme \'Congrès ouvrier français\' '
+                'pour toute la série'
+            ],
+            'conference': False,
+            'country_associated': 'fr',
+            'date_of_establishment': '1876',
+            'identifier': 'http://www.idref.fr/03255608X',
+            'language': ['fre'],
+            'md5': '4f838b25c1281bc96aa14b9a4ee49572',
+            'pid': '03255608X',
+            'preferred_name': 'Congrès ouvrier français',
+            'variant_access_point': [
+                'Congrès ouvrier de France',
+                'Congrès socialiste ouvrier de France',
+                'Congrès national ouvrier socialiste',
+                'Congrès socialiste national ouvrier'
+            ],
+            'variant_name': [
+                'Congrès ouvrier de France',
+                'Congrès socialiste ouvrier de France',
+                'Congrès national ouvrier socialiste',
+                'Congrès socialiste national ouvrier'
+            ]
+        },
+        'pid': '5777972',
+        'rero': {
+            '$schema': 'https://mef.rero.ch/schemas/'
+                       'agents_rero/rero-agent-v0.0.1.json',
+            'authorized_access_point': 'Congrès ouvrier de France',
+            'bf:Agent': 'bf:Organisation',
+            'conference': True,
+            'identifier': 'http://data.rero.ch/02-A005462931',
+            'md5': 'e94636af02fbfabca711ec87a103f1b3',
+            'pid': 'A005462931',
+            'preferred_name': 'Congrès ouvrier de France',
+            'variant_access_point': [
+                'Congrès ouvrier socialiste de France',
+                'Congrès national ouvrier socialiste (France)',
+                'Congrès socialiste ouvrier de France',
+                'Congrès national socialiste ouvrier (France)',
+                'Congrès socialiste national ouvrier (France)',
+                'Congrès ouvrier français'
+            ],
+            'variant_name': [
+                'Congrès ouvrier socialiste de France',
+                'Congrès national ouvrier socialiste (France)',
+                'Congrès socialiste ouvrier de France',
+                'Congrès national socialiste ouvrier (France)',
+                'Congrès socialiste national ouvrier (France)',
+                'Congrès ouvrier français'
+            ]
+        },
+        'viaf_pid': '134406719'
+    }
