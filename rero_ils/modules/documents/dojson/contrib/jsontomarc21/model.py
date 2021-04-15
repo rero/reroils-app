@@ -445,8 +445,11 @@ def reverse_contribution(self, key, value):
             preferred_name = agent.get('preferred_name')
             if not preferred_name:
                 current_app.logger.warning(f'JSON to MARC21 {key}: {value}')
+<<<<<<< HEAD
                 from pprint import pprint
                 pprint(agent)
+=======
+>>>>>>> a9d2b9cb (SRU: convert JSON to MARC21)
                 break
             result = {'__order__': []}
             result = add_value(result, 'a', preferred_name)
