@@ -109,16 +109,20 @@ def test_items_serializers(
     response = client.get(list_url, headers=rero_json_header)
     assert response.status_code == 200
 
-    list_url = url_for('invenio_records_rest.item_list')
+    list_url = url_for('api_item.inventory_search')
     response = client.get(list_url, headers=csv_header)
     assert response.status_code == 200
     data = get_csv(response)
     assert data
     assert '"pid","document_pid","document_title","document_creator",' \
-           '"document_main_type","document_sub_type","location_name",' \
-           '"barcode","call_number","second_call_number",' \
-           '"enumerationAndChronology","loans_count",' \
-           '"last_transaction_date","status","created"' in data
+           '"document_main_type","document_sub_type","library_name",' \
+           '"location_name","barcode","call_number","second_call_number",' \
+           '"enumerationAndChronology","item_type","temporary_item_type",' \
+           '"temporary_item_type_end_date","general_note","staff_note",' \
+           '"checkin_note","checkout_note","loans_count",' \
+           '"last_transaction_date","status","created","issue_status",' \
+           '"issue_status_date","issue_claims_count","issue_expected_date",' \
+           '"issue_regular"' in data
 
 
 def test_loans_serializers(

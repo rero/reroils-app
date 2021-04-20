@@ -21,9 +21,9 @@ from flask import Blueprint, abort, jsonify
 from flask_login import login_required
 
 from rero_ils.modules.items.api import Item
-from rero_ils.modules.items.api_views import \
-    check_logged_user_authentication, jsonify_error
 from rero_ils.modules.items.models import ItemCirculationAction
+from rero_ils.modules.items.views.api_views import \
+    check_logged_user_authentication, jsonify_error
 from rero_ils.modules.loans.api import Loan
 from rero_ils.modules.loans.utils import sum_for_fees
 

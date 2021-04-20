@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 # RERO ILS
-# Copyright (C) 2019 RERO
+# Copyright (C) 2021 RERO
+# Copyright (C) 2021 UCLouvain
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -15,15 +16,23 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Item data module."""
+"""Blueprints for item."""
 
-from .api import Item, ItemsIndexer, ItemsSearch, item_id_fetcher, \
-    item_id_minter
-from .circulation import ItemCirculation
-from .issue import ItemIssue
-from .record import ItemRecord
+from __future__ import absolute_import
 
-__all__ = (
-    'Item', 'ItemRecord', 'ItemCirculation', 'ItemIssue', 'ItemsSearch',
-    'ItemsIndexer', 'item_id_fetcher', 'item_id_minter'
+from .api_views import api_blueprint
+from .rest import InventoryListResource
+
+inventory_list = InventoryListResource.as_view(
+    'inventory_search'
 )
+api_blueprint.add_url_rule(
+    '/inventory',
+    view_func=inventory_list
+)
+
+blueprints = [
+    api_blueprint,
+]
+
+__all__ = 'api_blueprint'

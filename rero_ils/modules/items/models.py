@@ -92,3 +92,10 @@ class ItemNoteTypes:
         CONDITION,
         PATRIMONIAL
     ]
+
+    INVENTORY_LIST_CATEGORY = [
+        GENERAL,
+        STAFF,
+        CHECKIN,
+        CHECKOUT
+    ]

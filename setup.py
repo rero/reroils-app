@@ -104,7 +104,7 @@ setup(
             'contributions = rero_ils.modules.contributions.views:api_blueprint',
             'holdings = rero_ils.modules.holdings.api_views:api_blueprint',
             'item_types = rero_ils.modules.item_types.views:blueprint',
-            'items = rero_ils.modules.items.api_views:api_blueprint',
+            'items = rero_ils.modules.items.views:api_blueprint',
             'libraries = rero_ils.modules.libraries.api_views:api_blueprint',
             'loans = rero_ils.modules.loans.api_views:api_blueprint',
             'monitoring = rero_ils.modules.monitoring:api_blueprint',
