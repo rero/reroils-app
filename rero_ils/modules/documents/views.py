@@ -401,11 +401,9 @@ def get_other_accesses(record):
 
     def filter_type(electronic_locator):
         """Filter electronic locator for related resources and no info."""
-        if electronic_locator.get('type') in ['relatedResource', 'noInfo'] \
-                and electronic_locator.get('content') != 'coverImage':
-            return True
-        else:
-            return False
+        return electronic_locator.get('type') in [
+            'noInfo', 'resource', 'relatedResource', 'versionOfResource'
+        ] and electronic_locator.get('content') != 'coverImage'
 
     filtered_electronic_locators = filter(
         filter_type,

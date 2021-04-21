@@ -104,6 +104,29 @@
     </div>
     {% endif %}
 
+    <!-- ELECTRONIC LOCATOR (Other accesses, types in filters) -->
+    {% if record.electronicLocator %}
+      {% set resources = record | get_other_accesses %}
+      {% if resources | length > 0 %}
+        <ul class="list-unstyled mb-0">
+        {% for resource in resources %}
+          <li>
+            <a href="{{ resource.url }}">
+              <i class="fa fa-link"></i>
+              {{ _(resource.type) }}:
+              {% if resource.content %}
+                {{ _(resource.content) }}
+              {% else %}
+                {{ resource.url }}
+              {% endif %}
+            </a>
+            {% if resource.public_note %}({{ resource.public_note }}){% endif %}
+          </li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endif %}
+
     <!-- SUBJECTS TERM -->
     {% if record.subjects %}
     <div class="pt-2">
@@ -114,7 +137,6 @@
     {% endfor %}
     </div>
     {% endif %}
-
   </div>
 </div>
 

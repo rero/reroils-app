@@ -3633,7 +3633,14 @@ def test_marc21_to_electronicLocator_from_856(mock_cover_get):
         }
     ]
     assert get_cover_art(data) is None
-    assert get_other_accesses(data) == []
+    assert get_other_accesses(data) == [
+        {
+            'url': 'http://reader.digitale-s.de/r/d/XXX.html',
+            'type': 'versionOfResource',
+            'content': 'fullText',
+            'public_note': 'Vol. 1'
+        }
+    ]
 
     marc21xml = """
     <record>
