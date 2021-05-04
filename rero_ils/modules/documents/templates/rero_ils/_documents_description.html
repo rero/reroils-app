@@ -50,13 +50,6 @@
   {% endfor %}
   {% endif %}
 
-  <!-- UNIFORM TITLE -->
-  <!--
-  {% if record.titlesProper|length > 0 %}
-  {{ dl(_('Uniform title'), record.titlesProper|join('; ')) }}
-  {% endif %}
-  -->
-
   <!-- SERIES STATEMENT -->
   {% if record.seriesStatement %}
   {% for serie in record.seriesStatement %}

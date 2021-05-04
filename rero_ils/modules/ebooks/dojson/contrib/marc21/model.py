@@ -100,12 +100,11 @@ def marc21_to_identifier_rero_id(self, key, value):
     return identifiers
 
 
-@marc21.over('translatedFrom', '^041..')
+@marc21.over('language', '^041..')
 @utils.ignore_value
 def marc21_to_translated_from(self, key, value):
-    """Get translatedFrom.
+    """Get language.
 
-    translatedFrom: 041 [$h repetitive]
     languages: 008 and 041 [$a, repetitive]
     """
     languages = self.get('language', [])
@@ -121,13 +120,7 @@ def marc21_to_translated_from(self, key, value):
                 unique_lang.append(lang)
                 languages.append({'type': 'bf:Language', 'value': lang})
 
-    self['language'] = languages
-
-    translated = value.get('h')
-    if translated:
-        return list(utils.force_list(translated))
-
-    return None
+    return languages
 
 
 @marc21.over('contribution', '[17][01][01]..')
@@ -531,17 +524,6 @@ def marc21_to_subjects(self, key, value):
         })
     self['subjects'] = subjects
     return None
-
-
-@marc21.over('titlesProper', '^730..')
-@utils.for_each_value
-@utils.ignore_value
-def marc21_to_titles_proper(self, key, value):
-    """Test dojson marc21titlesProper.
-
-    titleProper: 730$a
-    """
-    return value.get('a')
 
 
 @marc21.over('electronicLocator', '^8564.')

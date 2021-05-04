@@ -50,17 +50,6 @@ def test_title(document_schema, document_data_tmp):
         validate(document_data_tmp, document_schema)
 
 
-def test_titlesProper(document_schema, document_data_tmp):
-    """Test titlesProper for jsonschemas."""
-    document_data_tmp['titlesProper'] = ['RERO21 pour les nuls']
-
-    validate(document_data_tmp, document_schema)
-
-    with pytest.raises(ValidationError):
-        document_data_tmp['titlesProper'] = 'string is a bad type'
-        validate(document_data_tmp, document_schema)
-
-
 def test_type(document_schema, document_data_tmp):
     """Test type for document jsonschemas."""
     validate(document_data_tmp, document_schema)
@@ -93,17 +82,6 @@ def test_languages(document_schema, document_data_tmp):
 
     with pytest.raises(ValidationError):
         document_data_tmp['language'][0]['value'] = ['gre']
-        validate(document_data_tmp, document_schema)
-
-
-def test_translatedFrom(document_schema, document_data_tmp):
-    """Test translatedFrom for jsonschemas."""
-    document_data_tmp['translatedFrom'] = ['eng']
-
-    validate(document_data_tmp, document_schema)
-
-    with pytest.raises(ValidationError):
-        document_data_tmp['translatedFrom'] = [2]
         validate(document_data_tmp, document_schema)
 
 

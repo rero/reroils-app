@@ -483,17 +483,6 @@ def marc21_to_part_of(self, key, value):
         self['partOf'].append(part_of)
 
 
-@unimarc.over('titlesProper', '^500..')
-@utils.for_each_value
-@utils.ignore_value
-def unimarc_titles_proper(self, key, value):
-    """Test dojson unimarctitlesProper.
-
-    titleProper: 500$a
-    """
-    return value.get('a', '')
-
-
 @unimarc.over('language', '^101')
 @utils.ignore_value
 def unimarc_languages(self, key, value):
@@ -513,12 +502,6 @@ def unimarc_languages(self, key, value):
     for language in languages:
         if language in langs:
             to_return.append({'value': language, 'type': 'bf:Language'})
-
-    translatedsfrom = utils.force_list(value.get('c'))
-    if translatedsfrom:
-        self['translatedFrom'] = []
-        for translatedfrom in translatedsfrom:
-            self['translatedFrom'].append(translatedfrom)
 
     return to_return
 
