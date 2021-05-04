@@ -93,9 +93,6 @@ describe('Create a document with all simple fields', function() {
     // Add color contents
     cy.get('#addField').type('Color contents{enter}');
     cy.get('#colorContent-0').select(this.documents.book.colorContent[0].value);
-    // Add abstract
-    cy.get('#addField').type('Abstracts{enter}');
-    cy.get('#abstracts-0').type(this.documents.book.abstracts[0]);
     // Add copyright date
     cy.get('#addField').type('Copyright dates{enter}');
     cy.get('#copyrightDate-0').type(this.documents.book.copyrightDate[0]);
@@ -121,7 +118,6 @@ describe('Create a document with all simple fields', function() {
     // Check document detail view
     cy.checkDocumentEssentialFields(this.documents.book);
     cy.get('#doc-extent').should('contain', this.documents.book.extent);
-    cy.get('#doc-abstract-0').should('contain', this.documents.book.abstracts[0]);
     cy.get('#doc-subject-0').should('contain', this.documents.book.subjects[0]);
     cy.get('#doc-subject-1').should('contain', this.documents.book.subjects[1]);
     cy.get('#doc-language-0').should('contain', this.documents.book.translatedFrom[0]);

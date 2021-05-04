@@ -2919,8 +2919,6 @@ def test_marc21_to_summary():
         "label": [{"value": "This book is about"}],
         "source": "source"
     }]
-    # TODO: remove legacy code for abstracts (next line)
-    assert data.get('abstracts') == ['This book is about']
 
     marc21xml = """
     <record>
@@ -2944,8 +2942,6 @@ def test_marc21_to_summary():
                     'language': 'und-hani'
                 }]
     }]
-    # TODO: remove legacy code for abstracts (next line)
-    assert data.get('abstracts') == ['Za wen fen wei si bu fen lu ru']
 
 
 def test_marc21_to_intended_audience():

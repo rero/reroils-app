@@ -356,17 +356,6 @@ def test_note(document_schema, document_data_tmp):
         validate(document_data_tmp, document_schema)
 
 
-def test_abstracts(document_schema, document_data_tmp):
-    """Test abstracts for jsonschemas."""
-    document_data_tmp['abstracts'] = ["This document is about..."]
-
-    validate(document_data_tmp, document_schema)
-
-    with pytest.raises(ValidationError):
-        document_data_tmp['abstracts'][0] = 2
-        validate(document_data_tmp, document_schema)
-
-
 def test_identifiedby(document_schema, document_data_tmp):
     """Test identifiers for jsonschemas."""
     document_data_tmp['identifiedBy'] = [
