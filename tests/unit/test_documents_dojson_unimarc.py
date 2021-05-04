@@ -774,36 +774,6 @@ def test_unimarctotitle_with_parallel_and_variant_title():
     ]
 
 
-# titleProper: [500$a repetitive]
-def test_unimarctotitlesProper():
-    """Test dojson unimarc_titlesProper."""
-
-    unimarcxml = """
-    <record>
-      <datafield tag="500" ind1="1" ind2="0">
-        <subfield code="a">proper title</subfield>
-      </datafield>
-    </record>
-    """
-    unimarcjson = create_record(unimarcxml)
-    data = unimarc.do(unimarcjson)
-    assert data.get('titlesProper') == ['proper title']
-
-    unimarcxml = """
-    <record>
-      <datafield tag="500" ind1=" " ind2=" ">
-        <subfield code="a">proper title</subfield>
-      </datafield>
-      <datafield tag="500" ind1=" " ind2=" ">
-         <subfield code="a">other proper title</subfield>
-       </datafield>
-    </record>
-    """
-    unimarcjson = create_record(unimarcxml)
-    data = unimarc.do(unimarcjson)
-    assert data.get('titlesProper') == ['proper title', 'other proper title']
-
-
 # languages: 101 [$a]
 def test_unimarc_languages():
     """Test dojson unimarc_languages."""
@@ -834,7 +804,6 @@ def test_unimarc_languages():
         {'value': 'eng', 'type': 'bf:Language'},
         {'value': 'fre', 'type': 'bf:Language'}
     ]
-    assert data.get('translatedFrom') == ['ita']
 
     unimarcxml = """
     <record>
@@ -850,7 +819,6 @@ def test_unimarc_languages():
     assert data.get('language') == [
         {'value': 'eng', 'type': 'bf:Language'},
     ]
-    assert data.get('translatedFrom') == ['ita']
 
 
 def test_unimarc_contribution():
