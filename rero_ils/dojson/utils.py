@@ -1396,7 +1396,7 @@ class ReroIlsMarc21Overdo(ReroIlsOverdo):
                 elif media_type_from_338 != media_type:
                     value['mediaType'] = media_type_from_338
                     error_print(
-                        'MEDIA TYPE ERROR:',
+                        'WARNING MEDIA TYPE:',
                         self.bib_id, self.rero_id, media_type)
 
             if media_type_from_338 and not media_type:
