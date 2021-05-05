@@ -107,6 +107,31 @@
     {% endfor %}
     </div>
     {% endif %}
+
+    <!-- SUMMARY -->
+    {% if record.summary %}
+    <div class="pt-2">
+      {% for sum in record.summary %}
+        {% for data in sum.label %}
+          <div>
+            {% if data.language %}
+              <span class="badge badge-secondary">
+                {{ _('lang_script_' + data.language) }}
+              </span>
+            {% endif %}
+            {% if data.value | length > 400 %}
+              <span data-show-more="{{ data.value | nl2br | safe }}">
+                {{ data.value | nl2br | safe | truncate(400) }}
+              </span>
+              <a href="#" class="show-more">{{ _('Show more') }}&hellip;</a>
+            {% else %}
+              {{ data.value | nl2br | safe }}
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+    {% endif %}
   </div>
 </div>
 
