@@ -1,6 +1,7 @@
 ..
     RERO ILS
-    Copyright (C) 2020 RERO
+    Copyright (C) 2018-2021 RERO
+	Copyright (C) 2018-2021 UCLouvain
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -41,7 +42,7 @@
         :alt: Translation status
         :target: https://hosted.weblate.org/engage/rero_plus/?utm_source=widget
 
-*Copyright (C) 2020 RERO*
+*Copyright (C) 2018-2021 RERO*, *Copyright (C) 2018-2021 UCLouvain*
 
 Table of Content
 ----------------
@@ -166,6 +167,8 @@ If you have questions, you can ask the development team on `Gitter`_.
 
 You can also `open an issue`_.
 
+You can help translating the software on `Weblate`_.
+
 To contribute to the code itself, please check the
 `contributing recommandations`_.
 
@@ -231,6 +234,7 @@ you can run your own ebooks server.
 .. _`ecosystem`: #the-rero-ils-ecosystem
 .. _`ils.test.rero.ch`: https://ils.test.rero.ch
 .. _`open an issue`: https://github.com/rero/rero-ils/issues/new
+.. _`Weblate`: https://hosted.weblate.org/projects/rero_plus/#information
 .. _`Gitter`: https://gitter.im/rero/reroils
 .. _`contributing recommandations`: https://github.com/rero/rero-ils/blob/dev/CONTRIBUTING.rst
 .. _`rero-ils GitHub project`: https://github.com/rero/rero-ils
