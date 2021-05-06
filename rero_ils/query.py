@@ -386,7 +386,7 @@ def search_factory(self, search, query_parser=None):
         """Default parser that uses the Q() from elasticsearch_dsl."""
         query_type = 'query_string'
         default_operator = 'OR'
-        if request.args.get('simple'):
+        if request.args.get('simple') == '1':
             query_type = 'simple_query_string'
             default_operator = 'AND'
 
