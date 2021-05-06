@@ -63,9 +63,6 @@
     "frequency",
     "dissertation",
     "adminMetadata",
-    "titlesProper",
-    "translatedFrom",
-    "abstracts",
     "usageAndAccessPolicy",
     "_masked"
   ],
@@ -91,9 +88,6 @@
     "responsibilityStatement": {
       "$ref": "https://ils.rero.ch/schemas/documents/document_responsibility_statement-v0.0.1.json#/responsibilityStatement"
     },
-    "titlesProper": {
-      "$ref": "https://ils.rero.ch/schemas/documents/document_titles_proper-v0.0.1.json#/titlesProper"
-    },
     "partOf": {
       "$ref": "https://ils.rero.ch/schemas/documents/document_part_of-v0.0.1.json#/partOf"
     },
@@ -102,9 +96,6 @@
     },
     "issuance": {
       "$ref": "https://ils.rero.ch/schemas/documents/document_issuance-v0.0.1.json#/issuance"
-    },
-    "translatedFrom": {
-      "$ref": "https://ils.rero.ch/schemas/documents/document_translated_from-v0.0.1.json#/translatedFrom"
     },
     "contribution": {
       "$ref": "https://ils.rero.ch/schemas/documents/document_contribution-v0.0.1.json#/contribution"
@@ -144,9 +135,6 @@
     },
     "note": {
       "$ref": "https://ils.rero.ch/schemas/documents/document_note-v0.0.1.json#/note"
-    },
-    "abstracts": {
-      "$ref": "https://ils.rero.ch/schemas/documents/document_abstract-v0.0.1.json#/abstracts"
     },
     "identifiedBy": {
       "$ref": "https://ils.rero.ch/schemas/documents/document_identified_by-v0.0.1.json#/identifiedBy"

@@ -2539,7 +2539,377 @@
       "templateOptions": {
         "itemCssClass": "col-lg-6"
       },
-      "hide": true
+      "hide": true,
+      "options": [
+        {
+          "label": "lang_script_ara-arab",
+          "value": "ara-arab"
+        },
+        {
+            "label": "lang_script_ara-latn",
+            "value": "ara-latn"
+        },
+        {
+            "label": "lang_script_arm-armn",
+            "value": "arm-armn"
+        },
+        {
+            "label": "lang_script_arm-latn",
+            "value": "arm-latn"
+        },
+        {
+            "label": "lang_script_awa-deva",
+            "value": "awa-deva"
+        },
+        {
+            "label": "lang_script_awa-latn",
+            "value": "awa-latn"
+        },
+        {
+            "label": "lang_script_bel-cyrl",
+            "value": "bel-cyrl"
+        },
+        {
+            "label": "lang_script_bel-latn",
+            "value": "bel-latn"
+        },
+        {
+            "label": "lang_script_bho-deva",
+            "value": "bho-deva"
+        },
+        {
+            "label": "lang_script_bho-latn",
+            "value": "bho-latn"
+        },
+        {
+            "label": "lang_script_bra-deva",
+            "value": "bra-deva"
+        },
+        {
+            "label": "lang_script_bra-latn",
+            "value": "bra-latn"
+        },
+        {
+            "label": "lang_script_chi-hani",
+            "value": "chi-hani"
+        },
+        {
+            "label": "lang_script_chi-latn",
+            "value": "chi-latn"
+        },
+        {
+            "label": "lang_script_chi-zyyy",
+            "value": "chi-zyyy"
+        },
+        {
+            "label": "lang_script_chu-cyrl",
+            "value": "chu-cyrl"
+        },
+        {
+            "label": "lang_script_chu-latn",
+            "value": "chu-latn"
+        },
+        {
+            "label": "lang_script_doi-deva",
+            "value": "doi-deva"
+        },
+        {
+            "label": "lang_script_doi-latn",
+            "value": "doi-latn"
+        },
+        {
+            "label": "lang_script_eng-latn",
+            "value": "eng-latn"
+        },
+        {
+            "label": "lang_script_fre-latn",
+            "value": "fre-latn"
+        },
+        {
+            "label": "lang_script_geo-geor",
+            "value": "geo-geor"
+        },
+        {
+            "label": "lang_script_geo-latn",
+            "value": "geo-latn"
+        },
+        {
+            "label": "lang_script_ger-latn",
+            "value": "ger-latn"
+        },
+        {
+            "label": "lang_script_grc-grek",
+            "value": "grc-grek"
+        },
+        {
+            "label": "lang_script_grc-latn",
+            "value": "grc-latn"
+        },
+        {
+            "label": "lang_script_gre-grek",
+            "value": "gre-grek"
+        },
+        {
+            "label": "lang_script_gre-latn",
+            "value": "gre-latn"
+        },
+        {
+            "label": "lang_script_heb-hebr",
+            "value": "heb-hebr"
+        },
+        {
+            "label": "lang_script_heb-latn",
+            "value": "heb-latn"
+        },
+        {
+            "label": "lang_script_hin-deva",
+            "value": "hin-deva"
+        },
+        {
+            "label": "lang_script_hin-latn",
+            "value": "hin-latn"
+        },
+        {
+            "label": "lang_script_ita-latn",
+            "value": "ita-latn"
+        },
+        {
+            "label": "lang_script_jpn-hani",
+            "value": "jpn-hani"
+        },
+        {
+            "label": "lang_script_jpn-hrkt",
+            "value": "jpn-hrkt"
+        },
+        {
+            "label": "lang_script_jpn-jpan",
+            "value": "jpn-jpan"
+        },
+        {
+            "label": "lang_script_jpn-latn",
+            "value": "jpn-latn"
+        },
+        {
+            "label": "lang_script_kas-deva",
+            "value": "kas-deva"
+        },
+        {
+            "label": "lang_script_kas-latn",
+            "value": "kas-latn"
+        },
+        {
+            "label": "lang_script_kok-deva",
+            "value": "kok-deva"
+        },
+        {
+            "label": "lang_script_kok-latn",
+            "value": "kok-latn"
+        },
+        {
+            "label": "lang_script_kor-kore",
+            "value": "kor-kore"
+        },
+        {
+            "label": "lang_script_kor-latn",
+            "value": "kor-latn"
+        },
+        {
+            "label": "lang_script_lad-hebr",
+            "value": "lad-hebr"
+        },
+        {
+            "label": "lang_script_lad-latn",
+            "value": "lad-latn"
+        },
+        {
+            "label": "lang_script_mac-cyrl",
+            "value": "mac-cyrl"
+        },
+        {
+            "label": "lang_script_mac-latn",
+            "value": "mac-latn"
+        },
+        {
+            "label": "lang_script_mag-deva",
+            "value": "mag-deva"
+        },
+        {
+            "label": "lang_script_mag-latn",
+            "value": "mag-latn"
+        },
+        {
+            "label": "lang_script_mai-deva",
+            "value": "mai-deva"
+        },
+        {
+            "label": "lang_script_mai-latn",
+            "value": "mai-latn"
+        },
+        {
+            "label": "lang_script_mar-deva",
+            "value": "mar-deva"
+        },
+        {
+            "label": "lang_script_mar-latn",
+            "value": "mar-latn"
+        },
+        {
+            "label": "lang_script_mun-deva",
+            "value": "mun-deva"
+        },
+        {
+            "label": "lang_script_mun-latn",
+            "value": "mun-latn"
+        },
+        {
+            "label": "lang_script_nep-deva",
+            "value": "nep-deva"
+        },
+        {
+            "label": "lang_script_nep-latn",
+            "value": "nep-latn"
+        },
+        {
+            "label": "lang_script_per-arab",
+            "value": "per-arab"
+        },
+        {
+            "label": "lang_script_per-latn",
+            "value": "per-latn"
+        },
+        {
+            "label": "lang_script_pli-deva",
+            "value": "pli-deva"
+        },
+        {
+            "label": "lang_script_pli-latn",
+            "value": "pli-latn"
+        },
+        {
+            "label": "lang_script_pra-deva",
+            "value": "pra-deva"
+        },
+        {
+            "label": "lang_script_pra-latn",
+            "value": "pra-latn"
+        },
+        {
+            "label": "lang_script_raj-deva",
+            "value": "raj-deva"
+        },
+        {
+            "label": "lang_script_raj-latn",
+            "value": "raj-latn"
+        },
+        {
+            "label": "lang_script_rus-cyrl",
+            "value": "rus-cyrl"
+        },
+        {
+            "label": "lang_script_rus-latn",
+            "value": "rus-latn"
+        },
+        {
+            "label": "lang_script_san-deva",
+            "value": "san-deva"
+        },
+        {
+            "label": "lang_script_san-latn",
+            "value": "san-latn"
+        },
+        {
+            "label": "lang_script_sat-deva",
+            "value": "sat-deva"
+        },
+        {
+            "label": "lang_script_sat-latn",
+            "value": "sat-latn"
+        },
+        {
+            "label": "lang_script_snd-deva",
+            "value": "snd-deva"
+        },
+        {
+            "label": "lang_script_snd-latn",
+            "value": "snd-latn"
+        },
+        {
+            "label": "lang_script_srp-cyrl",
+            "value": "srp-cyrl"
+        },
+        {
+            "label": "lang_script_srp-latn",
+            "value": "srp-latn"
+        },
+        {
+            "label": "lang_script_tam-taml",
+            "value": "tam-taml"
+        },
+        {
+            "label": "lang_script_tam-latn",
+            "value": "tam-latn"
+        },
+        {
+            "label": "lang_script_tha-thai",
+            "value": "tha-thai"
+        },
+        {
+            "label": "lang_script_tha-latn",
+            "value": "tha-latn"
+        },
+        {
+            "label": "lang_script_ukr-cyrl",
+            "value": "ukr-cyrl"
+        },
+        {
+            "label": "lang_script_ukr-latn",
+            "value": "ukr-latn"
+        },
+        {
+            "label": "lang_script_und-arab",
+            "value": "und-arab"
+        },
+        {
+            "label": "lang_script_und-cyrl",
+            "value": "und-cyrl"
+        },
+        {
+            "label": "lang_script_und-grek",
+            "value": "und-grek"
+        },
+        {
+            "label": "lang_script_und-hani",
+            "value": "und-hani"
+        },
+        {
+            "label": "lang_script_und-hebr",
+            "value": "und-hebr"
+        },
+        {
+            "label": "lang_script_und-jpan",
+            "value": "und-jpan"
+        },
+        {
+            "label": "lang_script_und-kore",
+            "value": "und-kore"
+        },
+        {
+            "label": "lang_script_und-latn",
+            "value": "und-latn"
+        },
+        {
+            "label": "lang_script_und-zyyy",
+            "value": "und-zyyy"
+        },
+        {
+            "label": "lang_script_yid-hebr",
+            "value": "yid-hebr"
+        },
+        {
+            "label": "lang_script_yid-latn",
+            "value": "yid-latn"
+        }
+      ]
     }
   },
   "language_script": {

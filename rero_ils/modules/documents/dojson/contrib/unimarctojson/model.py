@@ -24,8 +24,8 @@ from dojson.utils import GroupableOrderedDict
 from pkg_resources import resource_string
 
 from rero_ils.dojson.utils import ReroIlsUnimarcOverdo, TitlePartList, \
-    add_note, get_field_items, make_year, not_repetitive, \
-    remove_trailing_punctuation
+    add_note, get_field_items, get_field_link_data, make_year, \
+    not_repetitive, remove_trailing_punctuation
 from rero_ils.modules.documents.api import Document
 
 _ISSUANCE_MAIN_TYPE_PER_BIB_LEVEL = {
@@ -483,17 +483,6 @@ def marc21_to_part_of(self, key, value):
         self['partOf'].append(part_of)
 
 
-@unimarc.over('titlesProper', '^500..')
-@utils.for_each_value
-@utils.ignore_value
-def unimarc_titles_proper(self, key, value):
-    """Test dojson unimarctitlesProper.
-
-    titleProper: 500$a
-    """
-    return value.get('a', '')
-
-
 @unimarc.over('language', '^101')
 @utils.ignore_value
 def unimarc_languages(self, key, value):
@@ -513,12 +502,6 @@ def unimarc_languages(self, key, value):
     for language in languages:
         if language in langs:
             to_return.append({'value': language, 'type': 'bf:Language'})
-
-    translatedsfrom = utils.force_list(value.get('c'))
-    if translatedsfrom:
-        self['translatedFrom'] = []
-        for translatedfrom in translatedsfrom:
-            self['translatedFrom'].append(translatedfrom)
 
     return to_return
 
@@ -936,15 +919,35 @@ def unimarc_series_statement(self, key, value):
     unimarc.extract_series_statement_from_marc_field(key, new_value, self)
 
 
-@unimarc.over('abstracts', '^330..')
+@unimarc.over('summary', '^330..')
 @utils.for_each_value
 @utils.ignore_value
-def unimarc_abstracts(self, key, value):
-    """Get abstracts.
-
-    abstract: [330$a repetitive]
-    """
-    return ', '.join(utils.force_list(value.get('a', '')))
+def marc21_to_summary(self, key, value):
+    """Get summary from repetitive field 520."""
+    key_per_code = {
+        'a': 'label',
+        'c': 'source'
+    }
+    # parse field 520 subfields for extracting:
+    # summary and source parts
+    tag_link, link = get_field_link_data(value)
+    items = get_field_items(value)
+    index = 1
+    summary = {}
+    subfield_selection = {'a', 'c'}
+    for blob_key, blob_value in items:
+        if blob_key in subfield_selection:
+            subfield_selection.remove(blob_key)
+            if blob_key == 'a':
+                summary_data = unimarc.build_value_with_alternate_graphic(
+                    '520', blob_key, blob_value, index, link, ',.', ':;/-=')
+            else:
+                summary_data = blob_value
+            if summary_data:
+                summary[key_per_code[blob_key]] = summary_data
+        if blob_key != '__order__':
+            index += 1
+    return summary or None
 
 
 @unimarc.over('identifiedBy', '^073..')

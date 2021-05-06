@@ -100,12 +100,11 @@ def marc21_to_identifier_rero_id(self, key, value):
     return identifiers
 
 
-@marc21.over('translatedFrom', '^041..')
+@marc21.over('language', '^041..')
 @utils.ignore_value
 def marc21_to_translated_from(self, key, value):
-    """Get translatedFrom.
+    """Get language.
 
-    translatedFrom: 041 [$h repetitive]
     languages: 008 and 041 [$a, repetitive]
     """
     languages = self.get('language', [])
@@ -121,13 +120,7 @@ def marc21_to_translated_from(self, key, value):
                 unique_lang.append(lang)
                 languages.append({'type': 'bf:Language', 'value': lang})
 
-    self['language'] = languages
-
-    translated = value.get('h')
-    if translated:
-        return list(utils.force_list(translated))
-
-    return None
+    return languages
 
 
 @marc21.over('contribution', '[17][01][01]..')
@@ -482,17 +475,35 @@ def marc21_to_notes(self, key, value):
     return None
 
 
-@marc21.over('abstracts', '^520..')
+@marc21.over('summary', '^520..')
 @utils.for_each_value
 @utils.ignore_value
-def marc21_to_abstracts(self, key, value):
-    """Get abstracts.
-
-    abstract: [520$a repetitive]
-    """
-    if not value.get('a'):
-        return None
-    return ', '.join(utils.force_list(value.get('a')))
+def marc21_to_summary(self, key, value):
+    """Get summary from repetitive field 520."""
+    key_per_code = {
+        'a': 'label',
+        'c': 'source'
+    }
+    # parse field 520 subfields for extracting:
+    # summary and source parts
+    tag_link, link = get_field_link_data(value)
+    items = get_field_items(value)
+    index = 1
+    summary = {}
+    subfield_selection = {'a', 'c'}
+    for blob_key, blob_value in items:
+        if blob_key in subfield_selection:
+            subfield_selection.remove(blob_key)
+            if blob_key == 'a':
+                summary_data = marc21.build_value_with_alternate_graphic(
+                    '520', blob_key, blob_value, index, link, ',.', ':;/-=')
+            else:
+                summary_data = blob_value
+            if summary_data:
+                summary[key_per_code[blob_key]] = summary_data
+        if blob_key != '__order__':
+            index += 1
+    return summary or None
 
 
 @marc21.over('subjects', '^6....')
@@ -513,17 +524,6 @@ def marc21_to_subjects(self, key, value):
         })
     self['subjects'] = subjects
     return None
-
-
-@marc21.over('titlesProper', '^730..')
-@utils.for_each_value
-@utils.ignore_value
-def marc21_to_titles_proper(self, key, value):
-    """Test dojson marc21titlesProper.
-
-    titleProper: 730$a
-    """
-    return value.get('a')
 
 
 @marc21.over('electronicLocator', '^8564.')

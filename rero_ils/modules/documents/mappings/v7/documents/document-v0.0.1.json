@@ -141,27 +141,6 @@
           }
         }
       },
-      "titlesProper": {
-        "type": "text",
-        "fields": {
-          "eng": {
-            "type": "text",
-            "analyzer": "english"
-          },
-          "fre": {
-            "type": "text",
-            "analyzer": "french"
-          },
-          "ger": {
-            "type": "text",
-            "analyzer": "german"
-          },
-          "ita": {
-            "type": "text",
-            "analyzer": "italian"
-          }
-        }
-      },
       "type": {
         "type": "object",
         "properties": {
@@ -227,9 +206,6 @@
             }
           }
         }
-      },
-      "translatedFrom": {
-        "type": "keyword"
       },
       "contribution": {
         "type": "object",
@@ -602,27 +578,6 @@
           },
           "noteType": {
             "type": "keyword"
-          }
-        }
-      },
-      "abstracts": {
-        "type": "text",
-        "fields": {
-          "eng": {
-            "type": "text",
-            "analyzer": "english"
-          },
-          "fre": {
-            "type": "text",
-            "analyzer": "french"
-          },
-          "ger": {
-            "type": "text",
-            "analyzer": "german"
-          },
-          "ita": {
-            "type": "text",
-            "analyzer": "italian"
           }
         }
       },

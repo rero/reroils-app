@@ -311,6 +311,10 @@
         "subtype": "docsubtype_music"
       }
     ],
+    "tableOfContents": [
+      "CD: Rhythm of time ; Don't step ; Signs ; Expo ; good oou do (uptempo) - Oizo Diss anymore ; visitor ; Session (feat. Vivek Rajagopalan) ; Create ; Chingari (feat. Shilpa Rao) ; Better day ; Human bees",
+      "Bonus DVD: Create (Intro) ; Expo ; Good you do (uptempo) - Oizo ; Session (feat. Vivek Rajagopalan) ; Rhythm of time ; Diss anymore ; Human bees ; Chingari (feat. Shilpa Rao)"
+    ],
     "contribution": [
       {
         "agent": {
@@ -446,6 +450,9 @@
         "noteType": "general",
         "label": "Program notes by Joseph Darsky and Mark Zaltsberg, and texts with English translations inserted in containers"
       }
+    ],
+    "tableOfContents": [
+      "Vol. 5: American & British recordings, 1913-1921. - 2004"
     ],
     "credits": [
       "Participants ou interpr\u00e8tes: Feodor Chaliapin (chant) ; accompagn\u00e9 par divers orchestres et pianistes"
@@ -3222,9 +3229,6 @@
         ]
       }
     ],
-    "abstracts": [
-      "Fictions jeunesse: roman, pr\u00e9histoire, science fiction"
-    ],
     "intendedAudience": [
       {
         "audienceType": "understanding_level",
@@ -4402,9 +4406,6 @@
         ]
       }
     ],
-    "titlesProper": [
-      "La norme SIA 118 et l'actualit\u00e9 juridique en mati\u00e8re de construction"
-    ],
     "classification": [
       {
         "classificationPortion": "CA/CH 47 g",
@@ -5065,6 +5066,19 @@
           }
         ]
       }
+    ],
+    "tableOfContents": [
+      "Vol. 1 / traduit du japonais par Satoko Fujimoto ... [et al.]",
+      "Vol. 2 / traduit du japonais par Patrick Honnor\u00e9 ... [et al.]",
+      "Vol. 3 / traduit du japonais par Satoko Fujimoto ... [et al.]",
+      "Vol. 4 / traduit du japonais par Patrick Honnor\u00e9 ... [et al.]",
+      "Vol. 5 / traduit du japonais par Satoko Fujimoto ... [et al.]",
+      "Vol. 6 / traduit du japonais par Yukari Maeda ... [et al.]",
+      "Vol. 7 / traduit du japonais par Eric Cordier ... [et al.]",
+      "Vol. 8 / traduit du japonais par Patrick Honnor\u00e9 ... [et al.]",
+      "Vol. 9 / traduit du japonais par Eric Cordier ... [et al.]",
+      "Vol. 10 / traduit du japonais par Patrick Honnor\u00e9 ... [et al.]",
+      "Vol. 11 / traduit du japonais par Eric Cordier ... [et al.]"
     ],
     "intendedAudience": [
       {
@@ -5743,6 +5757,9 @@
     ],
     "supplementaryContent": [
       "Bibliogr. + Register"
+    ],
+    "tableOfContents": [
+      "Bd. 1: A - Faustus von Byzanz. Bd. 2: Faustus von Mileve - Jeanne d'Arc. Bd. 3: Jedin, Hubert - Kleinschmidt, Beda. Bd. 4: Kleist, Heinrich von - Leyden, Lucas von. Bd. 5: Leyden, Nikolaus - M\u00f6nch, Antonius. Bd. 6: Moenius, Georg - Patijn, Constantijn Leopold. Bd. 7: Patocka, Jan - Remachus. Bd. 8: Rembrandt - Scharbel. Bd. 9: Scharling, Carl Henrik - Sheldon, Charles Monroe. Bd. 10: Shelkov, Vladimir Andreyevich - Stoss, Andreas. Bd. 11: Stoss, Veit - Tieffenthaler, Joseph. Bd. 12: Tibboniden - Volpe, Giovannio Antonio. Bd. 13: Voltaire, Fran\u00e7ois - Wolfram von Eschenbach. Bd. 14: Wolfram von Eschenbach bis Zygomalas, Theodosios ; Erg\u00e4nzungen I. Bd. 15: Erg\u00e4nzungen II. Bd. 16: Erg\u00e4nzungen III. Bd. 17: Erg\u00e4nzungen IV. Bd. 18: Erg\u00e4nzungen V. Bd. 19: Erg\u00e4nzungen VI. Bd. 20: Erg\u00e4nzungen VII. Bd. 21: Erg\u00e4nzungen VIII. Bd. 22: Erg\u00e4nzungen IX. Bd. 23: Erg\u00e4nzungen X. Bd. 24: Erg\u00e4nzungen XI. Bd. 25: Erg\u00e4nzungen XII. Bd. 26: Erg\u00e4nzungen XIII. Bd. 27: Erg\u00e4nzungen XIV. Bd. 28: Erg\u00e4nzungen XV. Bd. 29: Erg\u00e4nzungen XVI. Bd. 30: Erg\u00e4nzungen XVII. Bd. 31: Erg\u00e4nzungen XVIII. Bd. 32: Erg\u00e4nzungen XIX. Bd. 33: Erg\u00e4nzungen XX. Bd. 34: Erg. XXI. Bd. 35: Erg. XXII. Bd. 36: Erg. XXIII. Bd. 37: Erg. XXIV. Bd. 38: Erg. XXV. Bd. 39: Erg. XXVI. Bd. 40: Erg. XXVII. Bd. 41: Erg. XXVIII"
     ],
     "subjects_imported": [
       {
@@ -7034,6 +7051,10 @@
         "subtype": "docsubtype_printed_score"
       }
     ],
+    "tableOfContents": [
+      "Sinfonien in C (Linzer Sinfonie) KV 425, in D (Prager Sinfonie) KV 504. - 1971",
+      "Kritischer Bericht / vorgelegt von Henning Bey. - 2003"
+    ],
     "seriesStatement": [
       {
         "seriesTitle": [
@@ -7666,9 +7687,6 @@
         ]
       }
     ],
-    "abstracts": [
-      "Klassenlekt\u00fcre"
-    ],
     "intendedAudience": [
       {
         "audienceType": "understanding_level",
@@ -7819,6 +7837,9 @@
         "main_type": "docmaintype_audio",
         "subtype": "docsubtype_music"
       }
+    ],
+    "tableOfContents": [
+      "Des extraits des zarzuelas suivantes : La tabernera del puerto ; La del manojo de rosas / Soroz\u00e1bal. Do\u00f1a Francisquita / Vives. La alegr\u00eda del batall\u00f3n ; La dolorosa ; El trust de los tenorios / Serrano. La p\u00edcara molinera / Luna. Luisa Fer\u0144anda ; Maravilla / Torroba. El \u00faltimo rom\u00e1ntico ; La del soto del Parral ; La del soto del Parral / Soutullo & Vert. Los gavilanes ; El hu\u00e9sped del Sevillano / Guerrero. El guitarrico / Soriano. Luna / Cano"
     ],
     "credits": [
       "Participants ou interpr\u00e8tes: Domingo, Placido (direction) ; Villaz\u00f3n, Rolando (t\u00e9nor) ; Orquesta de la comunidad (Madrid)"
@@ -8496,6 +8517,10 @@
         ]
       }
     ],
+    "tableOfContents": [
+      "[Bd. 1]: Vom Mittelmeer zum Golf von Guinea",
+      "[Bd. 2]: Vom Golf von Guinea nach Sansibar"
+    ],
     "subjects": [
       {
         "source": "rero",
@@ -8837,6 +8862,11 @@
         ]
       }
     ],
+    "tableOfContents": [
+      "Teil 1 : Schriften / Alexander von Roes ; hrsg. von Herbert Grundmann und Hermann Heimpel. - Stuttgart : Hiersemann, 1958. - 208, 23 p.",
+      "Teil 2 : Speculum virtutum / Engelbert von Admont ; hrsg. von Karl Ubl. - Hannover : Hahnsche Buchhandlung, 2004. - VIII, 522 p.",
+      "Teil 3 : De ortu et fine Romani imperii / Engelbert von Admont ; hrsg. von Herbert Schneider ... . - Wiesbaden : Harrassowitz Verlag, 2016. - XXXVIII, 262 p."
+    ],
     "subjects": [
       {
         "source": "rero",
@@ -9037,6 +9067,11 @@
           }
         ]
       }
+    ],
+    "tableOfContents": [
+      "Vol. 1 : Reproduction of books I and II of edition of 1758. - LIX, 541 p",
+      "Vol. 2 : Reproduction of books III and IV of edition of 1758. - 375 p",
+      "Vol. 3 : Translation of the edition of 1758 / by Charles G. Fenwick ; with an introd. by Albert de Lapradelle. - LIX, 398 p"
     ],
     "partOf": [
       {
@@ -10529,9 +10564,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Pendant plus de deux ans, les r\u00e9alisateurs ont suivit l'Ensemble vocal de Lausanne et son chef. Ce film est une immersion intimiste dans l'enregistrement de la Messe en si mineur de Jean-S\u00e9bastien Bach (BWV 232)"
     ],
     "subjects": [
       {
@@ -12210,9 +12242,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Com\u00e9die"
     ],
     "contribution": [
       {
@@ -15370,6 +15399,9 @@
         ]
       }
     ],
+    "tableOfContents": [
+      "Encore: P\u00e9n\u00e9lope : pr\u00e9lude ; Masques et bergamasques"
+    ],
     "credits": [
       "Participants ou interpr\u00e8tes: Ansermet, Ernest (direction) ; Danco, Suzanne (soprano) ; Souzay, G\u00e9rard (baryton) ; Orchestre de la suisse romande ; Union chorale (La Tour de Peilz)"
     ],
@@ -15481,6 +15513,9 @@
         "main_type": "docmaintype_book",
         "subtype": "docsubtype_other_book"
       }
+    ],
+    "tableOfContents": [
+      "T. 1: Chefs-lieux de cantons"
     ],
     "contribution": [
       {
@@ -16860,6 +16895,10 @@
         "main_type": "docmaintype_score",
         "subtype": "docsubtype_printed_score"
       }
+    ],
+    "tableOfContents": [
+      "Bd. 1: Sailing. Lady in black. Dust in the wind. I still haven't found what I'm looking for. Listen to your heart. Purple rain. Blaze of glory. Still loving you. Holiday. Angie. While my guitar gently weeps. With a little help from my friends. Wonderful tonight. A whiter shade of pale. Right here waiting. Another day in paradise. Brothers in arms. Still got the blues.",
+      "Bd. 2: Stand by me. Michelle. Yesterday. Hey Jude. San Francisco. Atlantis. Ruby uesday. My sweet Lord. Nights in white satin. Sylvia's mother. Heart of gold. The needle and the damage done. Walk on the wild side. Love hurts. Boat on the river. I'm on fire. On the beach. Wicked game. Wind of change. To be with you. Tears in Heaven. Don't cry. Cats in ihe cradle. Everything I do. What's up."
     ],
     "contribution": [
       {
@@ -19403,9 +19442,6 @@
         ]
       }
     ],
-    "abstracts": [
-      "Fictions jeunesse"
-    ],
     "intendedAudience": [
       {
         "audienceType": "school_level",
@@ -20015,9 +20051,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Dans le confortable lit de la sombre cave d'une haute maison qui se dresse dans une sombre rue, trois squelettes r\u00eavent qu'ils sont poursuivis par de terrifiants dinosaures..."
     ]
   },
   {
@@ -20523,9 +20556,6 @@
         ]
       }
     ],
-    "abstracts": [
-      "La reine Ahotep a reconquis une grande partie du sud, au prix de la vie de ceux qu'elle aime. Apr\u00e8s cent ans d'occupation, l'empire va enfin rena\u00eetre de ses cendres."
-    ],
     "genreForm": [
       {
         "source": "rero",
@@ -20674,10 +20704,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Crac paissait bien tranquille sous le vieux pommier, jusqu'\u00e0 ce qu'on vienne l'arracher \u00e0 son pr\u00e9 pour en faire un cheval de club. Mais qu'attend-on de lui au juste ? Qui sont tous ces gens ? Que va-t-on lui faire ? Et les autres chevaux pourraient-ils cesser de lui envoyer des coups de pied ?",
-      "Originalit\u00e9 de ce roman: c'est Crac lui-m\u00eame qui s'exprime. On a le point de vue du cheval, aussi bien sur des carottes qui poussent, sur certains cavaliers, que sur les \"choses difficiles\" \u00e0 ex\u00e9cuter lors des reprises. Pendant un an, Crac raconte au jour le jour la vie de son club, avec tant de naturel et de r\u00e9alisme qu'on s'y croit vraiment."
     ],
     "intendedAudience": [
       {
@@ -21899,9 +21925,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Roman du terroir"
     ]
   },
   {
@@ -21939,8 +21962,8 @@
     "contribution": [
       {
         "agent": {
-          "type": "bf:Person",
-          "preferred_name": "Reese, G\u00fcnter"
+          "$ref": "https://mef.rero.ch/api/idref/251298299",
+          "type": "bf:Person"
         },
         "role": [
           "cre"
@@ -23115,11 +23138,6 @@
         "noteType": "general",
         "label": "Dans cette collection les sous-s\u00e9ries ne sont pas catalogu\u00e9es s\u00e9par\u00e9ment, telles que Babel noir, Les \u00e9pistolaires, R\u00e9volutions, R\u00e9pliques"
       }
-    ],
-    "titlesProper": [
-      "Babel.",
-      "Babel.",
-      "Babel."
     ]
   },
   {
@@ -23524,9 +23542,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Analyse : Roman de science-fiction. Nouvelles"
     ],
     "subjects": [
       {
@@ -24156,6 +24171,15 @@
         ]
       }
     ],
+    "dissertation": [
+      {
+        "label": [
+          {
+            "value": "Diss. jur. Berlin"
+          }
+        ]
+      }
+    ],
     "partOf": [
       {
         "document": {
@@ -24497,6 +24521,11 @@
           }
         ]
       }
+    ],
+    "tableOfContents": [
+      "Vol. 1: 28 settembre 1847 - 18 dicembre 1848. - 1966. - 437 p",
+      "Vol. 2: 19 dicembre 1848 - 19 febbraio 1849. - 1968. - 571 p",
+      "Vol. 3: 20 febbraio - 29 novembre 1849. - 1970. - 473 p"
     ],
     "subjects": [
       {
@@ -25268,11 +25297,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Synopsis : Le jeune savant Victor Frankenstein est persuad\u00e9 que la science peut venir \u00e0 bout de tout et m\u00eame cr\u00e9er la vie. Il s'att\u00e8le \u00e0 cette tache avec ardeur et cr\u00e9e \u00e0 partir de morceaux de cadavres un \u00eatre humain qui sera accul\u00e9 par sa diff\u00e9rence \u00e0 la m\u00e9chancet\u00e9",
-      "Epouvante",
-      "Fantastique"
     ],
     "intendedAudience": [
       {
@@ -26561,6 +26585,10 @@
         "subtype": "docsubtype_music"
       }
     ],
+    "tableOfContents": [
+      "At least that's what you said ; Hell is chrome ; Spiders (kidsmoke) ; Muzzle of bees ; Hummingbird ; Handshake drugs ; Wishful thinking ; Company in my back ; I'm a wheel ; Theologians ; Less than you think ; The late greats",
+      "Bonus: Panthers ; At Least That's What You Said (Live) ; The Late Greats (Live) ; Handshake Drugs (Live) ; Kicking Television"
+    ],
     "contribution": [
       {
         "agent": {
@@ -26747,6 +26775,14 @@
         "main_type": "docmaintype_book",
         "subtype": "docsubtype_other_book"
       }
+    ],
+    "tableOfContents": [
+      "T. 1: Liricheskie stichotvorenii\ufe20a\ufe21",
+      "T. 2: Po\u0117my, skazki, Pesni zapadnykh slavi\ufe20a\ufe21n",
+      "T. 3: Evgeni\u012d Onegin i dramaticheskii\ufe20a\ufe21 proizvedenii\ufe20a\ufe21",
+      "T. 4: Zapiski, zametki, romany i povesti",
+      "T. 5: Otryvki, zhurnal\u02b9nye i istoricheskie stat\u02b9i",
+      "T. 6: Istorii\ufe20a\ufe21 Pugachevskago bunta"
     ]
   },
   {
@@ -27783,9 +27819,6 @@
         ]
       }
     ],
-    "abstracts": [
-      "Egypte des pharaons, comment c'\u00e9tait? Comment vivaient les Egyptiens? Comment \u00e9crivaient-ils ? Qui \u00e9taient les pharaons ? \u00c0 quoi servaient les pyramides ? Avec Justine, r\u00e9ponds \u00e0 toutes ces questions ! Pars \u00e0 la d\u00e9couverte des magnifiques tr\u00e9sors que nous ont laiss\u00e9s les \u00c9gyptiens et qui te feront voyager dans une autre \u00e9poque. Une histoire que l'on peut lire \u00e0 deux, d\u00e8s 4 ans."
-    ],
     "intendedAudience": [
       {
         "audienceType": "understanding_level",
@@ -28649,9 +28682,6 @@
           "ctb"
         ]
       }
-    ],
-    "titlesProper": [
-      "Go down Moses."
     ]
   },
   {
@@ -29036,12 +29066,12 @@
     "sequence_numbering": "No 1(2005)-",
     "intendedAudience": [
       {
-        "audienceType": "school_level",
-        "value": "target_school_tertiary"
-      },
-      {
         "audienceType": "understanding_level",
         "value": "target_understanding_tertiary"
+      },
+      {
+        "audienceType": "school_level",
+        "value": "target_school_tertiary"
       },
       {
         "audienceType": "understanding_level",
@@ -30476,9 +30506,8 @@
     "contribution": [
       {
         "agent": {
-          "type": "bf:Person",
-          "preferred_name": "Kappeler, Manfred,",
-          "date_of_birth": "1940"
+          "$ref": "https://mef.rero.ch/api/idref/251273660",
+          "type": "bf:Person"
         },
         "role": [
           "ctb"
@@ -31053,9 +31082,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Contient e.a.: affiches de la M\u00e9diath\u00e8que Valais"
     ],
     "subjects": [
       {
@@ -32488,8 +32514,8 @@
     "contribution": [
       {
         "agent": {
-          "type": "bf:Person",
-          "preferred_name": "Arold, Marliese"
+          "$ref": "https://mef.rero.ch/api/idref/251463028",
+          "type": "bf:Person"
         },
         "role": [
           "cre"
@@ -33317,9 +33343,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Une femme pr\u00e9pare un d\u00eener aux chandelles pour f\u00eater son anniversaire de mariage. Elle descend dans sa cave pour y chercher une bouteille de vin, qu'elle trouve envelopp\u00e9e dans un papier journal dont elle lit distraitement les petites annonces. Soudain, sa vie bascule : elle remonte les escaliers, \u00e9teint le four, prend sa voiture, quitte tout. En chacun d'entre nous repose peut-\u00eatre, tapie sous l'apparente qui\u00e9tude quotidienne, la possibilit\u00e9 d'\u00eatre un jour requis par son premier amour..."
     ]
   },
   {
@@ -34000,9 +34023,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Le premier jour, il y eut une \u00e9nigme. Le deuxi\u00e8me jour, ce fut l'obscurit\u00e9. Le troisi\u00e8me jour vint le d\u00e9luge. Le quatri\u00e8me jour, ce fut la guerre. Le cinqui\u00e8me jour survint l'effroi. Le sixi\u00e8me jour, ce fut le chaos."
     ],
     "intendedAudience": [
       {
@@ -35155,9 +35175,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Quelles techniques apprendre, quels trucs et quels tours exercer, quels habits porter"
     ]
   },
   {
@@ -35305,9 +35322,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "\" -Quelquefois je me demande ce que nous sommes en train d'attendre.Silence.-Qu'il soit trop tard, madame. \""
     ]
   },
   {
@@ -38673,9 +38687,6 @@
         ]
       }
     ],
-    "abstracts": [
-      "Avec de nombreuses contributions [ po\u00e8mes et proses] d'\u00e9crivains vaudois"
-    ],
     "subjects": [
       {
         "source": "rero",
@@ -40960,9 +40971,6 @@
         ]
       }
     ],
-    "abstracts": [
-      "Analyse: Survol de la ville par l'image et les commentaires de quelques-unes de ses personnalit\u00e9s."
-    ],
     "subjects": [
       {
         "source": "rero",
@@ -42398,9 +42406,6 @@
         ]
       }
     ],
-    "abstracts": [
-      "Roman de science-fiction (space opera)"
-    ],
     "partOf": [
       {
         "document": {
@@ -42902,9 +42907,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Voix: Choeur Mixte (4 SATB) ; Langue: Allemand, Anglais ; Usage Liturgique: M\u00e9ditation, Envoi ; Temps Liturgique: 31\u00e8me dimanche TO A, Car\u00eame, P\u00e9nitence, Onction des Malades ; Epoque: Romantique"
     ],
     "classification": [
       {
@@ -43756,8 +43758,8 @@
           "type": "bf:Person"
         },
         "role": [
-          "cmp",
-          "prf"
+          "prf",
+          "cmp"
         ]
       },
       {
@@ -43771,9 +43773,8 @@
       },
       {
         "agent": {
-          "type": "bf:Person",
-          "preferred_name": "Fuller, Louisa,",
-          "date_of_birth": "1964"
+          "$ref": "https://mef.rero.ch/api/idref/251561240",
+          "type": "bf:Person"
         },
         "role": [
           "prf"
@@ -43781,8 +43782,8 @@
       },
       {
         "agent": {
-          "type": "bf:Person",
-          "preferred_name": "Bonner, Natalia"
+          "$ref": "https://mef.rero.ch/api/idref/251561623",
+          "type": "bf:Person"
         },
         "role": [
           "prf"
@@ -43904,6 +43905,9 @@
         "subtype": "docsubtype_music"
       }
     ],
+    "tableOfContents": [
+      "\"Mrs Dalloway\" (Words, In the garde, War anthem, Meeting again) ; \"Orlando\" (Memory is the seamstress, Modular astronomy, Entropy, Transformation, Morphology, The tyranny of symmetry, The explorers, Persistence of images, Genesis of poetry, Possibles, Love songs) ; \"The waves\" (Tuesday)"
+    ],
     "credits": [
       "Participants ou interpr\u00e8tes: Robert Ziegler (direction) ; Max Richter (piano, synth\u00e9) ; Louisa Fuller, Natalia Bonner (violon) ; John Metcalfe (alto) ; Ian Burdge, Chris Worsey (violoncelle) ; Deutsches Filmorchester Babelsberg"
     ]
@@ -44022,9 +44026,6 @@
         "main_type": "docmaintype_book",
         "subtype": "docsubtype_other_book"
       }
-    ],
-    "titlesProper": [
-      "Poema del Cid."
     ]
   },
   {
@@ -46448,11 +46449,6 @@
         ]
       }
     ],
-    "abstracts": [
-      "Analyse: Revue de futurs cin\u00e9astes \u00e0 l'origine, \"Travelling\" s'oriente, d\u00e8s les ann\u00e9es 70, vers l'histoire du cin\u00e9ma, portant en particulier son attention au cin\u00e9ma suisse.",
-      "La lecture de la collection dans son ensemble s'av\u00e8re passionnante pour qui chercherait \u00e0 reconstituer l'itin\u00e9raire du nouveau cin\u00e9ma suisse.",
-      "\"Travelling\", soutenu par la Cin\u00e9math\u00e8que suisse d\u00e8s 1975, constitue dans le domaine cin\u00e9matographique l'effort le plus soutenu d'une volont\u00e9 d'historiographie s\u00e9rieuse."
-    ],
     "subjects": [
       {
         "source": "rero",
@@ -47743,8 +47739,8 @@
     "contribution": [
       {
         "agent": {
-          "type": "bf:Person",
-          "preferred_name": "Leslie, Alan Christopher"
+          "$ref": "https://mef.rero.ch/api/idref/251298523",
+          "type": "bf:Person"
         },
         "role": [
           "com"
@@ -50083,9 +50079,6 @@
         ]
       }
     ],
-    "abstracts": [
-      "Voir: La Libert\u00e9 ; 15.11.2001 ; 15.07.200 - La Gruy\u00e8re ; 15.11.2001."
-    ],
     "subjects": [
       {
         "source": "rero",
@@ -50136,8 +50129,8 @@
       },
       {
         "agent": {
-          "type": "bf:Person",
-          "preferred_name": "Leuthold, Axel"
+          "$ref": "https://mef.rero.ch/api/idref/251309835",
+          "type": "bf:Person"
         },
         "role": [
           "ctb"
@@ -50858,6 +50851,11 @@
         "main_type": "docmaintype_book",
         "subtype": "docsubtype_other_book"
       }
+    ],
+    "tableOfContents": [
+      "T. 1: L'oeil de B\u00e9zoard. - 2004. - 234 p.",
+      "T. 2: La nuit des gh\u00fclls. - 2004. - 239 p.",
+      "T. 3: Le dernier combat. - 2005. - 231 p."
     ],
     "intendedAudience": [
       {
@@ -53721,9 +53719,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Analyse: Concerne notamment le canton de Vaud."
     ],
     "subjects": [
       {
@@ -63181,9 +63176,6 @@
           }
         ]
       }
-    ],
-    "abstracts": [
-      "Analyse: Contient des informations sur la faune."
     ],
     "note": [
       {

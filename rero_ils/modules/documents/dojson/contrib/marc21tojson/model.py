@@ -486,17 +486,6 @@ def marc21_to_title(self, key, value):
     return title_list or None
 
 
-@marc21.over('titlesProper', '^730..')
-@utils.for_each_value
-@utils.ignore_value
-def marc21_to_titlesProper(self, key, value):
-    """Test dojson marc21titlesProper.
-
-    titleProper: 730$a
-    """
-    return not_repetitive(marc21.bib_id, marc21.rero_id, key, value, 'a')
-
-
 @marc21.over('contribution', '[17][01][01]..')
 @utils.for_each_value
 @utils.ignore_value
@@ -901,13 +890,10 @@ def marc21_to_summary(self, key, value):
     index = 1
     summary = {}
     subfield_selection = {'a', 'c'}
-    legacy_abstract = ''  # TODO: remove legacy code for abstracts
     for blob_key, blob_value in items:
         if blob_key in subfield_selection:
             subfield_selection.remove(blob_key)
             if blob_key == 'a':
-                # TODO: remove legacy code for abstracts (next line)
-                legacy_abstract = blob_value
                 summary_data = marc21.build_value_with_alternate_graphic(
                     '520', blob_key, blob_value, index, link, ',.', ':;/-=')
             else:
@@ -916,14 +902,7 @@ def marc21_to_summary(self, key, value):
                 summary[key_per_code[blob_key]] = summary_data
         if blob_key != '__order__':
             index += 1
-    if summary:
-        summary_list = self.get('summary', [])
-        summary_list.append(summary)
-        self['summary'] = summary_list
-        # TODO: remove legacy code for abstracts (next 3 lines)
-        abstract_list = self.get('abstracts', [])
-        abstract_list.append(legacy_abstract)
-        self['abstracts'] = abstract_list
+    return summary or None
 
 
 @marc21.over('intendedAudience', '^521..')

@@ -22,3 +22,4 @@ import './toast';
 import './login';
 import './toggle';
 import './ills_request';
+import './show_more';

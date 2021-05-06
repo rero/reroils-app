@@ -67,9 +67,6 @@
         "code": "rdacc:1003"
       }
     ],
-    "abstracts": [
-      "La reine Ahotep a reconquis une grande partie du sud, au prix de la vie de ceux qu'elle aime."
-    ],
     "copyrightDate": [
       "\u00a9 1999"
     ],
@@ -84,12 +81,6 @@
         "value": "embossing",
         "code": "rdapm:1018"
       }
-    ],
-    "translatedFrom": [
-      "French"
-    ],
-    "titlesProper": [
-      "Babel."
     ]
   },
   "bookPublication": {
