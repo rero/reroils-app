@@ -30,16 +30,18 @@ from invenio_circulation.errors import CirculationException, \
     MissingRequiredParameterError
 from werkzeug.exceptions import NotFound
 
-from .api import Item
-from .models import ItemCirculationAction
-from .utils import item_pid_to_object
-from ..circ_policies.api import CircPolicy
-from ..documents.views import item_library_pickup_locations
-from ..errors import NoCirculationActionIsPermitted
-from ..libraries.api import Library
-from ..loans.api import Loan
-from ..patrons.api import Patron, current_librarian, current_patrons
-from ...permissions import librarian_permission, request_item_permission
+from rero_ils.modules.circ_policies.api import CircPolicy
+from rero_ils.modules.documents.views import item_library_pickup_locations
+from rero_ils.modules.errors import NoCirculationActionIsPermitted
+from rero_ils.modules.items.api import Item
+from rero_ils.modules.items.models import ItemCirculationAction
+from rero_ils.modules.items.utils import item_pid_to_object
+from rero_ils.modules.libraries.api import Library
+from rero_ils.modules.loans.api import Loan
+from rero_ils.modules.patrons.api import Patron, current_librarian, \
+    current_patrons
+from rero_ils.modules.views import check_authentication
+from rero_ils.permissions import request_item_permission
 
 # from rero_ils.modules.utils import profile
 
@@ -56,19 +58,6 @@ def check_logged_user_authentication(func):
     def decorated_view(*args, **kwargs):
         if not current_user.is_authenticated:
             return jsonify({'status': 'error: Unauthorized'}), 401
-        return func(*args, **kwargs)
-
-    return decorated_view
-
-
-def check_authentication(func):
-    """Decorator to check authentication for items HTTP API."""
-    @wraps(func)
-    def decorated_view(*args, **kwargs):
-        if not current_user.is_authenticated:
-            return jsonify({'status': 'error: Unauthorized'}), 401
-        if not librarian_permission.require().can():
-            return jsonify({'status': 'error: Forbidden'}), 403
         return func(*args, **kwargs)
 
     return decorated_view

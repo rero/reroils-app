@@ -49,7 +49,11 @@ def enrich_item_data(sender, json=None, record=None, index=None,
             json['vendor'] = {
                 'pid': item.vendor_pid
             }
-
+        # inherited_first_call_number to issue
+        inherited_first_call_number = item.issue_inherited_first_call_number
+        if inherited_first_call_number:
+            json['issue']['inherited_first_call_number'] = \
+                inherited_first_call_number
         # Local fields in JSON
         local_fields = LocalField.get_local_fields_by_resource(
             'item', item.pid)

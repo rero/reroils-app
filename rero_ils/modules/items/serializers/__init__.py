@@ -34,15 +34,28 @@ csv_item = ItemCSVSerializer(
         'document_creator',
         'document_main_type',
         'document_sub_type',
+        'library_name',
         'location_name',
         'barcode',
         'call_number',
         'second_call_number',
         'enumerationAndChronology',
+        'item_type',
+        'temporary_item_type',
+        'temporary_item_type_end_date',
+        'general_note',
+        'staff_note',
+        'checkin_note',
+        'checkout_note',
         'loans_count',
         'last_transaction_date',
         'status',
-        'created'
+        'created',
+        'issue_status',
+        'issue_status_date',
+        'issue_claims_count',
+        'issue_expected_date',
+        'issue_regular'
     ]
 )
 csv_item_response = record_responsify(csv_item, "text/csv")

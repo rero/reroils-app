@@ -27,9 +27,10 @@ from flask import request as flask_request
 from jinja2.exceptions import TemplateSyntaxError, UndefinedError
 from werkzeug.exceptions import NotFound
 
+from rero_ils.modules.views import check_authentication
+
 from .api import Holding
 from ..errors import RegularReceiveNotAllowed
-from ..items.api_views import check_authentication
 from ...permissions import can_receive_regular_issue
 
 api_blueprint = Blueprint(

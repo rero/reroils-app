@@ -132,6 +132,9 @@
           "status": {
             "type": "keyword"
           },
+          "inherited_first_call_number": {
+            "type": "keyword"
+          },
           "status_date": {
             "type": "date"
           },
