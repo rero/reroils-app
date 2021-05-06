@@ -25,6 +25,4 @@ def user_has_patron(user=current_user):
     """Test if user has a patron."""
     from .api import Patron
     patrons = Patron.get_patrons_by_user(user=user)
-    if patrons:
-        return True
-    return False
+    return bool(patrons)  # true if `patrons` list isn't empty; false otherwise

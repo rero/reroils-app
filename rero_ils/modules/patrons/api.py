@@ -314,7 +314,7 @@ class Patron(IlsRecord):
         patrons = cls.get_patrons_by_user(user)
         librarians = list(filter(lambda ptrn: ptrn.is_librarian, patrons))
         if len(librarians) > 1:
-            raise Error('more than one librarian account for a user')
+            raise Exception('more than one librarian account for a user')
         if len(librarians) == 0:
             return None
         return librarians[0]
@@ -322,17 +322,14 @@ class Patron(IlsRecord):
     @classmethod
     def get_patrons_by_user(cls, user):
         """Get all patrons by user."""
+        patrons = []
         if hasattr(user, 'id'):
-            result = PatronsSearch().filter(
-                'term',
-                user_id=user.id
-            ).source(includes='pid').scan()
-            patrons = [
-                cls.get_record_by_pid(record.pid)
-                for record in result
-            ]
-            return patrons if patrons else []
-        return []
+            result = PatronsSearch()\
+                .filter('term', user_id=user.id)\
+                .source(includes='pid')\
+                .scan()
+            patrons = [cls.get_record_by_pid(hit.pid) for hit in result]
+        return patrons
 
     @classmethod
     def get_patron_by_email(cls, email):
@@ -340,8 +337,6 @@ class Patron(IlsRecord):
         pid_value = cls.get_pid_by_email(email)
         if pid_value:
             return cls.get_record_by_pid(pid_value)
-        else:
-            return None
 
     @classmethod
     def get_pid_by_email(cls, email):

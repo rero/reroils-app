@@ -36,7 +36,6 @@ from rero_ils.modules.organisations.api import Organisation
 from rero_ils.modules.patrons.api import current_librarian, current_patrons
 from rero_ils.permissions import can_access_professional_view
 
-from ..modules.patrons.utils import user_has_patron
 from ..version import __version__
 
 blueprint = Blueprint(
@@ -101,7 +100,7 @@ def init_menu_tools():
     rero_register(
         item,
         endpoint='ill_requests.ill_request_form',
-        visible_when=lambda: user_has_patron,
+        visible_when=lambda: bool(current_patrons),
         text='{icon} {help}'.format(
             icon='<i class="fa fa-shopping-basket"></i>',
             help=_('Interlibrary loan request')
