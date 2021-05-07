@@ -149,7 +149,7 @@ def wait_empty_tasks(delay, verbose=False):
     if verbose:
         spinner = itertools.cycle(['-', '\\', '|', '/'])
         click.echo(
-            'Waiting: {spinner}\r'.format(spinner=next(spinner)),
+            f'Waiting: {next(spinner)}\r',
             nl=False
         )
     count = queue_count()
@@ -158,7 +158,7 @@ def wait_empty_tasks(delay, verbose=False):
     while count:
         if verbose:
             click.echo(
-                'Waiting: {spinner}\r'.format(spinner=next(spinner)),
+                f'Waiting: {next(spinner)}\r',
                 nl=False
             )
         sleep(delay)
@@ -351,11 +351,13 @@ def create(infile, create_or_update, append, reindex, dbcommit, commit,
             record['$schema'] = schema
         try:
             pid = record.get('pid')
+            msg = 'created'
             if create_or_update and pid and \
                     record_class.record_pid_exists(pid):
                 db_record = record_class.get_record_by_pid(pid)
                 rec = db_record.update(
                         record, dbcommit=dbcommit, reindex=reindex)
+                msg = 'updated'
             else:
                 rec = record_class.create(
                         record, dbcommit=dbcommit, reindex=reindex,
@@ -364,21 +366,12 @@ def create(infile, create_or_update, append, reindex, dbcommit, commit,
                     pids.append(rec.pid)
             if verbose:
                 click.echo(
-                    '{count: <8} {pid_type} created {pid}:{id}'.format(
-                        count=count,
-                        pid_type=pid_type,
-                        pid=rec.pid,
-                        id=rec.id
-                    )
-                )
+                    f'{count: <8} {pid_type} {msg} {rec.pid}:{rec.id}')
+
         except Exception as err:
+            pid = record.get('pid', '???')
             click.secho(
-                '{count: <8} {type} create error {pid}: {err}'.format(
-                    count=count,
-                    type=pid_type,
-                    pid=record.get('pid', '???'),
-                    err=err
-                ),
+                f'{count: <8} {type} create error {pid}: {err}',
                 fg='red'
             )
             if debug:
@@ -395,7 +388,7 @@ def create(infile, create_or_update, append, reindex, dbcommit, commit,
             if verbose:
                 click.echo(f'DB commit: {count}')
             db.session.commit()
-    click.echo('DB commit: {count}'.format(count=count))
+    click.echo(f'DB commit: {count}')
     db.session.commit()
 
     if save_errors:
@@ -746,12 +739,9 @@ def do_worker(marc21records, results, pid_required, debug, schema=None):
             if debug:
                 pprint(record)
             trace_lines = traceback.format_exc(1).split('\n')
-            msg = 'ERROR:\t{pid}\t{rero_pid}\t{err}\t-\t{trace}'.format(
-                pid=pid,
-                rero_pid=data_json.get('035__', {}).get('a'),
-                err=err.args[0],
-                trace=trace_lines[5].strip()
-            )
+            trace = trace_lines[5].strip()
+            rero_pid = data_json.get('035__', {}).get('a'),
+            msg = f'ERROR:\t{pid}\t{rero_pid}\t{err.args[0]}\t-\t{trace}'
             click.secho(msg, fg='red')
             results.append({
                 'pid': pid,
@@ -759,11 +749,8 @@ def do_worker(marc21records, results, pid_required, debug, schema=None):
                 'data': data['xml']
             })
         except Exception as err:
-            msg = 'ERROR:\t{pid}\t{rero_pid}\t{err}'.format(
-                pid=pid,
-                rero_pid=data_json.get('035__', {}).get('a'),
-                err=err.args[0],
-            )
+            rero_pid = data_json.get('035__', {}).get('a'),
+            msg = f'ERROR:\t{pid}\t{rero_pid}\t{err.args[0]}'
             click.secho(msg, fg='red')
             if debug:
                 traceback.print_exc()
@@ -799,9 +786,8 @@ class Marc21toJson():
         self.schema = schema
         self.first_result = True
         if verbose:
-            click.echo('Main process pid: {pid}'.format(
-                pid=multiprocessing.current_process().pid
-            ))
+            click.echo(
+                f'Main process pid: {multiprocessing.current_process().pid}')
         self.debug = debug
         if debug:
             multiprocessing.log_to_stderr(logging.DEBUG)
@@ -876,11 +862,8 @@ class Marc21toJson():
                 start = 1
             else:
                 start = self.count - len(self.active_records) + 1
-            click.echo('Start process: {pid} records: {start}..{end}'.format(
-                pid=new_process.pid,
-                start=start,
-                end=self.count
-            ))
+            pid = new_process.pid
+            click.echo(f'Start process: {pid} records: {start}..{self.count}')
         self.next_active_buffer()
 
     def write_start(self):
@@ -1011,7 +994,7 @@ def extract_from_xml(pid_file, xml_file_in, xml_file_out, tag, progress,
             if is_controlfield and is_tag:
                 if progress:
                     click.secho(
-                        '{idx} {pid}'.format(idx=idx, pid=repr(child.text)),
+                        f'{idx} {repr(child.text)}',
                         nl='\r'
                     )
                 if pids.get(child.text, -1) >= 0:
@@ -1026,10 +1009,7 @@ def extract_from_xml(pid_file, xml_file_in, xml_file_out, tag, progress,
                     xml_file_out.write(data)
                     found_pids[child.text] = True
                     if verbose:
-                        click.secho('Found: {pid} on position: {idx}'.format(
-                            pid=child.text,
-                            idx=idx
-                        ))
+                        click.secho(f'Found: {child.text} on position: {idx}')
                     break
     xml_file_out.write(b'\n</collection>')
     if count != found:
@@ -1074,11 +1054,9 @@ def reserve_pid_range(pid_type, records_number, unused):
         record_class.provider.create(pid_type, pid_value=pid,
                                      status=PIDStatus.RESERVED)
         db.session.commit()
-    click.secho(
-        'reserved_pids range, from: {min} to: {max}'.format(
-            min=min(reserved_pids), max=max(reserved_pids)
-        )
-    )
+    min_pid = min(reserved_pids)
+    max_pid = max(reserved_pids)
+    click.secho(f'reserved_pids range, from: {min_pid} to: {max_pid}')
     if unused:
         for pid in range(1, identifier.max()):
             if not db.session.query(
@@ -1218,11 +1196,7 @@ def translate(translate_to, change, title_map, no_loc_en, angular, verbose):
         for entry in po:
             if entry.msgid in values:
                 click.echo(
-                    'Translate: {name} -> {trans}'.format(
-                        name=entry.msgid,
-                        trans=values[entry.msgid]
-                    )
-                )
+                    f'Translate: {entry.msgid} -> {values[entry.msgid]}')
                 entry.msgstr = values[entry.msgid]
                 if entry.fuzzy:
                     entry.flags.remove('fuzzy')
@@ -1283,21 +1257,6 @@ def translate(translate_to, change, title_map, no_loc_en, angular, verbose):
             # countries
             countries = definitions.get('country', {}).get('enum')
             print_title_map('country', countries)
-            # translated_countries = {}
-            # for country_code in countries:
-            #     try:
-            #         country = pycountry.countries.lookup(country_code)
-            #         trans_name = locale.territories[country.alpha_2]
-            #         translated_countries[country_code] = trans_name
-            #         if verbose:
-            #             click.echo('Country {code}: {translated}'.format(
-            #                 code=country_code,
-            #                 translated=trans_name
-            #             ))
-            #     except:
-            #         pass
-            # if change:
-            #     change_po(po, translated_countries)
 
             # language_script
             language_scripts = definitions.get(
@@ -1315,7 +1274,7 @@ def translate(translate_to, change, title_map, no_loc_en, angular, verbose):
             click.secho('Add to manual_translation.ts', fg='yellow')
             click.secho('// Languages translations')
             for language in languages:
-                click.secho("_('{language}')".format(language=language))
+                click.secho(f"_('{language}')")
             click.secho(f'Add to i18n/{translate_to}.ts', fg='yellow')
             file_po = (
                 f'./rero_ils/translations/{translate_to}/LC_MESSAGES/'
@@ -1334,10 +1293,9 @@ def translate(translate_to, change, title_map, no_loc_en, angular, verbose):
 
         if change:
             po.save(file_name)
-        click.echo('Languages: {count} translated: {t_count}'.format(
-            count=len(languages),
-            t_count=len(translated_languages)
-        ))
+        count = len(languages),
+        t_count = len(translated_languages)
+        click.echo(f'Languages: {count} translated: {t_count}')
     except core.UnknownLocaleError as err:
         click.secho(f'Unknown locale: {translate_to}', fg='red')
     except FileNotFoundError as err:
@@ -1434,11 +1392,8 @@ def check_pid_dependencies(dependency_file, directory, verbose):
                     datas = self.record.get(dependency['name'], [])
                     if not(datas or dependency.get('optional')):
                         click.secho(
-                            ('{name}: sublist not found:'
-                             ' {dependency_name}').format(
-                                 name=self.name,
-                                 dependency_name=dependency['name']
-                             ),
+                            f'{self.name}: sublist not found: '
+                            f'{dependency["name"]}',
                             fg='red'
                         )
                         self.not_found += 1
@@ -1479,15 +1434,10 @@ def check_pid_dependencies(dependency_file, directory, verbose):
                     for value in values:
                         try:
                             self.test_data[key][value]
-                        except Exception as err:
+                        except Exception:
                             click.secho(
-                                ('{name}: {pid} missing '
-                                 '{ref_name}: {ref_pid}').format(
-                                     name=self.name,
-                                     pid=self.pid,
-                                     ref_name=key,
-                                     ref_pid=value
-                                 ),
+                                f'{self.name}: {self.pid} missing '
+                                f'{key}: {value}',
                                 fg='red'
                             )
                             self.missing += 1
@@ -1596,13 +1546,8 @@ def export(verbose, pid_type, outfile, pidfile, indent, schema):
             rec = record_class.get_record_by_pid(pid)
             count += 1
             if verbose:
-                msg = '{count: <8} {pid_type} export {pid}:{id}'.format(
-                    count=count,
-                    pid_type=pid_type,
-                    pid=rec.pid,
-                    id=rec.id
-                )
-                click.echo(msg)
+                click.echo(
+                    f'{count: <8} {pid_type} export {rec.pid}:{rec.id}')
 
             outfile.write(output)
             if count > 1:

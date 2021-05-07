@@ -116,7 +116,7 @@ def import_users(infile, append, verbose, password, lazy, dont_stop_on_error,
                                 .format(count=count, username=username),
                                 fg='yellow')
         except Exception as err:
-            error_records.append(data)
+            error_records.append(patron_data)
             click.secho(
                 '{count: <8} User create error: {err}'.format(
                     count=count,
@@ -130,6 +130,8 @@ def import_users(infile, append, verbose, password, lazy, dont_stop_on_error,
                 sys.exit(1)
             if debug:
                 traceback.print_exc()
+            db.session.rollback()
+
     if append:
         click.secho(f'Append fixtures new identifiers: {len(pids)}')
         identifier = Patron.provider.identifier
@@ -187,9 +189,21 @@ def users_validate(jsonfile, verbose, debug):
     datas = read_json_record(jsonfile)
     for idx, data in enumerate(datas):
         if verbose:
-            click.echo(f'\tTest record: {idx}')
+            click.echo(f'\tTest record: {idx} pid: {data.get("pid")}')
         try:
             validate(data, schema)
+            patron = data.get('patron', {})
+            if patron and patron.get('communication_channel') == 'email'\
+               and data.get('email') is None \
+               and patron.get('additional_communication_email') is None:
+                raise ValidationError('At least one email should be defined '
+                                      'for an email communication channel.')
+            librarian_roles = [
+                Patron.ROLE_SYSTEM_LIBRARIAN, Patron.ROLE_LIBRARIAN]
+            if any(role in librarian_roles for role in data.get('roles', [])):
+                if not data.get('libraries'):
+                    raise ValidationError('Missing libraries')
+
         except ValidationError as err:
             click.secho(
                 f'Error validate in record: {idx} pid: {data.get("pid")}',
