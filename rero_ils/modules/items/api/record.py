@@ -22,6 +22,7 @@ import pytz
 from elasticsearch_dsl.query import Q
 from flask_babelex import gettext as _
 
+from ..models import TypeOfItem
 from ..utils import item_pid_to_object
 from ...api import IlsRecord
 from ...item_types.api import ItemType
@@ -97,6 +98,7 @@ class ItemRecord(IlsRecord):
         """Create item record."""
         cls._item_build_org_ref(data)
         data = cls._prepare_item_record(data=data, mode='create')
+        data = cls._set_issue_status_date(data=data)
         record = super().create(
             data, id_, delete_pid, dbcommit, reindex, **kwargs)
         holding = cls._increment_next_prediction_for_holding(
@@ -109,7 +111,7 @@ class ItemRecord(IlsRecord):
         # If `dbcommit` is already set to True, this commit is already done by
         # the `IlsRecord.update()` function.
         #
-        # /!\ if we write some other operation after _increement_next_predition
+        # /!\ if we write some other operation after _increment_next_predition
         #     we need to manage ourself the `rollback()`.
         #
         # TODO :: best solution will be to create an invenio `post_create`
@@ -153,11 +155,19 @@ class ItemRecord(IlsRecord):
         :param data: The record to update.
         :return: The updated record.
         """
+        if data.get('type') != TypeOfItem.ISSUE:
+            return data
+
         status = data.get('issue', {}).get('status')
         item = cls.get_record_by_pid(data.get('pid'))
-        if status and item and status != item.issue_status:
-            data['issue']['status_date'] = \
-                datetime.now(timezone.utc).isoformat()
+        now = datetime.now(timezone.utc).isoformat()
+
+        if item and item:  # item already exists
+            if status and status != item.issue_status:
+                data['issue']['status_date'] = now
+        else:  # item creation
+            if status:
+                data['issue']['status_date'] = now
         return data
 
     @classmethod

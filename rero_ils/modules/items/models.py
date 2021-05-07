@@ -43,8 +43,15 @@ class ItemMetadata(db.Model, RecordMetadataBase):
     __tablename__ = 'item_metadata'
 
 
+class TypeOfItem:
+    """Enum class to list all possible item type."""
+
+    STANDARD = 'standard'
+    ISSUE = 'issue'
+
+
 class ItemStatus:
-    """Class holding all availabe circulation item statuses."""
+    """Class holding all available circulation item statuses."""
 
     ON_SHELF = 'on_shelf'
     AT_DESK = 'at_desk'

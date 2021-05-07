@@ -23,11 +23,16 @@ import ciso8601
 from flask import current_app
 
 from .record import ItemRecord
-from ..models import ItemIssueStatus
+from ..models import ItemIssueStatus, TypeOfItem
 
 
 class ItemIssue(ItemRecord):
     """Item issue class."""
+
+    @property
+    def is_issue(self):
+        """Is this item is an issue or not."""
+        return self.get('type') == TypeOfItem.ISSUE
 
     @property
     def expected_date(self):
