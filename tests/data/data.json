@@ -3679,7 +3679,11 @@
     },
     "visibility": "public",
     "template_type": "items",
-    "data": {}
+    "data": {
+      "barcode": "barcode_1234",
+      "type": "standard",
+      "call_number": "HB271"
+    }
   },
   "tmpl6": {
     "$schema": "https://ils.rero.ch/schemas/templates/template-v0.0.1.json",

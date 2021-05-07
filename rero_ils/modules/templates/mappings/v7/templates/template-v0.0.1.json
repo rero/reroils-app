@@ -46,7 +46,8 @@
         "type": "keyword"
       },
       "data": {
-        "type": "object"
+        "type": "object",
+        "enabled": false
       },
       "_created": {
         "type": "date"

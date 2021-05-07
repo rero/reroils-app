@@ -255,7 +255,8 @@
       "barcode": "",
       "call_number": "AO BIB ",
       "item_type": {},
-      "location": {}
+      "location": {},
+      "type": "standard"
     }
   },
   {
