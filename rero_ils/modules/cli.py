@@ -65,6 +65,7 @@ from werkzeug.security import gen_salt
 from .api import IlsRecordsIndexer
 from .collections.cli import create_collections
 from .contributions.tasks import create_mef_record_online
+from .data_handling.cli import set_circulation_category
 from .documents.api import Document, DocumentsSearch
 from .documents.dojson.contrib.marc21tojson import marc21
 from .documents.views import get_cover_art
@@ -104,6 +105,7 @@ fixtures.add_command(create_patterns)
 fixtures.add_command(create_ill_requests)
 fixtures.add_command(create_collections)
 fixtures.add_command(migrate_virtua_operation_logs)
+fixtures.add_command(set_circulation_category)
 
 
 @users.command('confirm')

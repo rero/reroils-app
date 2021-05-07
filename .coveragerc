@@ -11,3 +11,4 @@ omit =
     rero_ils/modules/items/cli.py
     rero_ils/modules/loans/cli.py
     rero_ils/modules/patrons/cli.py
+    rero_ils/modules/data_handling/cli.py
