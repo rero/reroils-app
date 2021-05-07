@@ -30,6 +30,7 @@ from utils import flush_index, postdata
 from rero_ils.modules.loans.api import Loan, LoanAction, LoanState
 from rero_ils.modules.notifications.api import Notification, \
     NotificationsSearch, number_of_reminders_sent
+from rero_ils.modules.notifications.dispatcher import Dispatcher
 from rero_ils.modules.selfcheck.api import authorize_patron, enable_patron, \
     item_information, patron_information, selfcheck_checkin, \
     selfcheck_checkout, selfcheck_login, system_status, \
@@ -143,8 +144,9 @@ def test_patron_information(client, librarian_martigny,
     )
     loan = Loan.get_record_by_pid(loan_pid)
     assert loan.is_loan_overdue()
-    loan.create_notification(
+    notification = loan.create_notification(
         notification_type=Notification.OVERDUE_NOTIFICATION_TYPE)
+    Dispatcher.dispatch_notifications([notification.get('pid')])
     flush_index(NotificationsSearch.Meta.index)
     flush_index(LoansSearch.Meta.index)
     assert number_of_reminders_sent(loan) == 1
@@ -214,8 +216,9 @@ def test_item_information(client, librarian_martigny,
     loan = Loan.get_record_by_pid(loan_pid)
     assert loan['state'] == LoanState.ITEM_ON_LOAN
     assert loan.is_loan_overdue()
-    loan.create_notification(
+    notification = loan.create_notification(
         notification_type=Notification.OVERDUE_NOTIFICATION_TYPE)
+    Dispatcher.dispatch_notifications([notification.get('pid')])
     flush_index(NotificationsSearch.Meta.index)
     flush_index(LoansSearch.Meta.index)
     assert number_of_reminders_sent(loan) == 1

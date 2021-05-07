@@ -99,7 +99,7 @@ def test_notifications_task(
     create_notifications(types=[
         Notification.DUE_SOON_NOTIFICATION_TYPE,
         Notification.OVERDUE_NOTIFICATION_TYPE
-    ], process=False)
+    ])
     flush_index(NotificationsSearch.Meta.index)
     flush_index(LoansSearch.Meta.index)
     assert loan.is_notified(Notification.OVERDUE_NOTIFICATION_TYPE, 0)
@@ -112,7 +112,7 @@ def test_notifications_task(
     create_notifications(types=[
         Notification.DUE_SOON_NOTIFICATION_TYPE,
         Notification.OVERDUE_NOTIFICATION_TYPE
-    ], tstamp=datetime.now(timezone.utc), process=False)
+    ], tstamp=datetime.now(timezone.utc))
     assert number_of_reminders_sent(
         loan, notification_type=Notification.OVERDUE_NOTIFICATION_TYPE) == 1
 
@@ -129,7 +129,7 @@ def test_notifications_task(
     create_notifications(types=[
         Notification.DUE_SOON_NOTIFICATION_TYPE,
         Notification.OVERDUE_NOTIFICATION_TYPE
-    ], process=False)
+    ])
     flush_index(NotificationsSearch.Meta.index)
     flush_index(LoansSearch.Meta.index)
     assert loan.is_notified(Notification.OVERDUE_NOTIFICATION_TYPE, 1)

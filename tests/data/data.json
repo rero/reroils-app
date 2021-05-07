@@ -144,6 +144,11 @@
       {
         "type": "recall",
         "email": "reroilstest+martigny@gmail.com"
+      },
+      {
+        "type": "availability",
+        "email": "reroilstest+martigny@gmail.com",
+        "delay": 0
       }
     ]
   },

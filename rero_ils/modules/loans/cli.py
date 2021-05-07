@@ -37,6 +37,7 @@ from ..libraries.api import Library
 from ..loans.api import Loan
 from ..locations.api import Location
 from ..notifications.api import Notification
+from ..notifications.dispatcher import Dispatcher
 from ..notifications.tasks import create_notifications
 from ..patron_transaction_events.api import PatronTransactionEvent
 from ..patron_transactions.api import PatronTransaction
@@ -238,32 +239,52 @@ def create_loans(infile, verbose, debug):
                 click.echo(msg)
 
             for transaction in range(loans.get('active', 0)):
-                item_barcode = create_loan(barcode, 'active', loanable_items,
-                                           verbose, debug)
+                item_barcode = create_loan(
+                    barcode, 'active',
+                    loanable_items,
+                    verbose,
+                    debug
+                )
                 errors_count = print_message(item_barcode, 'active',
                                              errors_count)
 
             for transaction in range(loans.get('overdue_active', 0)):
-                item_barcode = create_loan(barcode, 'overdue_active',
-                                           loanable_items, verbose, debug)
+                item_barcode = create_loan(
+                    barcode, 'overdue_active',
+                    loanable_items,
+                    verbose,
+                    debug
+                )
                 errors_count = print_message(item_barcode, 'overdue_active',
                                              errors_count)
 
             for transaction in range(loans.get('overdue_paid', 0)):
-                item_barcode = create_loan(barcode, 'overdue_paid',
-                                           loanable_items, verbose, debug)
+                item_barcode = create_loan(
+                    barcode, 'overdue_paid',
+                    loanable_items,
+                    verbose,
+                    debug
+                )
                 errors_count = print_message(item_barcode, 'overdue_paid',
                                              errors_count)
 
             for transaction in range(loans.get('extended', 0)):
-                item_barcode = create_loan(barcode, 'extended', loanable_items,
-                                           verbose, debug)
+                item_barcode = create_loan(
+                    barcode, 'extended',
+                    loanable_items,
+                    verbose,
+                    debug
+                )
                 errors_count = print_message(item_barcode, 'extended',
                                              errors_count)
 
             for transaction in range(loans.get('requested_by_others', 0)):
-                item_barcode = create_loan(barcode, 'requested_by_others',
-                                           loanable_items, verbose, debug)
+                item_barcode = create_loan(
+                    barcode, 'requested_by_others',
+                    loanable_items,
+                    verbose,
+                    debug
+                )
                 errors_count = print_message(item_barcode,
                                              'requested_by_others',
                                              errors_count)
@@ -286,14 +307,6 @@ def create_loans(infile, verbose, debug):
                 errors_count = print_message(item_barcode, 'rank_2',
                                              errors_count)
     # create due soon notifications, overdue notifications are auto created.
-    result = create_notifications(
-        types=[
-            Notification.DUE_SOON_NOTIFICATION_TYPE,
-            Notification.OVERDUE_NOTIFICATION_TYPE
-        ],
-        process=False,
-        verbose=verbose
-    )
     # block given patron
     for patron_data in to_block:
         barcode = patron_data.get('barcode')
@@ -307,6 +320,13 @@ def create_loans(infile, verbose, debug):
         )
     for transaction_type, count in errors_count.items():
         click.secho(f'Errors {transaction_type}: {count}', fg='red')
+    result = create_notifications(
+        types=[
+            Notification.DUE_SOON_NOTIFICATION_TYPE,
+            Notification.OVERDUE_NOTIFICATION_TYPE
+        ],
+        verbose=verbose
+    )
     click.echo(result)
 
 
@@ -324,6 +344,7 @@ def print_message(item_barcode, transaction_type, errors_count):
 def create_loan(barcode, transaction_type, loanable_items, verbose=False,
                 debug=False):
     """Create loans transactions."""
+    notification_pids = []
     try:
         item = next(loanable_items)
         patron = Patron.get_patron_by_barcode(barcode=barcode)
@@ -349,7 +370,10 @@ def create_loan(barcode, transaction_type, loanable_items, verbose=False,
                 dbcommit=True,
                 reindex=True
             )
-            loan.create_notification(notification_type='due_soon')
+            notification = loan.create_notification(
+                notification_type='due_soon')
+            if notification:
+                notification_pids.append(notification['pid'])
 
             end_date = datetime.now(timezone.utc) - timedelta(days=70)
             loan['end_date'] = end_date.isoformat()
@@ -358,7 +382,10 @@ def create_loan(barcode, transaction_type, loanable_items, verbose=False,
                 dbcommit=True,
                 reindex=True
             )
-            loan.create_notification(notification_type='overdue')
+            notification = loan.create_notification(
+                notification_type='overdue')
+            if notification:
+                notification_pids.append(notification['pid'])
 
         elif transaction_type == 'overdue_paid':
             end_date = datetime.now(timezone.utc) - timedelta(days=2)
@@ -368,7 +395,10 @@ def create_loan(barcode, transaction_type, loanable_items, verbose=False,
                 dbcommit=True,
                 reindex=True
             )
-            loan.create_notification(notification_type='due_soon')
+            notification = loan.create_notification(
+                notification_type='due_soon')
+            if notification:
+                notification_pids.append(notification['pid'])
 
             end_date = datetime.now(timezone.utc) - timedelta(days=70)
             loan['end_date'] = end_date.isoformat()
@@ -377,9 +407,11 @@ def create_loan(barcode, transaction_type, loanable_items, verbose=False,
                 dbcommit=True,
                 reindex=True
             )
-            notif = loan.create_notification(notification_type='overdue')
-            patron_transaction = [record
-                                  for record in notif.patron_transactions][0]
+            notification = notif = loan.create_notification(
+                notification_type='overdue')
+            if notification:
+                notification_pids.append(notification['pid'])
+            patron_transaction = next(notif.patron_transactions)
             user = get_random_librarian(patron).replace_refs()
             payment = create_payment_record(
                 patron_transaction,
@@ -424,14 +456,18 @@ def create_loan(barcode, transaction_type, loanable_items, verbose=False,
                         requested_patron.pid, item),
                     document_pid=extracted_data_from_ref(item.get('document')),
                 )
-                loan.create_notification(notification_type='recall')
+                notification = loan.create_notification(
+                    notification_type='recall')
+                if notification:
+                    notification_pids.append(notification['pid'])
+        Dispatcher.dispatch_notifications(notification_pids, verbose=verbose)
         return item['barcode']
     except Exception as err:
         if verbose:
             click.secho(f'\tException loan {transaction_type}:{err}', fg='red')
         if debug:
             traceback.print_exc()
-        return None
+        return None, []
 
 
 def create_request(barcode, transaction_type, loanable_items, verbose=False,

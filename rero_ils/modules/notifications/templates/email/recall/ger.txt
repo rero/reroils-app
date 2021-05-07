@@ -4,9 +4,11 @@ Sehr geehrte Leserin, sehr geehrter Leser,
 
 Das von Ihnen ausgeliehene Dokument ist von einer anderen Person reserviert worden. Eine Verlängerung der Ausleihfrist ist deshalb nicht mehr möglich und wir bitten Sie, das Dokument spätestens bis zum Rückgabedatum zurückzugeben.
 
+{%- for document in documents %}
 Titel : {{ document.title_text }} / {{ document.responsibility_statement }}
-Rückgabedatum: {{ end_date }}
+Rückgabedatum: {{ document.end_date }}
 Anmerkung: Nicht verlängerbar
+{%- endfor %}
 
 Unter folgender Adresse können Sie Ihr Konto einsehen: {{ profile_url }}
 

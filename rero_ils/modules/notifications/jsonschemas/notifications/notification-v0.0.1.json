@@ -44,6 +44,10 @@
       "format": "date-time",
       "title": "Notification processing date"
     },
+    "notification_sent": {
+      "type": "boolean",
+      "title": "Notification sent or not"
+    },
     "reminder_counter": {
       "type": "integer",
       "title": "Current reminder count"

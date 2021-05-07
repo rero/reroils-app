@@ -15,6 +15,9 @@
       "process_date": {
         "type": "date"
       },
+      "notification_sent": {
+        "type": "boolean"
+      },
       "reminder_counter": {
         "type": "integer"
       },

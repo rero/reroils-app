@@ -4,9 +4,11 @@ Dear patron,
 
 The document you borrowed has been requested by another person. An extension of the loan period is therefore no longer possible and we kindly ask you to return it at the latest by the due date.
 
+{%- for document in documents %}
 Title : {{ document.title_text }} / {{ document.responsibility_statement }}
-Due date: {{ end_date }}
+Due date: {{ document.end_date }}
 Note: Non extendable
+{%- endfor %}
 
 You can consult your account at: {{ profile_url }}
 

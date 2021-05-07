@@ -2,7 +2,7 @@ The item [{{ item.barcode }}] has been requested
 {%- include('email/_patron_address.txt') %}
 An item has been requested. See below for information about this item.
 
-Pickup location  : {{ pickup_location.library.name }} -- {{ pickup_location.name }}
+Pickup location  : {{ pickup_location.name }} -- {{ pickup_location.name }}
 Request date     : {{ loan.transaction_date }}
 Item barcode     : {{ item.barcode }}
 Item call number : {{ item.call_number }}

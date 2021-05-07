@@ -4,9 +4,11 @@ Cara lettrice, caro lettore,
 
 La durata di prestito dei seguenti documenti è scaduta:
 
+{%- for document in documents %}
 Titolo : {{ document.title_text }} / {{ document.responsibility_statement }}
-Scadenza: {{ end_date }}
-NoNotate: 1° richiamo
+Scadenza: {{ document.end_date }}
+NoNotate: {{ document.reminder }} richiamo
+{%- endfor %}
 
 Lei può consultare il Suo conto et prorogare la durata di prestito dei Suoi documenti al seguente indirizzo: {{ profile_url }}
 

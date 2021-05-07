@@ -24,34 +24,37 @@ from datetime import datetime, timezone
 from celery import shared_task
 from flask import current_app
 
-from .api import Notification
+from .api import Notification, get_notifications
+from .dispatcher import Dispatcher
 from ..circ_policies.api import OVERDUE_REMINDER_TYPE
 from ..libraries.api import Library
 from ..loans.api import get_due_soon_loans, get_overdue_loans
 from ..utils import set_timestamp
 
 
-@shared_task(ignore_result=True)
-def process_notifications(verbose=False):
-    """Process notifications."""
-    result = Notification.process_notifications(verbose=verbose)
-    msg = '{info}| send: {send} reject: {reject} error: {error}'.format(
-        info='notifications',
-        send=result['send'],
-        reject=result['reject'],
-        error=result['error']
+@shared_task()
+def process_notifications(notification_type, verbose=True):
+    """Dispatch notifications.
+
+    :param notification_type: notification type to dispatch the notifications.
+    :param verbose: is the task should be verbose.
+    """
+    notification_pids = get_notifications(notification_type=notification_type)
+    result = Dispatcher.dispatch_notifications(
+        notification_pids=notification_pids,
+        verbose=verbose
     )
-    return msg
+    set_timestamp(f'notification-dispatch-{notification_type}', **result)
+    return result
 
 
-@shared_task(ignore_result=True)
-def create_notifications(types=None, tstamp=None, process=True, verbose=True):
+@shared_task()
+def create_notifications(types=None, tstamp=None, verbose=True):
     """Creates requested notifications.
 
     :param types: an array of notification types to create.
     :param tstamp: a timestamp to specify when the function is execute. By
                    default it will be `datetime.now()`.
-    :param process: is the notifications should be processed/sent.
     :param verbose: is the task should be verbose.
     """
     from ..loans.utils import get_circ_policy
@@ -64,10 +67,11 @@ def create_notifications(types=None, tstamp=None, process=True, verbose=True):
     if Notification.DUE_SOON_NOTIFICATION_TYPE in types:
         due_soon_type = Notification.DUE_SOON_NOTIFICATION_TYPE
         notification_counter[due_soon_type] = 0
-        logger.debug("OVERDUE_NOTIFICATION_CREATION --------------")
+        logger.debug("DUE_SOON_NOTIFICATION_TYPE --------------")
         for loan in get_due_soon_loans(tstamp=tstamp):
             logger.debug(f'* Loan#{loan.pid} is considerate as \'due_soon\'')
-            loan.create_notification(notification_type=due_soon_type)
+            notification = loan.create_notification(
+                notification_type=due_soon_type)
             notification_counter[due_soon_type] += 1
 
     # OVERDUE NOTIFICATIONS
@@ -103,19 +107,19 @@ def create_notifications(types=None, tstamp=None, process=True, verbose=True):
                 if notification:
                     logger.debug(f'  --> Overdue notification#{idx+1} created')
                     notification_counter[overdue_type] += 1
+
                 else:
                     logger.debug(f'  --> Overdue notification#{idx+1} skipped '
                                  f':: already sent')
+    notification_sum = sum(notification_counter.values())
+    counters = {k: v for k, v in notification_counter.items() if v > 0}
 
     if verbose:
         logger = current_app.logger
         logger.info("NOTIFICATIONS CREATION TASK")
-        notification_sum = sum(notification_counter.values())
         logger.info(f'  * total of {notification_sum} notification(s) created')
-        counters = {k: v for k, v in notification_counter.items() if v > 0}
         for notif_type, cpt in counters.items():
             logger.info(f'  +--> {cpt} `{notif_type}` notification(s) created')
 
-    if process:
-        logger.info(process_notifications.run(verbose=verbose))
-    set_timestamp('notification-creation')
+    set_timestamp('notification-creation', **counters)
+    return counters

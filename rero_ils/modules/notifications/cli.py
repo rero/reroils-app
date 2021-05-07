@@ -22,6 +22,7 @@ from __future__ import absolute_import, print_function
 import click
 from flask.cli import with_appcontext
 
+from .api import Notification
 from .tasks import process_notifications
 
 
@@ -30,18 +31,38 @@ def notifications():
     """Notification management commands."""
 
 
-@notifications.command('process')
-@click.option('--delayed', '-d', is_flag=True, default=False,
-              help='Run indexing in background.')
-@click.option('-v', '--verbose', is_flag=True, default=False,
-              help='Verbose output')
 @with_appcontext
-def process(delayed, verbose):
+@notifications.command('process')
+@click.option('-t', '--type', 'notification_type', help="Notification Type.",
+              multiple=True, default=Notification.ALL_NOTIFICATIONS)
+@click.option('-k', '--enqueue', 'enqueue', is_flag=True, default=False,
+              help="Enqueue record creation.")
+@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False,
+              help='verbose')
+@with_appcontext
+def process(notification_type, enqueue, verbose):
     """Process notifications."""
-    click.secho('Process notifications:', fg='green')
-    if delayed:
-        uid = process_notifications.delay(verbose=verbose)
-        msg = f'Started task: {uid}'
-    else:
-        msg = process_notifications(verbose=verbose)
-    click.echo(msg)
+    results = {}
+    enqueue_results = {}
+    for n_type in notification_type:
+        if n_type not in Notification.ALL_NOTIFICATIONS:
+            click.secho(
+                f'Notification type does not exist: {n_type}', fg='red')
+            break
+        click.secho(
+            f'Process notification: {n_type}', fg='green')
+        if enqueue:
+            enqueue_results[n_type] = process_notifications.delay(
+                notification_type=n_type, verbose=verbose)
+        else:
+            results[n_type] = process_notifications(
+                notification_type=n_type, verbose=verbose)
+
+    if verbose:
+        if enqueue_results:
+            for key, value in enqueue_results.items():
+                results[key] = value.get()
+
+        for key, value in results.items():
+            result_values = ' '.join([f'{k}={v}' for k, v in value.items()])
+            click.secho(f'Notification {key:12}: {result_values}')

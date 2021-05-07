@@ -20,19 +20,14 @@
 
 from __future__ import absolute_import, print_function
 
-from contextlib import contextmanager
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from functools import partial
 
 import ciso8601
-from celery import current_app as current_celery_app
+from elasticsearch_dsl.query import Q
 from flask import current_app
-from kombu import Exchange, Producer, Queue
-from kombu.compat import Consumer
-from sqlalchemy.orm.exc import NoResultFound
 
-from .dispatcher import Dispatcher
 from .models import NotificationIdentifier, NotificationMetadata
 from ..api import IlsRecord, IlsRecordsIndexer, IlsRecordsSearch
 from ..circ_policies.api import DUE_SOON_REMINDER_TYPE, \
@@ -53,6 +48,7 @@ NotificationProvider = type(
     (Provider,),
     dict(identifier=NotificationIdentifier, pid_type='notif')
 )
+
 # notification minter
 notification_id_minter = partial(id_minter, provider=NotificationProvider)
 # notification fetcher
@@ -80,18 +76,17 @@ class Notification(IlsRecord):
     AVAILABILITY_NOTIFICATION_TYPE = 'availability'
     DUE_SOON_NOTIFICATION_TYPE = 'due_soon'
     OVERDUE_NOTIFICATION_TYPE = 'overdue'
+    ALL_NOTIFICATIONS = [
+        AVAILABILITY_NOTIFICATION_TYPE,
+        DUE_SOON_NOTIFICATION_TYPE,
+        OVERDUE_NOTIFICATION_TYPE,
+        RECALL_NOTIFICATION_TYPE
+    ]
 
     minter = notification_id_minter
     fetcher = notification_id_fetcher
     provider = NotificationProvider
     model_cls = NotificationMetadata
-    mq_routing_key = 'notification'
-    mq_exchange = Exchange(mq_routing_key, type='direct')
-    mq_queue = Queue(
-        mq_routing_key,
-        exchange=Exchange(mq_routing_key, type='direct'),
-        routing_key=mq_routing_key
-    )
 
     @classmethod
     def create(cls, data, id_=None, delete_pid=False,
@@ -104,11 +99,11 @@ class Notification(IlsRecord):
             delete_pid=delete_pid)
         return record
 
-    def update_process_date(self):
+    def update_process_date(self, sent=False):
         """Update process date."""
-        self['process_date'] = datetime.now(timezone.utc).isoformat()
-        self.update(data=self.dumps(), dbcommit=True, reindex=True)
-        return self
+        self['process_date'] = datetime.utcnow().isoformat()
+        self['notification_sent'] = sent
+        return self.update(data=self.dumps(), dbcommit=True, reindex=True)
 
     def replace_pids_and_refs(self):
         """Dumps data."""
@@ -135,16 +130,17 @@ class Notification(IlsRecord):
                 # del(data['loan']['pickup_location_pid'])
                 library_pid = data['loan']['pickup_location']['library']['pid']
                 library = Library.get_record_by_pid(library_pid)
-                data['loan']['pickup_location']['library'] = library
+                data['loan']['pickup_name'] = pickup_location['pickup_name']
                 data['loan']['library'] = library
+                # TODO: make availability days variable (fixed to 10 days)
                 keep_until = datetime.now(timezone.utc) + timedelta(days=10)
                 next_open = library.next_open(keep_until)
                 # language = data['loan']['patron']['communication_language']
                 next_open = next_open.strftime("%d.%m.%Y")
-                data['loan']['next_open'] = next_open
+                data['loan']['library']['next_open'] = next_open
             else:
-                data['loan']['pickup_location'] = \
-                    self.transaction_location.replace_refs().dumps()
+                location = self.transaction_location.replace_refs().dumps()
+                data['loan']['pickup_name'] = location['library']['name']
                 item_pid = data['loan']['item_pid']
                 library = Item.get_record_by_pid(item_pid).get_library()
                 data['loan']['library'] = library
@@ -172,10 +168,8 @@ class Notification(IlsRecord):
             # create a link to patron profile
             patron = Patron.get_record_by_pid(data['loan']['patron']['pid'])
             view_code = patron.get_organisation().get('code')
-            profile_url = '{base_url}/{view_code}/patrons/profile'.format(
-                base_url=current_app.config.get('RERO_ILS_APP_URL'),
-                view_code=view_code
-            )
+            base_url = current_app.config.get('RERO_ILS_APP_URL')
+            profile_url = f'{base_url}/{view_code}/patrons/profile'
             data['loan']['profile_url'] = profile_url
 
             return data
@@ -282,63 +276,6 @@ class Notification(IlsRecord):
         for result in results:
             yield PatronTransaction.get_record_by_pid(result.pid)
 
-    def dispatch(self, enqueue=True, verbose=False):
-        """Dispatch notification."""
-        if enqueue:
-            with self.create_producer() as producer:
-                producer.publish(dict(pid=self.pid))
-        else:
-            self = Dispatcher().dispatch_notification(notification=self,
-                                                      verbose=verbose)
-        return self
-
-    @contextmanager
-    def create_producer(self):
-        """Context manager that yields an instance of ``Producer``."""
-        with current_celery_app.pool.acquire(block=True) as conn:
-            yield Producer(
-                conn,
-                exchange=self.mq_exchange,
-                routing_key=self.mq_routing_key,
-                auto_declare=True,
-            )
-
-    @classmethod
-    def process_notifications(cls, verbose=False):
-        """Process notifications queue."""
-        count = {'send': 0, 'reject': 0, 'error': 0}
-        with current_celery_app.pool.acquire(block=True) as conn:
-            consumer = Consumer(
-                connection=conn,
-                queue=cls.mq_queue.name,
-                exchange=cls.mq_exchange.name,
-                routing_key=cls.mq_routing_key,
-            )
-
-            for message in consumer.iterqueue():
-                payload = message.decode()
-                try:
-                    pid = payload['pid']
-                    notification = Notification.get_record_by_pid(pid)
-                    Dispatcher().dispatch_notification(notification, verbose)
-                    message.ack()
-                    count['send'] += 1
-                except NoResultFound:
-                    message.reject()
-                    count['reject'] += 1
-                except Exception:
-                    message.reject()
-                    current_app.logger.error(
-                        "Failed to dispatch notification {pid}".format(
-                            pid=payload.get('pid')
-                        ),
-                        exc_info=True
-                    )
-                    count['error'] += 1
-            consumer.close()
-
-        return count
-
 
 class NotificationsIndexer(IlsRecordsIndexer):
     """Holdings indexing class."""
@@ -368,6 +305,31 @@ def get_notification(loan, notification_type):
         return Notification.get_record_by_pid(pid)
     except StopIteration:
         return None
+
+
+def get_notifications(notification_type, processed=False, not_sent=False):
+    """Returns specific notifications pids.
+
+    :param processed: notifications are processed already.
+    """
+    query = NotificationsSearch()\
+        .filter('term', notification_type=notification_type) \
+        .source('pid')
+    if not not_sent:
+        query = query.filter(
+            'bool', must_not=[
+                Q('exists', field='notification_sent'),
+                Q('term', notification_sent=False)
+            ]
+        )
+    if processed:
+        query = query.filter('exists', field='process_date')
+    else:
+        query = query.filter(
+            'bool', must_not=[Q('exists', field='process_date')])
+
+    for hit in query.scan():
+        yield hit.pid
 
 
 def number_of_reminders_sent(
@@ -407,7 +369,8 @@ def get_communication_channel_to_use(loan, notification_data, patron):
             reminder_type=reminder_type,
             idx=notification_data.get('reminder_counter', 0)
         )
-        communication_channel = reminder.get('communication_channel')
+        if reminder:
+            communication_channel = reminder.get('communication_channel')
 
     # return the best communication channel
     if communication_channel == 'patron_setting':
@@ -416,11 +379,12 @@ def get_communication_channel_to_use(loan, notification_data, patron):
         return communication_channel
 
 
-def get_template_to_use(loan, notification_data):
+def get_template_to_use(loan, notification_type, reminder_counter):
     """Get the template path to use for a notification.
 
     :param loan: the notification parent loan.
-    :param notification_data: the notification data.
+    :param notification_type: the notification type.
+    :param reminder_counter: the reminder counter.
     """
     from ..loans.utils import get_circ_policy
 
@@ -428,7 +392,6 @@ def get_template_to_use(loan, notification_data):
     # found into the related circulation policy.
     # TODO : depending of the communication channel, improve the function to
     #        get the correct template.
-    notification_type = notification_data.get('notification_type')
     static_template_mapping = {
         Notification.RECALL_NOTIFICATION_TYPE: 'email/recall',
         Notification.AVAILABILITY_NOTIFICATION_TYPE: 'email/availability'
@@ -444,9 +407,12 @@ def get_template_to_use(loan, notification_data):
         reminder_type = OVERDUE_REMINDER_TYPE
     reminder = cipo.get_reminder(
         reminder_type=reminder_type,
-        idx=notification_data.get('reminder_counter', 0)
+        idx=reminder_counter
     )
-    return reminder.get('template')
+    template = f'email/{notification_type}'
+    if reminder:
+        template = reminder.get('template')
+    return template
 
 
 def calculate_notification_amount(notification):

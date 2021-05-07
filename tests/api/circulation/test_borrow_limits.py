@@ -27,6 +27,7 @@ from utils import flush_index, get_json, postdata
 from rero_ils.modules.loans.api import Loan, LoanAction, get_overdue_loans
 from rero_ils.modules.notifications.api import Notification, \
     NotificationsSearch, number_of_reminders_sent
+from rero_ils.modules.notifications.dispatcher import Dispatcher
 from rero_ils.modules.patron_types.api import PatronType
 from rero_ils.modules.utils import get_ref_for_pid
 
@@ -234,8 +235,9 @@ def test_overdue_limit(
     assert overdue_loans[0].get('pid') == loan_pid
     assert number_of_reminders_sent(loan) == 0
 
-    loan.create_notification(
+    notification = loan.create_notification(
         notification_type=Notification.OVERDUE_NOTIFICATION_TYPE)
+    Dispatcher.dispatch_notifications([notification.get('pid')])
     flush_index(NotificationsSearch.Meta.index)
     flush_index(LoansSearch.Meta.index)
     assert number_of_reminders_sent(loan) == 1

@@ -61,7 +61,8 @@ def listener_loan_state_changed(_, initial_loan, loan, trigger):
            and item.number_of_requests() == 0:
             send_notification_to_location(loan, item, item_location)
     elif loan['state'] == LoanState.ITEM_AT_DESK:
-        loan.create_notification(notification_type='availability')
+        notification = loan.create_notification(
+            notification_type='availability')
 
     # Create fees for checkin or extend operations
     if trigger in ['checkin', 'extend']:

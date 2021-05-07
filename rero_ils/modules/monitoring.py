@@ -437,7 +437,7 @@ class Monitoring(object):
         Get count details for all records rest endpoints in json format.
 
         :param with_deleted: count also deleted items in database.
-        :return: dictionair with database, elasticsearch and databse minus
+        :return: dictionary with database, elasticsearch and databse minus
         elasticsearch count informations.
         """
         info = {}
@@ -472,7 +472,7 @@ class Monitoring(object):
         """Compaire elasticsearch with database counts.
 
         :param with_deleted: count also deleted items in database.
-        :return: dictionair with all document types with a difference in
+        :return: dictionary with all document types with a difference in
         databse and elasticsearch counts.
         """
         checks = {}
@@ -500,7 +500,7 @@ class Monitoring(object):
         pids in elasticsearch.
 
         :param doc_type: doc type to get missing pids.
-        :return: dictionair with all missing pids.
+        :return: dictionary with all missing pids.
         """
         missing_in_db, missing_in_es, pids_es_double, index =\
             cls.get_es_db_missing_pids(
@@ -600,3 +600,13 @@ def es_db_counts_cli(missing):
 def es_db_missing_cli(doc_type):
     """Print missing pids informations."""
     Monitoring().print_missing(doc_type)
+
+
+@monitoring.command('time_stamps')
+@with_appcontext
+def time_stamps_cli():
+    """Print time_stampss informations."""
+    for key, value in current_cache.get('timestamps').items():
+        time = value.pop('time')
+        args = [f'{k}={v}' for k, v in value.items()]
+        click.echo(f'{time}: {key} {" | ".join(args)}')

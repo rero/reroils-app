@@ -465,6 +465,55 @@ def loan_validated_martigny(
 
 
 @pytest.fixture(scope="module")
+def loan2_validated_martigny(
+        app,
+        document,
+        item3_lib_martigny,
+        loc_public_martigny,
+        item_type_standard_martigny,
+        librarian_martigny,
+        patron_martigny,
+        circulation_policies):
+    """Request and validate item to a patron.
+
+    item3_lib_martigny is requested and validated to patron_martigny.
+    """
+    transaction_date = datetime.now(timezone.utc).isoformat()
+
+    item3_lib_martigny.request(
+        patron_pid=patron_martigny.pid,
+        transaction_location_pid=loc_public_martigny.pid,
+        transaction_user_pid=librarian_martigny.pid,
+        transaction_date=transaction_date,
+        pickup_location_pid=loc_public_martigny.pid,
+        document_pid=extracted_data_from_ref(
+            item3_lib_martigny.get('document'))
+    )
+    flush_index(ItemsSearch.Meta.index)
+    flush_index(LoansSearch.Meta.index)
+    flush_index(NotificationsSearch.Meta.index)
+
+    loan = list(item3_lib_martigny.get_loans_by_item_pid(
+        item_pid=item3_lib_martigny.pid))[0]
+    item3_lib_martigny.validate_request(
+        pid=loan.pid,
+        patron_pid=patron_martigny.pid,
+        transaction_location_pid=loc_public_martigny.pid,
+        transaction_user_pid=librarian_martigny.pid,
+        transaction_date=transaction_date,
+        pickup_location_pid=loc_public_martigny.pid,
+        document_pid=extracted_data_from_ref(
+            item3_lib_martigny.get('document'))
+    )
+    flush_index(ItemsSearch.Meta.index)
+    flush_index(LoansSearch.Meta.index)
+    flush_index(NotificationsSearch.Meta.index)
+    loan = list(item3_lib_martigny.get_loans_by_item_pid(
+        item_pid=item3_lib_martigny.pid))[0]
+    return loan
+
+
+@pytest.fixture(scope="module")
 def loan_validated_sion(
         app,
         document,
@@ -519,6 +568,15 @@ def notification_availability_martigny(loan_validated_martigny):
 
 
 @pytest.fixture(scope="module")
+def notification2_availability_martigny(loan2_validated_martigny):
+    """Availability notification of martigny."""
+    return get_notification(
+        loan2_validated_martigny,
+        notification_type=Notification.AVAILABILITY_NOTIFICATION_TYPE
+    )
+
+
+@pytest.fixture(scope="module")
 def notification_availability_sion(loan_validated_sion):
     """Availability notification of sion."""
     return get_notification(
@@ -526,6 +584,14 @@ def notification_availability_sion(loan_validated_sion):
         notification_type=Notification.AVAILABILITY_NOTIFICATION_TYPE
     )
 
+
+@pytest.fixture(scope="module")
+def notification_availability_sion2(loan_validated_sion2):
+    """Availability notification of sion."""
+    return get_notification(
+        loan_validated_sion2,
+        notification_type=Notification.AVAILABILITY_NOTIFICATION_TYPE
+    )
 # ------------ Notifications: dummy notification ----------
 
 

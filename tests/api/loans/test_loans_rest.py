@@ -34,6 +34,7 @@ from rero_ils.modules.loans.api import Loan, LoanAction, LoanState, \
     get_due_soon_loans, get_last_transaction_loc_for_item, get_overdue_loans
 from rero_ils.modules.notifications.api import Notification, \
     NotificationsSearch, number_of_reminders_sent
+from rero_ils.modules.notifications.dispatcher import Dispatcher
 
 
 def test_loans_permissions(client, loan_pending_martigny, json_header):
@@ -346,8 +347,9 @@ def test_overdue_loans(client, librarian_martigny,
     assert overdue_loans[0].get('pid') == loan_pid
     assert number_of_reminders_sent(loan) == 0
 
-    loan.create_notification(
+    notification = loan.create_notification(
         notification_type=Notification.OVERDUE_NOTIFICATION_TYPE)
+    Dispatcher.dispatch_notifications([notification.get('pid')])
     flush_index(NotificationsSearch.Meta.index)
     flush_index(LoansSearch.Meta.index)
     assert number_of_reminders_sent(loan) == 1

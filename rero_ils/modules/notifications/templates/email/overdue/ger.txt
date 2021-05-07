@@ -4,9 +4,11 @@ Sehr geehrte Leserin, sehr geehrter Leser,
 
 Die Ausleihfrist folgender Dokumente ist abgelaufen:
 
+{%- for document in documents %}
 Titel : {{ document.title_text }} / {{ document.responsibility_statement }}
-Rückgabedatum: {{ end_date }}
-Anmerkung: 1. Mahnung
+Rückgabedatum: {{ document.end_date }}
+Anmerkung: {{ document.reminder }} Mahnung
+{%- endfor %}
 
 Unter folgender Adresse können Sie Ihr Konto einsehen und die Ausleihfrist Ihrer Dokumente verlängern: {{ profile_url }}
 

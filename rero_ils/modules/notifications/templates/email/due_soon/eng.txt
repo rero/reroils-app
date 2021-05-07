@@ -4,8 +4,10 @@ Dear patron,
 
 The loan period of following documents is expiring:
 
+{%- for document in documents %}
 Title : {{ document.title_text }} / {{ document.responsibility_statement }}
-Due date: {{ end_date }}
+Due date: {{ document.end_date }}
+{%- endfor %}
 
 You can consult your account and extend the loan period of your documents at: {{ profile_url }}
 

@@ -207,6 +207,8 @@ LOGGING_SENTRY_CELERY = True
 SUPPORT_EMAIL = "software@rero.ch"
 #: Disable email sending by default.
 MAIL_SUPPRESS_SEND = True
+#: Default sender email
+DEFAULT_SENDER_EMAIL = "noreply@rero.ch"
 
 # Assets
 # ======
@@ -306,6 +308,38 @@ CELERY_BEAT_SCHEDULE = {
         },
         'enabled': False,
         # TODO: in production set this up once a day
+    },
+    'notification-dispatch-due_soon': {
+        'task': 'rero_ils.modules.notifications.tasks.process_notifications',
+        'schedule': crontab(minute="*/15"),
+        'kwargs': {
+            'notification_type': Notification.DUE_SOON_NOTIFICATION_TYPE
+        },
+        'enabled': False,
+    },
+    'notification-dispatch-overdue': {
+        'task': 'rero_ils.modules.notifications.tasks.process_notifications',
+        'schedule': timedelta(minutes=15),
+        'kwargs': {
+            'notification_type': Notification.OVERDUE_NOTIFICATION_TYPE
+        },
+        'enabled': False,
+    },
+    'notification-dispatch-availability': {
+        'task': 'rero_ils.modules.notifications.tasks.process_notifications',
+        'schedule': timedelta(minutes=15),
+        'kwargs': {
+            'notification_type': Notification.AVAILABILITY_NOTIFICATION_TYPE
+        },
+        'enabled': False,
+    },
+    'notification-dispatch-recall': {
+        'task': 'rero_ils.modules.notifications.tasks.process_notifications',
+        'schedule': timedelta(minutes=15),
+        'kwargs': {
+            'notification_type': Notification.RECALL_NOTIFICATION_TYPE
+        },
+        'enabled': False,
     },
     'claims-creation': {
         'task': ('rero_ils.modules.items.tasks'

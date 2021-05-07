@@ -23,6 +23,7 @@ from copy import deepcopy
 
 from utils import get_mapping
 
+from rero_ils.modules.libraries.api import email_notification_type
 from rero_ils.modules.notifications.api import Notification, \
     NotificationsSearch
 from rero_ils.modules.notifications.dispatcher import Dispatcher
@@ -37,11 +38,8 @@ def test_notification_es_mapping(
     assert mapping
 
     notif = deepcopy(dummy_notification)
-    notif_data = {
-        'loan_url': 'https://ils.rero.ch/api/loans/',
-        'pid': loan_validated_martigny.get('pid')
-    }
-    loan_ref = '{loan_url}{pid}'.format(**notif_data)
+    validated_pid = loan_validated_martigny.get('pid')
+    loan_ref = f'https://ils.rero.ch/api/loans/{validated_pid}'
     notif['loan'] = {"$ref": loan_ref}
 
     Notification.create(notif, dbcommit=True, delete_pid=True, reindex=True)
@@ -60,75 +58,53 @@ def test_notification_organisation_pid(
     assert notification_availability_martigny.can_delete
 
 
-def test_notification_mail(
-        notification_late_martigny, lib_martigny, mailbox):
+def test_notification_mail(notification_late_martigny, lib_martigny, mailbox):
     """Test notification creation.
         Patron communication channel is mail.
     """
     mailbox.clear()
-    notification_late_martigny.dispatch(enqueue=False, verbose=True)
-    assert mailbox[0].recipients == [
-        lib_martigny.email_notification_type(
-            notification_late_martigny['notification_type'])]
+    Dispatcher.dispatch_notifications(notification_late_martigny['pid'])
+    assert mailbox[0].recipients == [email_notification_type(
+            lib_martigny, notification_late_martigny['notification_type'])]
 
 
-def test_notification_email(
-        notification_late_sion, patron_sion, mailbox):
+def test_notification_email(notification_late_sion, patron_sion, mailbox):
     """Test overdue notification.
         Patron communication channel is email.
     """
     mailbox.clear()
-    notification_late_sion.dispatch(enqueue=False, verbose=True)
+    Dispatcher.dispatch_notifications(notification_late_sion['pid'])
     assert mailbox[0].recipients == [patron_sion.dumps()['email']]
 
 
-def test_notification_email_availability(
-        notification_availability_sion, lib_sion, patron_sion, mailbox):
+def test_notification_email_availability(notification_availability_sion,
+                                         lib_sion, patron_sion, mailbox):
     """Test availibility notification.
         Patron communication channel is email.
     """
     mailbox.clear()
-    notification_availability_sion.dispatch(enqueue=False, verbose=True)
+    Dispatcher.dispatch_notifications(notification_availability_sion['pid'])
     assert mailbox[0].recipients == [patron_sion.dumps()['email']]
 
 
-def test_notification_dispatch(app):
-    """Test notification dispatch."""
+def test_notification_email_aggregated(notification_availability_martigny,
+                                       notification2_availability_martigny,
+                                       lib_martigny, patron_martigny, mailbox):
+    """Test availibility notification.
+        Patron communication channel is email.
+    """
+    mailbox.clear()
+    Dispatcher.dispatch_notifications([
+        notification_availability_martigny['pid'],
+        notification2_availability_martigny['pid']
+    ], verbose=True)
+    assert len(mailbox) == 1
+    from pprint import pprint
+    pprint(mailbox[0])
 
-    class DummyNotification(object):
-
-        data = {
-            'pid': 'dummy_notification_pid',
-            'notification_type': 'dummy_notification'
-        }
-
-        def __init__(self, communication_channel):
-            self.communication_channel = communication_channel
-
-        def __getitem__(self, key):
-            return self.data[key]
-
-        def get(self, key):
-            return self.__getitem__(key)
-
-        def init_loan(self):
-            return None
-
-        def replace_pids_and_refs(self):
-            return {
-                'loan': {
-                    'pid': 'dummy_notification_loan_pid',
-                    'patron': {
-                        'pid': 'dummy_patron_pid',
-                        'patron': {
-                            'communication_channel': self.communication_channel
-                        }
-                    }
-                }
-            }
-
-        def update_process_date(self):
-            return self
-
-    notification = DummyNotification('XXXX')
-    Dispatcher().dispatch_notification(notification=notification, verbose=True)
+    recipient = '???'
+    for notification_setting in lib_martigny.get('notification_settings'):
+        if notification_setting['type'] == \
+                Notification.AVAILABILITY_NOTIFICATION_TYPE:
+            recipient = notification_setting['email']
+    assert mailbox[0].recipients == [recipient]

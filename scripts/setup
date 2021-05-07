@@ -443,7 +443,6 @@ eval ${PREFIX} invenio fixtures create_loans ${DATA_PATH}/loans.json
 # process notifications
 eval ${PREFIX} invenio notifications process
 
-
 # create token access for monitoring
 # if the environement variable INVENIO_RERO_ACCESS_TOKEN_MONITORING is not set
 # a new token will be generated
@@ -476,7 +475,8 @@ then
     info_msg "Start OAI harvesting asynchrone"
     eval ${PREFIX} invenio oaiharvester harvest -n ebooks -q -k
 else
-    eval ${PREFIX} invenio scheduler enable_tasks -n scheduler-timestamp -n bulk-indexer -n anonymize-loans -n claims-creation -n notification-creation -n accounts -n clear_and_renew_subscriptions -v
+    eval ${PREFIX} invenio scheduler enable_tasks -n scheduler-timestamp -n bulk-indexer -n anonymize-loans -n claims-creation -n accounts -n clear_and_renew_subscriptions -v
+    eval ${PREFIX} invenio scheduler enable_tasks -n notification-creation -n notification-dispatch-due_soon -n notification-dispatch-overdue -n notification-dispatch-availability -n notification-dispatch-recall -v
     info_msg "For ebooks harvesting run:"
     msg "\tinvenio oaiharvester harvest -n ebooks -a max=100 -q"
 fi

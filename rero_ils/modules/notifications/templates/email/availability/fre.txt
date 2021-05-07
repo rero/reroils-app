@@ -3,15 +3,18 @@ Invitation à retirer un document
 Chère lectrice, cher lecteur,
 
 Le document que vous avez demandé est maintenant disponible. Vous pouvez venir le retirer au bureau de prêt de la bibliothèque mentionnée ci-dessous.
+{%- for document in documents %}
 
 Titre : {{ document.title_text }} / {{ document.responsibility_statement }}
-Lieu de retrait : {{ pickup_location.library.name }}
-A retirer jusqu'au : {{ next_open }}
+Lieu de retrait : {{ pickup_name }}
+{%- endfor %}
+
+A retirer jusqu'au : {{ library.next_open }}
 
 Si le document n'est pas retiré dans les délais, il sera remis en circulation pour d'autres personnes.
 Vous pouvez consulter votre compte et prolonger la durée de prêt de vos documents à l'adresse : {{ profile_url }}
 
 Avec nos compliments
 
-{{ pickup_location.library.name }}
-{{ pickup_location.library.address }}
+{{ library.name }}
+{{ library.address }}

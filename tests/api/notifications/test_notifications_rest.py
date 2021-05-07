@@ -27,9 +27,11 @@ from invenio_accounts.testutils import login_user_via_session
 from utils import VerifyRecordPermissionPatch, flush_index, get_json, \
     postdata, to_relative_url
 
+from rero_ils.modules.libraries.api import email_notification_type
 from rero_ils.modules.loans.api import Loan, LoanAction
 from rero_ils.modules.notifications.api import Notification, \
     NotificationsSearch, get_notification
+from rero_ils.modules.notifications.tasks import process_notifications
 
 
 def test_notifications_permissions(
@@ -360,8 +362,10 @@ def test_recall_notification(client, patron_sion, lib_sion,
     assert not get_notification(
         loan, notification_type=Notification.AVAILABILITY_NOTIFICATION_TYPE)
 
+    for notification_type in Notification.ALL_NOTIFICATIONS:
+        process_notifications(notification_type)
     # one new email for the patron
-    assert mailbox[0].recipients == [patron_sion.dumps()['email']]
+    assert mailbox[-1].recipients == [patron_sion.dumps()['email']]
 
     mailbox.clear()
 
@@ -444,10 +448,6 @@ def test_recall_notification_without_email(
         )
     )
     assert res.status_code == 200
-
-    request_loan_pid = data.get(
-        'action_applied')[LoanAction.REQUEST].get('pid')
-
     flush_index(NotificationsSearch.Meta.index)
 
     assert loan.is_notified(
@@ -460,10 +460,11 @@ def test_recall_notification_without_email(
     assert not get_notification(
         loan, notification_type=Notification.AVAILABILITY_NOTIFICATION_TYPE)
 
+    for notification_type in Notification.ALL_NOTIFICATIONS:
+        process_notifications(notification_type)
     # one new email for the librarian
-    assert mailbox[0].recipients == [
-        lib_martigny.email_notification_type(
-            notification['notification_type'])]
+    assert mailbox[0].recipients == [email_notification_type(
+        lib_martigny, notification['notification_type'])]
     mailbox.clear()
 
 

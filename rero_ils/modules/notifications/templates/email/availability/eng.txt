@@ -3,15 +3,18 @@ Invitation to pick up a document
 Dear patron,
 
 The document you requested is now available. You can pick it up at the loan desk of the library mentioned below.
+{%- for document in documents %}
 
 Title: {{ document.title_text }} / {{ document.responsibility_statement }}
-Pick up location: {{ pickup_location.library.name }}
-To pick up until: {{ next_open }}
+Pick up location: {{ pickup_name }}
+{%- endfor %}
+
+To pick up until: {{ library.next_open }}
 
 Should the document not be picked up within the given period, it will be made available for other people.
 You can consult your account and extend the loan period of your documents at: {{ profile_url }}
 
 Best regards
 
-{{ pickup_location.library.name }}
-{{ pickup_location.library.address }}
+{{ library.name }}
+{{ library.address }}

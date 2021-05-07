@@ -191,7 +191,7 @@ class Loan(IlsRecord):
         required_params = self.action_required_params(action=action)
         missing_params = set(required_params) - set(kwargs)
         if missing_params:
-            message = 'Parameters {} are required'.format(missing_params)
+            message = f'Parameters {missing_params} are required'
             raise MissingRequiredParameterError(description=message)
 
     def update_pickup_location(self, pickup_location_pid):
@@ -574,12 +574,7 @@ class Loan(IlsRecord):
             }
             notification = Notification.create(
                 data=record, dbcommit=True, reindex=True)
-            enqueue = notification_type not in [
-                Notification.RECALL_NOTIFICATION_TYPE,
-                Notification.AVAILABILITY_NOTIFICATION_TYPE
-            ]
-            # put into the queue only for batch notifications i.e. overdue
-            return notification.dispatch(enqueue=enqueue)
+            return notification
 
     @classmethod
     def concluded(cls, loan):

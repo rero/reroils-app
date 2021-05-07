@@ -333,17 +333,6 @@ class Library(IlsRecord):
         default = pytz.timezone('Europe/Zurich')
         return default
 
-    def email_notification_type(self, notification_type):
-        """Get the email corresponding to the given notification type.
-
-        :param notification_type: the notification type.
-        :return: the email corresponding to the notification type.
-        :rtype: string
-        """
-        for setting in self['notification_settings']:
-            if setting['type'] == notification_type:
-                return setting['email']
-
 
 class LibrariesIndexer(IlsRecordsIndexer):
     """Holdings indexing class."""
@@ -356,3 +345,15 @@ class LibrariesIndexer(IlsRecordsIndexer):
         :param record_id_iterator: Iterator yielding record UUIDs.
         """
         super().bulk_index(record_id_iterator, doc_type='lib')
+
+
+def email_notification_type(libray, notification_type):
+    """Get the email corresponding to the given notification type.
+
+    :param notification_type: the notification type.
+    :return: the email corresponding to the notification type.
+    :rtype: string
+    """
+    for setting in libray['notification_settings']:
+        if setting['type'] == notification_type:
+            return setting['email']
