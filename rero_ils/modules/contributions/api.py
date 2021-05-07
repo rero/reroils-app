@@ -191,7 +191,7 @@ class Contribution(IlsRecord):
     def _get_contribution_for_document(self):
         """Get contribution for document."""
         agent = {
-            'pid': self.pid
+            'pid': self.pid,
         }
         for agency in current_app.config['RERO_ILS_CONTRIBUTIONS_SOURCES']:
             if self.get(agency):

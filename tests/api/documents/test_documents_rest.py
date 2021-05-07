@@ -648,3 +648,43 @@ def test_documents_get_dc(
     records = get_xml_dict(res)
     assert records['searchRetrieveResponse']['numberOfRecords'] == str(
         Document.count())
+
+
+def test_documents_get_marcxml(
+    client, document_ref, contribution_person_data, rero_json_header,
+):
+    """Test record get with format=marcxml."""
+    api_url = url_for('invenio_records_rest.doc_item', pid_value='doc2',
+                      format='marcxml')
+    res = client.get(api_url)
+    assert res.status_code == 200
+    xml_dict = get_xml_dict(res)
+    record = xml_dict.get('record')
+    assert 'leader' in record
+    assert 'controlfield' in record
+    assert record['controlfield'] == [{
+        '#text': 'doc2',
+        '@tag': '001'
+    }, {
+        '#text': '000000|2011||||xx#|||||||||||||||||ara|c',
+        '@tag': '008'
+    }]
+    assert 'datafield' in record
+
+    api_url = url_for('invenio_records_rest.doc_list', format='marcxml')
+    res = client.get(api_url)
+    assert res.status_code == 200
+    xml_dict = get_xml_dict(res)
+    assert 'collection' in xml_dict
+
+    api_url = url_for('invenio_records_rest.doc_list', format='marcxmlsru')
+    res = client.get(api_url)
+    assert res.status_code == 200
+    xml_dict = get_xml_dict(res)
+    assert 'searchRetrieveResponse' in xml_dict
+    search_rr = xml_dict['searchRetrieveResponse']
+    assert search_rr.get('echoedSearchRetrieveRequest') == {
+        'recordPacking': 'XML',
+        'recordSchema': 'info:sru/schema/1/marcxml-v1.1-light',
+        'resultSetTTL': '0'
+    }

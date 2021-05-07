@@ -25,6 +25,7 @@ from datetime import datetime, timezone
 from functools import partial
 
 from dateutil.relativedelta import relativedelta
+from elasticsearch_dsl import Q
 from flask import current_app
 from flask_babelex import gettext as _
 from invenio_search import current_search
@@ -302,34 +303,48 @@ class Holding(IlsRecord):
         return None
 
     @classmethod
-    def get_holdings_pid_by_document_pid(cls, document_pid):
+    def get_holdings_pid_by_document_pid(cls, document_pid, with_masked=True):
         """Returns holding pids attached for a given document pid."""
-        results = HoldingsSearch()\
-            .filter('term', document__pid=document_pid)\
-            .source(['pid']).scan()
-        for holding in results:
-            yield holding.pid
-
-    @classmethod
-    def get_holdings_pid_by_document_pid_by_org(cls, document_pid, org_pid):
-        """Returns holding pids attached for a given document pid."""
-        results = HoldingsSearch()\
-            .filter('term', document__pid=document_pid)\
-            .filter('term', organisation__pid=org_pid)\
-            .source(['pid']).scan()
-        for holding in results:
-            yield holding.pid
-
-    @classmethod
-    def get_holdings_by_document_by_view_code(cls, document_pid, viewcode):
-        """Returns holding pids by document and view code."""
         es_query = HoldingsSearch()\
             .filter('term', document__pid=document_pid)\
             .source(['pid'])
+        if not with_masked:
+            es_query = es_query.filter(
+                'bool', must_not=[Q('term', _masked=True)])
+        for holding in es_query.scan():
+            yield holding.pid
+
+    @classmethod
+    def get_holdings_pid_by_document_pid_by_org(cls, document_pid, org_pid,
+                                                with_masked=True):
+        """Returns holding pids attached for a given document pid."""
+        es_query = HoldingsSearch()\
+            .filter('term', document__pid=document_pid)\
+            .filter('term', organisation__pid=org_pid)\
+            .source(['pid'])
+        if not with_masked:
+            es_query = es_query.filter(
+                'bool', must_not=[Q('term', _masked=True)])
+        for holding in es_query.scan():
+            yield holding.pid
+
+    @classmethod
+    def get_holdings_by_document_by_view_code(cls, document_pid, viewcode,
+                                              with_masked=True):
+        """Returns holding PIDs by document and view code."""
+        es_query = HoldingsSearch()\
+            .filter('term', document__pid=document_pid)\
+            .source(['pid'])
+        if not with_masked:
+            es_query = es_query.filter(
+                'bool', must_not=[Q('term', _masked=True)])
         if (viewcode != current_app.
                 config.get('RERO_ILS_SEARCH_GLOBAL_VIEW_CODE')):
             org_pid = Organisation.get_record_by_viewcode(viewcode)['pid']
             es_query = es_query.filter('term', organisation__pid=org_pid)
+        # TODO: can we use a generator here ?
+        # for holding in es_query.scan():
+        #     yield holding.pid
         return [result.pid for result in es_query.scan()]
 
     def get_items_filter_by_viewcode(self, viewcode):
