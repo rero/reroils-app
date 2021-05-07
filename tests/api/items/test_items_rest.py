@@ -23,13 +23,11 @@ from datetime import datetime, timezone
 
 import ciso8601
 import mock
-import pytest
 from flask import url_for
 from invenio_accounts.testutils import login_user_via_session
 from utils import VerifyRecordPermissionPatch, flush_index, get_json, postdata
 
 from rero_ils.modules.circ_policies.api import CircPoliciesSearch
-from rero_ils.modules.errors import RecordValidationError
 from rero_ils.modules.items.api import Item
 from rero_ils.modules.items.models import ItemNoteTypes, ItemStatus
 from rero_ils.modules.loans.api import Loan, LoanAction
@@ -837,12 +835,16 @@ def test_items_notes(client, librarian_martigny, item_lib_martigny,
     item['notes'].append(
         {'type': ItemNoteTypes.GENERAL, 'content': 'Second public note'}
     )
-    with pytest.raises(RecordValidationError):
-        client.put(
-            url_for('invenio_records_rest.item_item', pid_value=item.pid),
-            data=json.dumps(item),
-            headers=json_header
-        )
+    res = client.put(
+        url_for('invenio_records_rest.item_item', pid_value=item.pid),
+        data=json.dumps(item),
+        headers=json_header
+    )
+    assert get_json(res) == {
+        'status': 400,
+        'message':
+            'Validation error: Can not have multiple notes of the same type..'
+    }
     item['notes'] = item.notes[:-1]
 
     # get a specific type of notes

@@ -1,0 +1,174 @@
+#!/usr/bin/env bash
+# -*- coding: utf-8 -*-
+#
+# RERO ILS
+# Copyright (C) 2019 RERO
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+# COLORS for messages
+NC='\033[0m'                    # Default color
+INFO_COLOR='\033[1;97;44m'      # Bold + white + blue background
+SUCCESS_COLOR='\033[1;97;42m'   # Bold + white + green background
+ERROR_COLOR='\033[1;97;41m'     # Bold + white + red background
+
+PROGRAM=`basename $0`
+
+# MESSAGES
+msg() {
+  echo -e "${1}" 1>&2
+}
+# Display a colored message
+# More info: https://misc.flogisoft.com/bash/tip_colors_and_formatting
+# $1: choosen color
+# $2: title
+# $3: the message
+colored_msg() {
+  msg "${1}[${2}]: ${3}${NC}"
+}
+
+info_msg() {
+  colored_msg "${INFO_COLOR}" "INFO" "${1}"
+}
+
+error_msg() {
+  colored_msg "${ERROR_COLOR}" "ERROR" "${1}"
+}
+
+error_msg+exit() {
+    error_msg "${1}" && exit 1
+}
+
+success_msg() {
+  colored_msg "${SUCCESS_COLOR}" "SUCCESS" "${1}"
+}
+
+DEPLOYMENT=false
+CREATE_CONTRIBUTION=false
+CREATE_LAZY=""
+VERBOSE=""
+INVERS_VERBOSE="--verbose"
+PREFIX=""
+IN_DATA_PATH=./data
+OUT_DATA_PATH=./data
+PIDDEPENDENCIES=false
+
+# Displays program name
+msg "PROGRAM: ${PROGRAM}"
+
+# POETRY is a mandatory condition to launch this program!
+if [[ -z "${VIRTUAL_ENV}" ]]; then
+  error_msg+exit "Error - Launch this script via poetry command:\n\tpoetry run ${PROGRAM}"
+fi
+
+# options may be followed by one colon to indicate they have a required argument
+if ! options=$(getopt -o dcplvstio: -l deployment,create_contribution,pid_dependencies,lazy,verbose,schema,time,in_data_path:out_data_path: -- "$@")
+then
+    # something went wrong, getopt will put out an error message for us
+    exit 1
+fi
+
+while [ $# -gt 0 ]
+do
+    case $1 in
+    -d|--deployment)
+      DEPLOYMENT=true
+      ;;
+    -c|--create_contribution)
+      CREATE_CONTRIBUTION=true
+      ;;
+    -p|--pid_dependencies)
+      PIDDEPENDENCIES=true
+      ;;
+    -l|--lazy)
+      CREATE_LAZY="--lazy"
+      ;;
+    -v|--verbose)
+      VERBOSE="--verbose"
+      INVERS_VERBOSE=""
+      ;;
+    -t|--time)
+      PREFIX="time"
+      ;;
+    -i|--in_data_path)
+      IN_DATA_PATH=$2
+      shift
+      ;;
+    -o|--out_data_path)
+      OUT_DATA_PATH=$2
+      shift
+      ;;
+    (--) shift; break;;
+    (-*) error_msg+exit "$0: Unrecognized option $1";;
+    (*) break;;
+    esac
+    shift
+done
+
+if [[ ! -d "${IN_DATA_PATH}" ]]; then
+    error_msg+exit "Error - in data path does not exist: ${IN_DATA_PATH}"
+fi
+if [[ ! -d "${OUT_DATA_PATH}" ]]; then
+    error_msg+exit "Error - out data path does not exist: ${OUT_DATA_PATH}"
+fi
+
+set -e
+if ${PIDDEPENDENCIES}
+then
+  if ${DEPLOYMENT}
+  then
+    info_msg "Check pid dependencies: ${IN_DATA_PATH}/pid_dependencies_big.json"
+    eval ${PREFIX} invenio utils check_pid_dependencies --directory ${IN_DATA_PATH} --dependency_file ${IN_DATA_PATH}/pid_dependencies_big.json ${VERBOSE}
+  else
+    info_msg "Check pid dependencies: ${IN_DATA_PATH}/pid_dependencies_small.json"
+    eval ${PREFIX} invenio utils check_pid_dependencies --directory ${IN_DATA_PATH} --dependency_file ${IN_DATA_PATH}/pid_dependencies_small.json ${VERBOSE}
+  fi
+fi
+
+eval ${PREFIX} invenio fixtures create_csv org ${IN_DATA_PATH}/organisations.json ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+eval ${PREFIX} invenio fixtures create_csv lib ${IN_DATA_PATH}/libraries.json ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+eval ${PREFIX} invenio fixtures create_csv loc ${IN_DATA_PATH}/locations.json ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+eval ${PREFIX} invenio fixtures create_csv itty ${IN_DATA_PATH}/item_types.json ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+eval ${PREFIX} invenio fixtures create_csv ptty ${IN_DATA_PATH}/patron_types.json ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+eval ${PREFIX} invenio fixtures create_csv cipo ${IN_DATA_PATH}/circulation_policies.json ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+eval ${PREFIX} invenio fixtures create_csv vndr ${IN_DATA_PATH}/vendors.json ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+
+if ${DEPLOYMENT}
+then
+  DOCUMENT=${IN_DATA_PATH}/documents_big.json
+  HOLDING=${IN_DATA_PATH}/holdings_big.json
+  ITEMS=${IN_DATA_PATH}/items_big.json
+  CONTRIBUTIONS=${IN_DATA_PATH}/contributions_big.json
+else
+  DOCUMENT=${IN_DATA_PATH}/documents_small.json
+  HOLDING=${IN_DATA_PATH}/holdings_small.json
+  ITEMS=${IN_DATA_PATH}/items_small.json
+  CONTRIBUTIONS=${IN_DATA_PATH}/contributions_small.json
+fi
+
+if ${CREATE_CONTRIBUTION}
+then
+  eval ${PREFIX} invenio fixtures get_all_mef_records ${DOCUMENT} ${CREATE_LAZY} --out_file ${CONTRIBUTIONS} ${INVERS_VERBOSE}
+fi
+
+eval ${PREFIX} invenio fixtures create_csv doc ${DOCUMENT} ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+eval ${PREFIX} invenio fixtures create_csv hold ${HOLDING} ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+eval ${PREFIX} invenio fixtures create_csv item ${ITEMS} ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+eval ${PREFIX} invenio fixtures create_csv cont ${CONTRIBUTIONS} ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+
+# eval ${PREFIX} invenio fixtures create_csv illr ${IN_DATA_PATH}/ill_requests.json ${OUT_DATA_PATH} ${VALIDATESCHEMA} ${CREATE_LAZY} ${VERBOSE}
+eval ${PREFIX} invenio fixtures create_csv lofi ${IN_DATA_PATH}/local_fields.json ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+eval ${PREFIX} invenio fixtures create_csv coll ${IN_DATA_PATH}/collections.json ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE} --create_pid
+eval ${PREFIX} invenio fixtures create_csv budg ${IN_DATA_PATH}/budgets.json ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+eval ${PREFIX} invenio fixtures create_csv acac ${IN_DATA_PATH}/acq_accounts.json ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}
+eval ${PREFIX} invenio fixtures create_csv tmpl ${IN_DATA_PATH}/templates.json ${OUT_DATA_PATH} ${CREATE_LAZY} ${VERBOSE}

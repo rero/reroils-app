@@ -25,7 +25,6 @@ import pytest
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 
-from rero_ils.modules.errors import RecordValidationError
 from rero_ils.modules.items.models import ItemNoteTypes
 from rero_ils.modules.utils import get_ref_for_pid
 
@@ -113,7 +112,7 @@ def test_temporary_item_type(item_schema, item_lib_martigny):
     data = item_lib_martigny
 
     # tmp_itty cannot be the same than main_itty
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         data['temporary_item_type'] = {
             '$ref': data['item_type']['$ref']
         }
@@ -121,7 +120,7 @@ def test_temporary_item_type(item_schema, item_lib_martigny):
         data.validate()  # check extented_validation
 
     # tmp_itty_enddate must be older than current date
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         current_date = datetime.datetime.now().strftime('%Y-%m-%d')
         data['temporary_item_type'] = {
             '$ref': get_ref_for_pid('itty', 'sample'),

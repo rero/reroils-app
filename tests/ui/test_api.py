@@ -117,6 +117,8 @@ def test_ilsrecord(app, es_default_index, ils_record, ils_record_2):
         reindex=True
     )
     assert record_1.pid == 'ilsrecord_pid'
+    assert record_1.id == RecordTest.get_id_by_pid(record_1.pid)
+
     record_2 = RecordTest.create(
         data=ils_record_2,
         dbcommit=True,
@@ -168,6 +170,10 @@ def test_ilsrecord(app, es_default_index, ils_record, ils_record_2):
     record = RecordTest.get_record_by_pid('ilsrecord_pid')
     pid = RecordTest.get_pid_by_id(record.id)
     assert pid == record.pid
+
+    """Test IlsRecord record pid exist."""
+    assert RecordTest.record_pid_exists('ilsrecord_pid')
+    assert not RecordTest.record_pid_exists('unknown')
 
     """Test IlsRecord revert."""
     record = RecordTest.get_record_by_pid('ilsrecord_pid')
@@ -261,50 +267,28 @@ def test_ilsrecord_failed_pid(app, es_default_index, ils_record, ils_record_2):
     db.session.rollback()
     assert FailedIlsRecord.count() == 0
 
+    next_pid = FailedIlsRecord.provider.identifier.next()
     record1 = FailedIlsRecord.create(data=ils_record, delete_pid=True)
+    next_pid += 1
     assert FailedIlsRecord.count() == 1
-    assert record1.pid == '1'
+    assert record1.pid == str(next_pid)
 
-    # Add another record to test that it's 2.
+    # Add another record
     record2 = FailedIlsRecord.create(data=ils_record_2, delete_pid=True)
-    assert record2.pid == '2'
+    next_pid += 1
+    assert record2.pid == str(next_pid)
 
-    # Add Manually 3 and 4. Add another one and check result
     ils_record_3 = {
         'pid': '3',
         'name': 'IlsRecord Name 3',
     }
-    ils_record_4 = {
-        'pid': '4',
-        'name': 'IlsRecord Name 4',
-    }
-    record3 = FailedIlsRecord.create(data=ils_record_3, delete_pid=False)
-    FailedIlsRecord.create(data=ils_record_4, delete_pid=False)
-    # without PID, this record should take 3 as next number. Not 5.
-    record5 = FailedIlsRecord.create(data=ils_record, delete_pid=True)
-    assert record5.pid == '3'
-    assert record3.pid == '3'
-
-    assert FailedIlsRecord.count() == 4
-
+    with pytest.raises(IlsRecordError.PidAlreadyUsed):
+        record3 = FailedIlsRecord.create(data=ils_record_3, delete_pid=False)
+        next_pid += 1
+    assert FailedIlsRecord.count() == 2
     db.session.commit()
 
-    # New error to break PID 4, then add new one to check its PID: 4!
-    record6 = None
-    with pytest.raises(ValidationError):
-        record6 = FailedIlsRecord.create(
-            data={
-                '$schema': schema,
-                'name': 'Bad IlsRecord',
-            },
-            delete_pid=False,
-        )
-    db.session.rollback()
-    assert record6 is None
-
-    # We should have 3 PID.
-    assert FailedIlsRecord.count() == 4
-
-    record7 = FailedIlsRecord.create(data=ils_record, delete_pid=True)
+    record4 = FailedIlsRecord.create(data=ils_record, delete_pid=True)
+    next_pid += 1
     db.session.commit()
-    assert record7.pid == '4'
+    assert record4.pid == str(next_pid)

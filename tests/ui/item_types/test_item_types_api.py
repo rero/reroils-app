@@ -20,8 +20,8 @@
 from __future__ import absolute_import, print_function
 
 import pytest
+from jsonschema.exceptions import ValidationError
 
-from rero_ils.modules.errors import RecordValidationError
 from rero_ils.modules.item_types.api import ItemType, item_type_id_fetcher
 
 
@@ -29,22 +29,24 @@ def test_item_type_create(db, item_type_data_tmp, org_martigny,
                           item_type_online_martigny):
     """Test item type record creation."""
     item_type_data_tmp['type'] = 'online'
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         itty = ItemType.create(item_type_data_tmp, delete_pid=True)
 
     db.session.rollback()
 
+    next_pid = ItemType.provider.identifier.next()
     item_type_data_tmp['type'] = 'standard'
     itty = ItemType.create(item_type_data_tmp, delete_pid=True)
+    next_pid += 1
 
     assert itty == item_type_data_tmp
-    assert itty.get('pid') == '1'
+    assert itty.get('pid') == str(next_pid)
 
-    itty = ItemType.get_record_by_pid('1')
+    itty = ItemType.get_record_by_pid(str(next_pid))
     assert itty == item_type_data_tmp
 
     fetched_pid = item_type_id_fetcher(itty.id, itty)
-    assert fetched_pid.pid_value == '1'
+    assert fetched_pid.pid_value == str(next_pid)
     assert fetched_pid.pid_type == 'itty'
     assert not ItemType.get_pid_by_name('no exists')
 

@@ -162,12 +162,12 @@ def test_item_extended_validation(client, holding_lib_martigny_w_patterns):
     # TODO: check why system is not raising validation error here
     # # can not have a standard item with issues on a serial holdings
     # data['type'] = 'standard'
-    # with pytest.raises(RecordValidationError):
+    # with pytest.raises(ValidationError):
     #     Item.create(data, dbcommit=True, reindex=True, delete_pid=True)
     # data['type'] == 'issue'
     # data.pop('issue')
     # # can not create an issue item without issues on a serial holdings
-    # with pytest.raises(RecordValidationError):
+    # with pytest.raises(ValidationError):
     #     Item.create(data, dbcommit=True, reindex=True, delete_pid=True)
 
 

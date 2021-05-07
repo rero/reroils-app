@@ -30,9 +30,11 @@ import re
 import sys
 import traceback
 from collections import OrderedDict
+from datetime import datetime
 from glob import glob
 from pprint import pprint
 from time import sleep
+from uuid import uuid4
 
 import click
 import polib
@@ -64,6 +66,7 @@ from werkzeug.security import gen_salt
 
 from .api import IlsRecordsIndexer
 from .collections.cli import create_collections
+from .contributions.api import Contribution
 from .contributions.tasks import create_mef_record_online
 from .documents.api import Document, DocumentsSearch
 from .documents.dojson.contrib.marc21tojson import marc21
@@ -72,10 +75,14 @@ from .holdings.cli import create_patterns
 from .ill_requests.cli import create_ill_requests
 from .items.cli import create_items, reindex_items
 from .loans.cli import create_loans, load_virtua_transactions
+from .monitoring import Monitoring
 from .operation_logs.cli import migrate_virtua_operation_logs
 from .patrons.cli import import_users, users_validate
 from .tasks import process_bulk_queue
-from .utils import get_record_class_from_schema_or_pid_type, \
+from .utils import bulk_load_metadata, bulk_load_pids, bulk_load_pidstore, \
+    bulk_save_metadata, bulk_save_pids, bulk_save_pidstore, \
+    csv_metadata_line, csv_pidstore_line, \
+    get_record_class_from_schema_or_pid_type, number_records_in_file, \
     read_json_record, read_xml_record
 from ..modules.providers import append_fixtures_new_identifiers
 from ..modules.utils import get_schema_for_resource
@@ -247,7 +254,7 @@ def check_json(paths, replace, indent, sort_keys, verbose):
         except ValueError as error:
             click.echo(fname + ': ', nl=False)
             click.secho('Invalid JSON', fg='red', nl=False)
-            click.echo(' -- ' + error.msg)
+            click.echo(f' -- {error}')
             error_cnt = 1
 
         tot_error_cnt += error_cnt
@@ -453,13 +460,19 @@ def count_cli(infile, lazy):
               help='verbose')
 @click.option('-w', '--wait', 'wait', is_flag=True, default=False,
               help="wait for enqueued tasks to finish")
+@click.option('-o', '--out_file', 'outfile', type=click.File('w'),
+              default=None)
 @with_appcontext
-def get_all_mef_records(infile, lazy, verbose, enqueue, wait):
+def get_all_mef_records(infile, lazy, verbose, enqueue, wait, outfile):
     """Get all contributions for given document file."""
     click.secho(
         f'Get all contributions for {infile.name}.',
         fg='green'
     )
+    if outfile:
+        outfile.write('[')
+        contribution_schema = get_schema_for_resource('cont')
+        click.secho('Write to {file_name}.'.format(file_name=outfile.name))
     if lazy:
         # try to lazy read json file (slower, better memory management)
         records = read_json_record(infile)
@@ -474,15 +487,37 @@ def get_all_mef_records(infile, lazy, verbose, enqueue, wait):
             if ref and not refs.get(ref):
                 count += 1
                 refs[ref] = 1
-                if enqueue:
-                    msg = create_mef_record_online.delay(ref)
+                if outfile:
+                    try:
+                        ref_split = ref.split('/')
+                        ref_type = ref_split[-2]
+                        ref_pid = ref_split[-1]
+                        data = Contribution._get_mef_data_by_type(
+                            pid=ref_pid,
+                            pid_type=ref_type
+                        )
+                        metadata = data['metadata']
+                        metadata['$schema'] = contribution_schema
+                        if count > 1:
+                            outfile.write(',')
+                        for line in json.dumps(metadata, indent=2).split('\n'):
+                            outfile.write('\n  ' + line)
+                        msg = 'ok'
+                    except Exception as err:
+                        msg = err
                 else:
-                    pid, online = create_mef_record_online(ref)
-                    msg = f'contribution pid: {pid} {online}'
+                    if enqueue:
+                        msg = create_mef_record_online.delay(ref)
+                    else:
+                        pid, online = create_mef_record_online(ref)
+                        msg = f'contribution pid: {pid} {online}'
                 if verbose:
-                    click.echo(f'{count:<10}ref: {ref}\t{msg}')
-    if enqueue and wait:
-        wait_empty_tasks(delay=3, verbose=True)
+                    click.echo(f"{count:<10}ref: {ref}\t{msg}")
+    if outfile:
+        outfile.write('\n]\n')
+    else:
+        if enqueue and wait:
+            wait_empty_tasks(delay=3, verbose=True)
     click.echo(f'Count refs: {count}')
 
 
@@ -1141,17 +1176,16 @@ def run(delayed, concurrency, with_stats, version_type=None, queue=None,
 @click.option('--yes-i-know', is_flag=True, callback=abort_if_false,
               expose_value=False,
               prompt='Do you really want to reindex all records?')
-@click.option('-t', '--pid-type', multiple=True, required=True)
+@click.option('-t', '--pid-types', multiple=True, required=True)
 @click.option('-n', '--no-info', 'no_info', is_flag=True, default=True)
 @with_appcontext
-def reindex(pid_type, no_info):
+def reindex(pid_types, no_info):
     """Reindex all records.
 
     :param pid_type: Pid type.
     """
-    for type in pid_type:
+    for type in pid_types:
         click.secho(f'Sending {type} to indexing queue ...', fg='green')
-
         query = (
             x[0] for x in PersistentIdentifier.query.
             filter_by(object_type='rec', status=PIDStatus.REGISTERED).
@@ -1163,6 +1197,49 @@ def reindex(pid_type, no_info):
             'Execute "runindex" command to process the queue!',
             fg='yellow'
         )
+
+
+@utils.command('reindex_missing')
+@click.option('-t', '--pid-types', multiple=True, required=True)
+@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@with_appcontext
+def reindex_missing(pid_types, verbose):
+    """Index all missing records.
+
+    :param pid_type: Pid type.
+    """
+    for p_type in pid_types:
+        click.secho(
+            'Indexing missing {pid_type}: '.format(pid_type=p_type),
+            fg='green',
+            nl=False
+        )
+        record_class = get_record_class_from_schema_or_pid_type(
+            pid_type=p_type
+        )
+        if not record_class:
+            click.secho(
+                'ERROR pid type does not exist!',
+                fg='red',
+            )
+            continue
+        pids_es, pids_db, pids_es_double, index = \
+            Monitoring.get_es_db_missing_pids(p_type)
+        click.secho(
+            '{count}'.format(count=len(pids_db)),
+            fg='green',
+        )
+        for idx, pid in enumerate(pids_db, 1):
+            record = record_class.get_record_by_pid(pid)
+            res = record.reindex()
+            if verbose:
+                click.secho(
+                    '{count}\t{pid_type}\t{pid}'.format(
+                        count=idx,
+                        pid_type=p_type,
+                        pid=pid
+                    )
+                )
 
 
 def get_loc_languages(verbose=False):
@@ -1346,7 +1423,7 @@ def translate(translate_to, change, title_map, no_loc_en, angular, verbose):
 
 @utils.command('check_pid_dependencies')
 @click.option('-i', '--dependency_file', 'dependency_file',
-              type=click.File('r'), default='./data/pid_dependencies.json')
+              type=click.File('r'), default='./data/pid_dependencies_big.json')
 @click.option('-d', '--directory', 'directory', default='./data')
 @click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
 def check_pid_dependencies(dependency_file, directory, verbose):
@@ -1715,3 +1792,264 @@ def add_cover_urls(verbose):
         url = get_cover_art(record=record, save_cover_url=True)
         if verbose:
             click.echo(f'{idx}:\tdocument: {pid}\t{url}')
+
+
+@fixtures.command('create_csv')
+@click.argument('record_type')
+@click.argument('json_file')
+@click.argument('output_directory')
+@click.option('-l', '--lazy', 'lazy', is_flag=True, default=False)
+@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@click.option('-p', '--create_pid', 'create_pid', is_flag=True, default=False)
+@with_appcontext
+def create_csv(record_type, json_file, output_directory, lazy, verbose,
+               create_pid):
+    """Create csv files from json.
+
+    :param verbose: Verbose.
+    """
+    click.secho(
+        "Create CSV files for: {record_type} from: {file_name}".format(
+            record_type=record_type,
+            file_name=json_file,
+        ),
+        fg='green'
+    )
+
+    path = current_jsonschemas.url_to_path(
+        get_schema_for_resource(record_type)
+    )
+    add_schema = get_schema_for_resource(record_type)
+    schema = current_jsonschemas.get_schema(path=path)
+    schema = _records_state.replace_refs(schema)
+    count = 0
+    errors_count = 0
+    with open(json_file) as infile:
+        if lazy:
+            # try to lazy read json file (slower, better memory management)
+            records = read_json_record(infile)
+        else:
+            # load everything in memory (faster, bad memory management)
+            records = json.load(infile)
+
+        file_name_pidstore = os.path.join(
+            output_directory, '{record_type}_pidstore.csv'.format(
+                record_type=record_type
+            )
+        )
+        click.secho('\t{name}'.format(name=file_name_pidstore), fg='green')
+        file_pidstore = open(file_name_pidstore, 'w')
+        file_name_metadata = os.path.join(
+            output_directory, '{record_type}_metadata.csv'.format(
+                record_type=record_type
+            )
+        )
+        click.secho('\t{name}'.format(name=file_name_metadata), fg='green')
+        file_metadata = open(file_name_metadata, 'w')
+        file_name_pids = os.path.join(
+            output_directory, '{record_type}_pids.csv'.format(
+                record_type=record_type
+            )
+        )
+        click.secho('\t{name}'.format(name=file_name_pids), fg='green')
+        file_pids = open(file_name_pids, 'w')
+        file_name_errors = os.path.join(
+            output_directory, '{record_type}_errors.json'.format(
+                record_type=record_type
+            )
+        )
+        file_errors = open(file_name_errors, 'w')
+        file_errors.write('[')
+
+        for count, record in enumerate(records, 1):
+            pid = record.get('pid')
+            if create_pid:
+                pid = str(count)
+                record['pid'] = pid
+            uuid = str(uuid4())
+            if verbose:
+                click.secho(
+                    '{count}\t{record_type}\t{pid}:{uuid}'.format(
+                        count=count,
+                        record_type=record_type,
+                        pid=pid,
+                        uuid=uuid
+                    )
+                )
+            date = str(datetime.utcnow())
+            record['$schema'] = add_schema
+            try:
+                validate(record, schema)
+                file_metadata.write(
+                    csv_metadata_line(record, uuid, date)
+                )
+                file_pidstore.write(
+                    csv_pidstore_line(record_type, pid, uuid, date)
+                )
+                file_pids.write(pid + '\n')
+            except Exception as err:
+                click.secho(
+                    '{count}\t{record_type}: {msg}'.format(
+                        count=count,
+                        record_type=record_type,
+                        msg='Error validate in record: '
+                    ),
+                    fg='red')
+                click.secho(str(err))
+                if errors_count > 0:
+                    file_errors.write(',')
+                errors_count += 1
+                file_errors.write('\n')
+                for line in json.dumps(record, indent=2).split('\n'):
+                    file_errors.write('  ' + line + '\n')
+
+        file_pidstore.close()
+        file_metadata.close()
+        file_pids.close()
+        file_errors.write('\n]')
+        file_errors.close()
+    if errors_count == 0:
+        os.remove(file_name_errors)
+    click.secho(
+        'Created: {count} Errors: {error_count}'.format(
+            count=count-errors_count,
+            error_count=errors_count
+        ),
+        fg='yellow'
+    )
+
+
+@fixtures.command('bulk_load')
+@click.argument('record_type')
+@click.argument('csv_metadata_file')
+@click.option('-c', '--bulk_count', 'bulkcount', default=0, type=int,
+              help='Set the bulk load chunk size.')
+@click.option('-r', '--reindex', 'reindex', help='add record to reindex.',
+              is_flag=True, default=False)
+@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@with_appcontext
+def bulk_load(record_type, csv_metadata_file, bulkcount, reindex, verbose):
+    """Agency record management.
+
+    :param csv_metadata_file: metadata: CSV file.
+    :param bulk_count: Set the bulk load chunk size.
+    :param reindex: add record to reindex.
+    :param verbose: Verbose.
+    """
+    if bulkcount > 0:
+        bulk_count = bulkcount
+    else:
+        bulk_count = current_app.config.get('BULK_CHUNK_COUNT', 100000)
+
+    message = 'Load {record_type} CSV files into database.'.format(
+        record_type=record_type
+    )
+    click.secho(message, fg='green')
+    file_name_metadata = csv_metadata_file
+    file_name_pidstore = file_name_metadata.replace('metadata', 'pidstore')
+    file_name_pids = file_name_metadata.replace('metadata', 'pids')
+
+    record_counts = number_records_in_file(file_name_pidstore, 'csv')
+    message = '  Number of records to load: {count}'.format(
+        count=record_counts
+    )
+    click.secho(message, fg='green')
+
+    click.secho('  Load pids: {file_name}'.format(
+        file_name=file_name_pids
+    ))
+    bulk_load_pids(pid_type=record_type, ids=file_name_pids,
+                   bulk_count=bulk_count, verbose=verbose)
+    click.secho('  Load pidstore: {file_name}'.format(
+        file_name=file_name_pidstore
+    ))
+    bulk_load_pidstore(pid_type=record_type, pidstore=file_name_pidstore,
+                       bulk_count=bulk_count, verbose=verbose)
+    click.secho('  Load metatada: {file_name}'.format(
+        file_name=file_name_metadata
+    ))
+    bulk_load_metadata(pid_type=record_type, metadata=file_name_metadata,
+                       bulk_count=bulk_count, verbose=verbose, reindex=reindex)
+
+
+@fixtures.command('bulk_save')
+@click.argument('output_directory')
+@click.option('-t', '--pid_types', multiple=True, default=['all'])
+@click.option('-d', '--deployment', 'deployment', is_flag=True, default=False)
+@click.option('-v', '--verbose', 'verbose', is_flag=True, default=False)
+@with_appcontext
+def bulk_save(pid_types, output_directory, deployment, verbose):
+    """Record dump.
+
+    :param pid_type: Records to export.
+        default=//all//
+    :param verbose: Verbose.
+    """
+    file_name_tmp_pidstore = os.path.join(
+        output_directory,
+        'tmp_pidstore.csv'
+    )
+    try:
+        os.remove(file_name_tmp_pidstore)
+    except OSError:
+        pass
+
+    all_pid_types = []
+    endpoints = current_app.config.get('RECORDS_REST_ENDPOINTS')
+    for endpoint in endpoints:
+        all_pid_types.append(endpoint)
+    if pid_types[0] == 'all':
+        pid_types = all_pid_types
+
+    for p_type in pid_types:
+        if p_type not in all_pid_types:
+            click.secho(
+                'Error {pid_type} does not exist!'.format(pid_type=p_type),
+                fg='red'
+            )
+            continue
+        # TODO: do we have to save loanid and how we can save it?
+        if p_type == 'loanid':
+            continue
+        click.secho(
+            'Save {pid_type} CSV files to directory: {path}'.format(
+                pid_type=p_type,
+                path=output_directory,
+            ),
+            fg='green'
+        )
+        file_prefix = endpoints[p_type].get('search_index')
+        if p_type in ['doc', 'hold', 'item', 'count']:
+            if deployment:
+                file_prefix += '_big'
+            else:
+                file_prefix += '_small'
+        file_name_metadata = os.path.join(
+            output_directory,
+            '{prefix}_metadata.csv'.format(prefix=file_prefix)
+        )
+        bulk_save_metadata(pid_type=p_type, file_name=file_name_metadata,
+                           verbose=verbose)
+        file_name_pidstore = os.path.join(
+            output_directory,
+            '{prefix}_pidstore.csv'.format(prefix=file_prefix)
+        )
+        count = bulk_save_pidstore(pid_type=p_type,
+                                   file_name=file_name_pidstore,
+                                   file_name_tmp=file_name_tmp_pidstore,
+                                   verbose=verbose)
+
+        file_name_pids = os.path.join(
+            output_directory,
+            '{prefix}_pids.csv'.format(prefix=file_prefix)
+        )
+        bulk_save_pids(pid_type=p_type, file_name=file_name_pids,
+                       verbose=verbose)
+        click.secho(
+            'Saved records: {count}'.format(count=count),
+            fg='yellow'
+        )
+    try:
+        os.remove(file_name_tmp_pidstore)
+    except OSError:
+        pass

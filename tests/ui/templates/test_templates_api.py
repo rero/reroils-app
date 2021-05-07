@@ -52,16 +52,18 @@ def test_template_create(db, es_clear, templ_doc_public_martigny_data,
 
     db.session.rollback()
 
+    next_pid = Template.provider.identifier.next()
     del templ_doc_public_martigny_data['toto']
     temp = Template.create(templ_doc_public_martigny_data, delete_pid=True)
+    next_pid += 1
     assert temp == templ_doc_public_martigny_data
-    assert temp.get('pid') == '1'
+    assert temp.get('pid') == str(next_pid)
 
-    temp = Template.get_record_by_pid('1')
+    temp = Template.get_record_by_pid(str(next_pid))
     assert temp == templ_doc_public_martigny_data
 
     fetched_pid = fetcher(temp.id, temp)
-    assert fetched_pid.pid_value == '1'
+    assert fetched_pid.pid_value == str(next_pid)
     assert fetched_pid.pid_type == 'tmpl'
 
 

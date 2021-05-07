@@ -1,6 +1,7 @@
 <collection xmlns="http://www.loc.gov/MARC21/slim">
 <record>
   <leader>00975nam a2200277 a 4500</leader>
+  <controlfield tag="001">270072860</controlfield>
   <controlfield tag="005">20170518120100.0</controlfield>
   <controlfield tag="008">000918s1999    gw ||| |  ||||00|  |ger d</controlfield>
   <datafield tag="020" ind1=" " ind2=" ">
@@ -83,13 +84,14 @@
 </record>
 <record>
   <leader>00975nam a2200277 a 4500</leader>
+  <controlfield tag="001">270072861</controlfield>
   <controlfield tag="005">20170518120100.0</controlfield>
   <controlfield tag="008">000918s1999    gw ||| |  ||||00|  |ger d</controlfield>
   <datafield tag="020" ind1=" " ind2=" ">
     <subfield code="a">9783503057221</subfield>
   </datafield>
   <datafield tag="035" ind1=" " ind2=" ">
-    <subfield code="a">R270072860</subfield>
+    <subfield code="a">R270072861</subfield>
   </datafield>
   <datafield tag="039" ind1=" " ind2=" ">
     <subfield code="b">4606</subfield>

@@ -20,33 +20,27 @@
 from __future__ import absolute_import, print_function
 
 import click
-import sqlalchemy
 from invenio_db import db
 from invenio_pidstore.errors import PIDDoesNotExistError
-from invenio_pidstore.models import PersistentIdentifier, PIDStatus
+from invenio_pidstore.models import PIDStatus
 from invenio_pidstore.providers.base import BaseProvider
 
 
-def append_fixtures_new_identifiers(identifier, pids, pid_type):
+def append_fixtures_new_identifiers(identifier, pids, pid_type, limit=100000):
     """Insert pids into the indentifier table and update its sequence."""
     idx = 0
     for idx, pid in enumerate(pids, 1):
         db.session.add(identifier(recid=pid))
-        if idx > 0 and idx % 100000 == 0:
+        if idx % limit == 0:
             click.echo(f'DB commit append: {idx}')
             db.session.commit()
-    max_pid = PersistentIdentifier.query.filter_by(
-        pid_type=pid_type
-    ).order_by(sqlalchemy.desc(
-        sqlalchemy.cast(PersistentIdentifier.pid_value, sqlalchemy.Integer)
-    )).first().pid_value
-    identifier._set_sequence(max_pid)
-    click.echo(f'DB commit append: {idx}')
     db.session.commit()
+    identifier._set_sequence(identifier.max())
+    click.echo(f'DB commit append: {idx}')
 
 
 class Provider(BaseProvider):
-    """CircPolicy identifier provider.
+    """Identifier provider.
 
     'identifier' and 'pid_type' must be set as following example
     OrganisationProvider = type(
@@ -64,7 +58,7 @@ class Provider(BaseProvider):
     pid_provider = None
     """Provider name.
     The provider name is not recorded in the PID since the provider does not
-    provide any additional features besides creation of CircPolicy ids.
+    provide any additional features besides creation of ids.
     """
 
     @classmethod

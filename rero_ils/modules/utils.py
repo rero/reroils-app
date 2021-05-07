@@ -18,14 +18,19 @@
 """Utilities for rero-ils editor."""
 
 import cProfile
+import os
 import pstats
+import unicodedata
 from datetime import date, datetime, time
 from functools import wraps
-from json import JSONDecodeError, JSONDecoder
+from io import StringIO
+from json import JSONDecodeError, JSONDecoder, dumps
 from time import sleep
 
 import click
+import psycopg2
 import pytz
+import sqlalchemy
 from dateutil import parser
 from flask import current_app
 from invenio_cache.proxies import current_cache
@@ -33,6 +38,7 @@ from invenio_pidstore.models import PersistentIdentifier
 from invenio_records_rest.utils import obj_or_import_string
 from lazyreader import lazyread
 from lxml import etree
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
 def cached(timeout=50, key_prefix='default', query_string=False):
@@ -629,3 +635,330 @@ def get_timestamp(name):
     if not time_stamps:
         return None
     return time_stamps.get(name)
+
+
+def csv_metadata_line(record, uuid, date):
+    """Build CSV metadata table line."""
+    created_date = updated_date = date
+    sep = '\t'
+    data = unicodedata.normalize('NFC', dumps(record, ensure_ascii=False))
+    metadata = (
+        created_date,
+        updated_date,
+        uuid,
+        data,
+        '1',
+    )
+    metadata_line = sep.join(metadata)
+    return metadata_line + '\n'
+
+
+def csv_pidstore_line(pid_type, pid, uuid, date):
+    """Build CSV pidstore table line."""
+    created_date = updated_date = date
+    sep = '\t'
+    pidstore_data = [
+        created_date,
+        updated_date,
+        pid_type,
+        pid,
+        'R',
+        'rec',
+        uuid,
+    ]
+    pidstore_line = sep.join(pidstore_data)
+    return pidstore_line + '\n'
+
+
+def raw_connection():
+    """Return a raw connection to the database."""
+    with current_app.app_context():
+        URI = current_app.config.get('SQLALCHEMY_DATABASE_URI')
+        engine = sqlalchemy.create_engine(URI)
+        connection = engine.raw_connection()
+        connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        return connection
+
+
+def db_copy_from(buffer, table, columns, raise_exception=True):
+    """Copy data from file to db."""
+    connection = raw_connection()
+    cursor = connection.cursor()
+    try:
+        cursor.copy_from(
+            file=buffer,
+            table=table,
+            columns=columns,
+            sep='\t'
+        )
+        connection.commit()
+    except psycopg2.DataError as error:
+        if raise_exception:
+            raise psycopg2.DataError(error)
+        else:
+            current_app.logger.error('data load error: {0}'.format(error))
+    connection.close()
+
+
+def db_copy_to(filehandle, table, columns, raise_exception=True):
+    """Copy data from db to file."""
+    connection = raw_connection()
+    cursor = connection.cursor()
+    try:
+        cursor.copy_to(
+            file=filehandle,
+            table=table,
+            columns=columns,
+            sep='\t'
+        )
+        cursor.connection.commit()
+    except psycopg2.DataError as error:
+        if raise_exception:
+            raise psycopg2.DataError(error)
+        else:
+            current_app.logger.error('data load error: {0}'.format(error))
+    cursor.execute('VACUUM ANALYSE {table}'.format(table=table))
+    cursor.close()
+    connection.close()
+
+
+def bulk_load(pid_type, data, table, columns, bulk_count=0, verbose=False,
+              reindex=False):
+    """Bulk load pid_type data to table."""
+    if bulk_count <= 0:
+        bulk_count = current_app.config.get('BULK_CHUNK_COUNT', 100000)
+    count = 0
+    buffer = StringIO()
+    buffer_uuid = []
+    index = -1
+    if 'id' in columns:
+        index = columns.index('id')
+    start_time = datetime.now()
+    with open(data, 'r', encoding='utf-8', buffering=1) as input_file:
+        for line in input_file:
+            count += 1
+            buffer.write(line.replace('\\', '\\\\'))
+            if index >= 0 and reindex:
+                buffer_uuid.append(line.split('\t')[index])
+            if count % bulk_count == 0:
+                buffer.flush()
+                buffer.seek(0)
+                if verbose:
+                    end_time = datetime.now()
+                    diff_time = end_time - start_time
+                    start_time = end_time
+                    click.echo(
+                        '{pid_type} copy from file: {count} {time}s'.format(
+                            pid_type=pid_type,
+                            count=count,
+                            time=diff_time.seconds
+                        ),
+                        nl=False
+                    )
+                db_copy_from(buffer=buffer, table=table, columns=columns)
+                buffer.close()
+
+                if index >= 0 and reindex:
+                    do_bulk_index(uuids=buffer_uuid, doc_type=pid_type,
+                                  verbose=verbose)
+                    buffer_uuid.clear()
+                else:
+                    if verbose:
+                        click.echo()
+                buffer = StringIO()
+
+        if verbose:
+            end_time = datetime.now()
+            diff_time = end_time - start_time
+            click.echo(
+                '{pid_type} copy from file: {count} {time}s'.format(
+                    pid_type=pid_type,
+                    count=count,
+                    time=diff_time.seconds
+                ),
+                nl=False
+            )
+        buffer.flush()
+        buffer.seek(0)
+        db_copy_from(buffer=buffer, table=table, columns=columns)
+        buffer.close()
+        if index >= 0 and reindex:
+            do_bulk_index(uuids=buffer_uuid, doc_type=pid_type,
+                          verbose=verbose)
+            buffer_uuid.clear()
+        else:
+            if verbose:
+                click.echo()
+
+
+def bulk_load_metadata(pid_type, metadata, bulk_count=0, verbose=True,
+                       reindex=False):
+    """Bulk load pid_type data to metadata table."""
+    record_class = get_record_class_from_schema_or_pid_type(pid_type=pid_type)
+    table, identifier = record_class.get_metadata_identifier_names()
+    columns = (
+        'created',
+        'updated',
+        'id',
+        'json',
+        'version_id'
+    )
+    bulk_load(
+        pid_type=pid_type,
+        data=metadata,
+        table=table,
+        columns=columns,
+        bulk_count=bulk_count,
+        verbose=verbose,
+        reindex=reindex
+    )
+
+
+def bulk_load_pidstore(pid_type, pidstore, bulk_count=0, verbose=True,
+                       reindex=False):
+    """Bulk load pid_type data to metadata table."""
+    table = 'pidstore_pid'
+    columns = (
+        'created',
+        'updated',
+        'pid_type',
+        'pid_value',
+        'status',
+        'object_type',
+        'object_uuid',
+    )
+    bulk_load(
+        pid_type=pid_type,
+        data=pidstore,
+        table=table,
+        columns=columns,
+        bulk_count=bulk_count,
+        verbose=verbose,
+        reindex=reindex
+    )
+
+
+def bulk_load_pids(pid_type, ids, bulk_count=0, verbose=True, reindex=False):
+    """Bulk load pid_type data to id table."""
+    record_class = get_record_class_from_schema_or_pid_type(pid_type=pid_type)
+    metadata, identifier = record_class.get_metadata_identifier_names()
+    columns = ('recid', )
+    bulk_load(
+        pid_type=pid_type,
+        data=ids,
+        table=identifier.__tablename__,
+        columns=columns,
+        bulk_count=bulk_count,
+        verbose=verbose,
+        reindex=reindex
+    )
+    max_pid = 0
+    with open(ids) as file:
+        for line in file:
+            pid = int(line)
+            if pid > max_pid:
+                max_pid = pid
+    identifier._set_sequence(max_pid)
+
+
+def bulk_save(pid_type, file_name, table, columns, verbose=False):
+    """Bulk save pid_type data to file."""
+    with open(file_name, 'w', encoding='utf-8') as output_file:
+        db_copy_to(
+            filehandle=output_file,
+            table=table,
+            columns=columns
+        )
+
+
+def bulk_save_metadata(pid_type, file_name, verbose=False):
+    """Bulk save pid_type data from metadata table."""
+    if verbose:
+        click.echo('Save {pid_type} metadata to file: {filename}'.format(
+            pid_type=pid_type,
+            filename=file_name
+        ))
+    record_class = get_record_class_from_schema_or_pid_type(pid_type=pid_type)
+    metadata, identifier = record_class.get_metadata_identifier_names()
+    columns = (
+        'created',
+        'updated',
+        'id',
+        'json',
+        'version_id'
+    )
+    bulk_save(
+        pid_type=pid_type,
+        file_name=file_name,
+        table=metadata,
+        columns=columns,
+        verbose=verbose
+    )
+
+
+def bulk_save_pidstore(pid_type, file_name, file_name_tmp, verbose=False):
+    """Bulk save pid_type data from pids table."""
+    if verbose:
+        click.echo('Save {pid_type} pidstore to file: {filename}'.format(
+            pid_type=pid_type,
+            filename=file_name
+        ))
+    if not os.path.isfile(file_name_tmp):
+        table = 'pidstore_pid'
+        columns = (
+            'created',
+            'updated',
+            'pid_type',
+            'pid_value',
+            'status',
+            'object_type',
+            'object_uuid',
+        )
+        bulk_save(
+            pid_type=pid_type,
+            file_name=file_name_tmp,
+            table=table,
+            columns=columns,
+            verbose=verbose
+        )
+    # clean pid file
+    with open(file_name_tmp, 'r') as file_in:
+        with open(file_name, "w") as file_out:
+            count = 0
+            for line in file_in:
+                if pid_type in line:
+                    count += 1
+                    file_out.write(line)
+    return count
+
+
+def bulk_save_pids(pid_type, file_name, verbose=False):
+    """Bulk save pid_type data from id table."""
+    if verbose:
+        click.echo('Save {pid_type} ids to file: {filename}'.format(
+            pid_type=pid_type,
+            filename=file_name
+        ))
+    record_class = get_record_class_from_schema_or_pid_type(pid_type=pid_type)
+    metadata, identifier = record_class.get_metadata_identifier_names()
+    columns = ('recid', )
+    bulk_save(
+        pid_type=pid_type,
+        file_name=file_name,
+        table=identifier.__tablename__,
+        columns=columns,
+        verbose=verbose
+    )
+
+
+def number_records_in_file(json_file, type):
+    """Get number of records per file."""
+    count = 0
+    with open(json_file, 'r',  buffering=1) as file:
+        for line in file:
+            if type == 'json':
+                if '"pid"' in line:
+                    count += 1
+            elif type == 'csv':
+                count += 1
+    return count

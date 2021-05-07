@@ -1,0 +1,255 @@
+[
+  {
+    "name": "organisation",
+    "filename": "organisations.json"
+  },
+  {
+    "name": "library",
+    "filename": "libraries.json",
+    "dependencies": [
+      {
+        "name": "organisation"
+      }
+    ]
+  },
+  {
+    "name": "location",
+    "filename": "locations.json",
+    "dependencies": [
+      {
+        "name": "library"
+      }
+    ]
+  },
+  {
+    "name": "pickup_location",
+    "filename": "locations.json"
+  },
+  {
+    "name": "item_type",
+    "filename": "item_types.json",
+    "dependencies": [
+      {
+        "name": "organisation"
+      }
+    ]
+  },
+  {
+    "name": "patron_type",
+    "filename": "patron_types.json",
+    "dependencies": [
+      {
+        "name": "organisation"
+      },
+      {
+        "name": "library_exceptions",
+        "optional": "True",
+        "sublist": [
+          {
+            "name": "library"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "circulation_policie",
+    "filename": "circulation_policies.json",
+    "dependencies": [
+      {
+        "name": "organisation"
+      },
+      {
+        "name": "settings",
+        "optional": "True",
+        "sublist": [
+          {
+            "name": "patron_type"
+          },
+          {
+            "name": "item_type"
+          }
+        ]
+      },
+      {
+        "name": "library",
+        "optional": "True"
+      }
+    ]
+  },
+  {
+    "name": "vendor",
+    "filename": "vendors.json",
+    "dependencies": [
+      {
+        "name": "organisation"
+      }
+    ]
+  },
+  {
+    "name": "patron",
+    "filename": "users.json",
+    "dependencies": [
+      {
+        "name": "library",
+        "optional": "True"
+      },
+      {
+        "name": "patron",
+        "optional": "True",
+        "sublist": [
+          {
+            "name": "patron_type",
+            "optional": "True"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "document",
+    "filename": "documents_small.json"
+  },
+  {
+    "name": "holding",
+    "filename": "holdings_small.json",
+    "dependencies": [
+      {
+        "name": "location"
+      },
+      {
+        "name": "circulation_category",
+        "ref": "item_type"
+      },
+      {
+        "name": "document"
+      }
+    ]
+  },
+  {
+    "name": "item",
+    "filename": "items_small.json",
+    "dependencies": [
+      {
+        "name": "location"
+      },
+      {
+        "name": "document"
+      },
+      {
+        "name": "item_type"
+      },
+      {
+        "name": "holding",
+        "optional": "True"
+      },
+      {
+        "name": "organisation",
+        "optional": "True"
+      }
+    ]
+  },
+  {
+    "name": "patterns",
+    "filename": "patterns.json"
+  },
+  {
+    "name": "budget",
+    "filename": "budgets.json",
+    "dependencies": [
+      {
+        "name": "organisation",
+        "optional": "True"
+      }
+    ]
+  },
+  {
+    "name": "collection",
+    "filename": "collections.json",
+    "dependencies": [
+      {
+        "name": "librarie",
+        "ref": "libraries",
+        "optional": "True"
+      },
+      {
+        "name": "item",
+        "ref": "items",
+        "optional": "True"
+      },
+      {
+        "name": "organisation"
+      }
+    ]
+  },
+  {
+    "name": "acq_account",
+    "filename": "acq_accounts.json",
+    "dependencies": [
+      {
+        "name": "budget"
+      },
+      {
+        "name": "library"
+      },
+      {
+        "name": "organisation",
+        "optional": "True"
+      }
+    ]
+  },
+  {
+    "name": "template",
+    "filename": "templates.json",
+    "dependencies": [
+      {
+        "name": "organisation"
+      },
+      {
+        "name": "creator",
+        "ref": "patron"
+      }
+    ]
+  },
+  {
+    "name": "loan",
+    "filename": "loans.json",
+    "dependencies": [
+      {
+        "name": "item",
+        "optional": "True"
+      },
+      {
+        "name": "patron",
+        "optional": "True"
+      },
+      {
+        "name": "document",
+        "optional": "True"
+      },
+      {
+        "name": "organisation",
+        "optional": "True"
+      }
+    ]
+  },
+  {
+    "name": "local_field",
+    "filename": "local_fields.json",
+    "dependencies": [
+      {
+        "name": "organisation",
+        "optional": "True"
+      },
+      {
+        "name": "parent",
+        "optional": "True",
+        "refs": {
+          "document": "documents",
+          "item": "items",
+          "holding": "holdings"
+        }
+      }
+    ]
+  }
+]

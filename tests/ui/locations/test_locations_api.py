@@ -20,9 +20,9 @@
 from __future__ import absolute_import, print_function
 
 import pytest
+from jsonschema.exceptions import ValidationError
 from utils import get_mapping
 
-from rero_ils.modules.errors import RecordValidationError
 from rero_ils.modules.locations.api import Location, LocationsSearch
 from rero_ils.modules.locations.api import location_id_fetcher as fetcher
 
@@ -46,21 +46,23 @@ def test_location_create(db, es_clear, loc_public_martigny_data, lib_martigny,
                          loc_online_martigny):
     """Test location creation."""
     loc_public_martigny_data['is_online'] = True
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         loc = Location.create(loc_public_martigny_data, delete_pid=True)
 
     db.session.rollback()
 
+    next_pid = Location.provider.identifier.next()
     del loc_public_martigny_data['is_online']
     loc = Location.create(loc_public_martigny_data, delete_pid=True)
+    next_pid += 1
     assert loc == loc_public_martigny_data
-    assert loc.get('pid') == '1'
+    assert loc.get('pid') == str(next_pid)
 
-    loc = Location.get_record_by_pid('1')
+    loc = Location.get_record_by_pid(str(next_pid))
     assert loc == loc_public_martigny_data
 
     fetched_pid = fetcher(loc.id, loc)
-    assert fetched_pid.pid_value == '1'
+    assert fetched_pid.pid_value == str(next_pid)
     assert fetched_pid.pid_type == 'loc'
 
 

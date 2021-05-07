@@ -59,16 +59,18 @@ def test_patron_transaction_event_create(
 
     db.session.rollback()
 
+    next_pid = PatronTransactionEvent.provider.identifier.next()
     patron_event['type'] = 'fee'
     record = PatronTransactionEvent.create(patron_event, delete_pid=True)
+    next_pid += 1
     assert record == patron_event
-    assert record.get('pid') == '2'
+    assert record.get('pid') == str(next_pid)
 
-    pttr = PatronTransactionEvent.get_record_by_pid('2')
+    pttr = PatronTransactionEvent.get_record_by_pid(str(next_pid))
     assert pttr == patron_event
 
     fetched_pid = fetcher(pttr.id, pttr)
-    assert fetched_pid.pid_value == '2'
+    assert fetched_pid.pid_value == str(next_pid)
     assert fetched_pid.pid_type == 'pttr'
 
 

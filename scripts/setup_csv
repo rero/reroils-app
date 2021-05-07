@@ -16,20 +16,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-DATA_PATH=./data
-
-# Parameters description:
-#  --create_items_holdings_small:
-#       used for create only the items and holdings files for the 'small' documents file
-#  --create_items_holdings_big:
-#       used for create only the items and holdings files for the 'big' documents file
-#  --deployment:
-#       used for deploy the 'big' files
-#  --dont_stop:
-#       used for continue script on error
-#  --time:
-#       used for checking time for each command
-
 # COLORS for messages
 NC='\033[0m'                    # Default color
 INFO_COLOR='\033[1;97;44m'      # Bold + white + blue background
@@ -77,19 +63,12 @@ invert_warning_option() {
 }
 
 
+DATA_PATH=./data
+CSV_PATH=./data
 DEPLOYMENT=false
-LOADCONTRIBUTIONS=false
-CREATE_ITEMS_HOLDINGS_SMALL=false
-CREATE_ITEMS_HOLDINGS_BIG=false
-STOP_EXECUTION=true
 CREATE_LAZY=""
-DONT_STOP=""
 PREFIX=""
-ES_MAPPING=false
-ENQUEUE=""
 INDEX_PARALLEL=0
-# Permit user to set it with system var. Default is true.
-ENABLE_WARNINGS=${ENABLE_WARNINGS:=true}
 
 # Displays program name
 msg "PROGRAM: ${PROGRAM}"
@@ -100,7 +79,7 @@ if [[ -z "${VIRTUAL_ENV}" ]]; then
 fi
 
 # options may be followed by one colon to indicate they have a required argument
-if ! options=$(getopt -o dCsbclptmwkD:i: -l deployment,contributions,create_items_holdings_small,create_items_holdings_big,lazy,pursue,time,es-mapping,warnings,enqueue,data_path:,index_parallel: -- "$@")
+if ! options=$(getopt -o dltD:C:i: -l deployment,lazy,time,data_path:,csv_path:,index_parallel: -- "$@")
 then
     # something went wrong, getopt will put out an error message for us
     exit 1
@@ -112,38 +91,18 @@ do
     -d|--deployment)
       DEPLOYMENT=true
       ;;
-    -C|--contributions)
-      LOADCONTRIBUTIONS=true
-      ;;
-    -s|--create_items_holdings_small)
-      CREATE_ITEMS_HOLDINGS_SMALL=true
-      ;;
-    -b|--create_items_holdings_big)
-      CREATE_ITEMS_HOLDINGS_BIG=true
-      ;;
-    -c|--continue)
-      STOP_EXECUTION=false
-      ;;
     -l|--lazy)
       CREATE_LAZY="--lazy"
-      ;;
-    -p|--pursue)
-      DONT_STOP="--dont-stop"
       ;;
     -t|--time)
       PREFIX="time"
       ;;  # Get time for all commands
-    -m|--es-mapping)
-      ES_MAPPING=true
-      ;;
-    -w|--warnings)
-      invert_warning_option
-      ;;
-    -k|--enqueue)
-      ENQUEUE="--enqueue --wait"
-      ;;
     -D|--data_path)
       DATA_PATH=$2
+      shift
+      ;;
+    -C|--csv_path)
+      CSV_PATH=$2
       shift
       ;;
     -i|--index_parallel)
@@ -161,31 +120,8 @@ if [[ ! -d "${DATA_PATH}" ]]; then
     error_msg+exit "Error - data path does not exist: ${DATA_PATH}"
 fi
 
-if ${CREATE_ITEMS_HOLDINGS_SMALL} && ${CREATE_ITEMS_HOLDINGS_BIG}
-then
-    error_msg+exit "Choose option for 'small' or 'big' documents generation"
-fi
-
-if ${CREATE_ITEMS_HOLDINGS_SMALL} || ${CREATE_ITEMS_HOLDINGS_BIG}
-then
-    if ${DEPLOYMENT}
-    then
-        error_msg+exit "Choose deployment option only"
-    fi
-fi
-
-if ${CREATE_ITEMS_HOLDINGS_BIG}
-then
-    # set DEPLOYMENT to true in order to use big documents file
-    DEPLOYMENT=true
-fi
-
-if ! ${ENABLE_WARNINGS}
-then
-    # Disables different warnings from used applications
-    # --------------------------------------------------
-    # avoid Python deprecation warnings
-    export PYTHONWARNINGS="ignore::DeprecationWarning"
+if [[ ! -d "${CSV_PATH}" ]]; then
+    error_msg+exit "Error - csv path does not exist: ${CSV_PATH}"
 fi
 
 # Purge celery
@@ -196,14 +132,8 @@ info_msg "Clean redis"
 eval "${PREFIX} invenio shell --no-term-title -c \"import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')\""
 eval ${PREFIX} invenio scheduler init -r
 
-if ${DEPLOYMENT}
-then
-  eval ${PREFIX} invenio db drop --yes-i-know
-  eval ${PREFIX} invenio db create
-else
-  eval ${PREFIX} invenio db destroy --yes-i-know
-  eval ${PREFIX} invenio db init create
-fi
+eval ${PREFIX} invenio db destroy --yes-i-know
+eval ${PREFIX} invenio db init create
 eval ${PREFIX} invenio index queue purge delete
 set -e
 eval ${PREFIX} invenio index destroy --force --yes-i-know
@@ -216,13 +146,6 @@ eval ${PREFIX} invenio index queue init
 # Delete invenio_circulations index
 info_msg "Delete invenio_circulations index"
 eval ${PREFIX} invenio index delete loans-loan-v1.0.0 --force --yes-i-know
-
-if ${ES_MAPPING}
-then
-    info_msg "ES mappings:"
-    mkdir -p tmp
-    invenio utils dump_es_mappings -o tmp/mapping_before_setup.txt
-fi
 
 # create roles
 info_msg "Create roles"
@@ -267,33 +190,26 @@ eval ${PREFIX} invenio roles add gipi@ngscan.com document_importer
 # Generate fixtures
 info_msg "Generate fixtures:"
 
-info_msg "- Organisations ${DATA_PATH}/organisations.json ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures create --pid_type org ${DATA_PATH}/organisations.json --append ${CREATE_LAZY} ${DONT_STOP}
-eval ${PREFIX} invenio utils reindex -t org --yes-i-know --no-info
+info_msg "- Organisations ${CSV_PATH}/org_metadata.csv"
+eval ${PREFIX} invenio fixtures bulk_load org ${CSV_PATH}/org_metadata.csv --reindex --verbose
 
-info_msg "- Libraries: ${DATA_PATH}/libraries.json ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures create --pid_type lib ${DATA_PATH}/libraries.json --append ${CREATE_LAZY} ${DONT_STOP}
-eval ${PREFIX} invenio utils reindex -t lib --yes-i-know --no-info
+info_msg "- Libraries: ${CSV_PATH}/lib_metadata.csv"
+eval ${PREFIX} invenio fixtures bulk_load lib ${CSV_PATH}/lib_metadata.csv --reindex --verbose
 
-info_msg "- Locations: ${DATA_PATH}/locations.json ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures create --pid_type loc ${DATA_PATH}/locations.json  --append ${CREATE_LAZY} ${DONT_STOP}
-eval ${PREFIX} invenio utils reindex -t loc --yes-i-know --no-info
+info_msg "- Locations: ${CSV_PATH}/loc_metadata.csv"
+eval ${PREFIX} invenio fixtures bulk_load loc ${CSV_PATH}/loc_metadata.csv --reindex --verbose
 
-info_msg "- Item types: ${DATA_PATH}/item_types.json ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures create --pid_type itty ${DATA_PATH}/item_types.json  --append ${CREATE_LAZY} ${DONT_STOP}
-eval ${PREFIX} invenio utils reindex -t itty --yes-i-know --no-info
+info_msg "- Item types: ${CSV_PATH}/itty_metadata.csv"
+eval ${PREFIX} invenio fixtures bulk_load itty ${CSV_PATH}/itty_metadata.csv --reindex --verbose
 
-info_msg "- Patron types: ${DATA_PATH}/patron_types.json ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures create --pid_type ptty ${DATA_PATH}/patron_types.json --append ${CREATE_LAZY} ${DONT_STOP}
-eval ${PREFIX} invenio utils reindex -t ptty --yes-i-know --no-info
+info_msg "- Patron types: ${CSV_PATH}/ptty_metadata.csv"
+eval ${PREFIX} invenio fixtures bulk_load ptty ${CSV_PATH}/ptty_metadata.csv --reindex --verbose
 
-info_msg "- Circulation policies: ${DATA_PATH}/circulation_policies.json ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures create --pid_type cipo ${DATA_PATH}/circulation_policies.json --append ${CREATE_LAZY} ${DONT_STOP}
-eval ${PREFIX} invenio utils reindex -t cipo --yes-i-know --no-info
+info_msg "- Circulation policies: ${CSV_PATH}/cipo_metadata.csv ${CREATE_LAZY} ${DONT_STOP}"
+eval ${PREFIX} invenio fixtures bulk_load cipo ${CSV_PATH}/cipo_metadata.csv --reindex --verbose
 
-info_msg "Acquisition vendors: ${DATA_PATH}/vendors.json ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures create --pid_type vndr ${DATA_PATH}/vendors.json --append  ${CREATE_LAZY} ${DONT_STOP}
-eval ${PREFIX} invenio utils reindex -t vndr --yes-i-know --no-info
+info_msg "Acquisition vendors: ${CSV_PATH}/vndr_metadata.csv"
+eval ${PREFIX} invenio fixtures bulk_load vndr ${CSV_PATH}/vndr_metadata.csv --reindex --verbose
 
 if [ ${INDEX_PARALLEL} -gt 0 ]; then
     eval ${PREFIX} invenio utils runindex -d -c ${INDEX_PARALLEL} --raise-on-error
@@ -304,81 +220,20 @@ if [ ${INDEX_PARALLEL} -gt 0 ]; then
 fi
 
 info_msg "- Users: ${DATA_PATH}/users.json"
-eval ${PREFIX} invenio fixtures import_users ${DATA_PATH}/users.json -v --append ${CREATE_LAZY} ${DONT_STOP}
+eval ${PREFIX} invenio fixtures import_users ${DATA_PATH}/users.json -v --append
 
 info_msg "- ILL requests: ${DATA_PATH}/ill_request.json"
 eval ${PREFIX} invenio fixtures create_ill_requests -f ${DATA_PATH}/ill_requests.json
 eval ${PREFIX} invenio utils reindex -t illr --yes-i-know --no-info
 
-#: - xml to json transformation for rero marcxml --------------------------------
-#: don't forget to recreat the documents json schema files:
-# SIZE=big # SIZE=small
-# export RERO_ILS_MEF_HOST=mef.test.rero.ch
-# invenio utils marc21tojson ${DATA_PATH}/documents_${SIZE}.xml ${DATA_PATH}/documents_${SIZE}.json ${DATA_PATH}/documents_${SIZE}_errors.xml -v -r
-# Save the contribution after setup for later use.
-# invenio utils export -t cont -o ${DATA_PATH}/contributions_${SIZE}.json -v
+info_msg "- CONTRIBUTIONS: ${CONTRIBUTIONS} ${CREATE_LAZY} ${DONT_STOP}"
+eval ${PREFIX} invenio fixtures bulk_load cont ${CSV_PATH}/cont_metadata.csv --verbose
 
-if ${DEPLOYMENT}
-then
-    DOCUMENTS=${DATA_PATH}/documents_big.json
-    ITEMS=${DATA_PATH}/items_big.json
-    HOLDINGS=${DATA_PATH}/holdings_big.json
-    CONTRIBUTIONS=${DATA_PATH}/contributions_big.json
-else
-    DOCUMENTS=${DATA_PATH}/documents_small.json
-    ITEMS=${DATA_PATH}/items_small.json
-    HOLDINGS=${DATA_PATH}/holdings_small.json
-    CONTRIBUTIONS=${DATA_PATH}/contributions_small.json
-fi
+info_msg "- Documents: ${CSV_PATH}/cont_metadata.csv"
+eval ${PREFIX} invenio fixtures bulk_load doc ${CSV_PATH}/doc_metadata.csv --verbose
 
-if ${LOADCONTRIBUTIONS}
-then
-    info_msg "- CONTRIBUTIONS: ${CONTRIBUTIONS} ${CREATE_LAZY} ${DONT_STOP}"
-    eval ${PREFIX} invenio fixtures create --pid_type cont --schema 'http://ils.rero.ch/schemas/contributions/contribution-v0.0.1.json' ${CONTRIBUTIONS} --append ${CREATE_LAZY} ${DONT_STOP}
-    info_msg "Indexing Contributions:"
-    eval ${PREFIX} invenio utils reindex -t cont --yes-i-know --no-info
-    if [ ${INDEX_PARALLEL} -gt 0 ]; then
-        eval ${PREFIX} invenio utils runindex -d -c ${INDEX_PARALLEL} --raise-on-error
-    fi
-    eval ${PREFIX} invenio utils runindex --raise-on-error
-    if [ ${INDEX_PARALLEL} -gt 0 ]; then
-        eval ${PREFIX} invenio utils reindex_missing -t cont -v
-    fi
-else
-    info_msg "- Contributions from MEF: ${DOCUMENTS} ${CREATE_LAZY} ${ENQUEUE}"
-    eval ${PREFIX} invenio fixtures get_all_mef_records ${DOCUMENTS} ${CREATE_LAZY} ${ENQUEUE}
-fi
-
-info_msg "- Documents: ${DOCUMENTS} ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures create --pid_type doc --schema 'http://ils.rero.ch/schemas/documents/document-v0.0.1.json' ${DOCUMENTS} --append ${CREATE_LAZY} ${DONT_STOP}
-
-if ${CREATE_ITEMS_HOLDINGS_SMALL}
-then
-    # to generate small items file small documents must exist in DB
-    msg "\tSMALL documents, creation of items and holdings"
-    eval ${PREFIX} invenio fixtures create_items -i 3 -t ${DATA_PATH}/items_small.json -h ${DATA_PATH}/holdings_small.json
-    success_msg "Creation of items and holdings done for 'small' documents."
-    if ${STOP_EXECUTION}
-    then
-        exit 0
-    fi
-fi
-
-if ${CREATE_ITEMS_HOLDINGS_BIG}
-then
-    # to generate big items file big documents must exist in DB
-    msg "\tBIG documents, creation of items and holdings"
-    eval ${PREFIX} invenio fixtures create_items -i 3 -t ${DATA_PATH}/items_big.json -h ${DATA_PATH}/holdings_big.json
-    success_msg "Creation of items and holdings done for 'big' documents."
-    if ${STOP_EXECUTION}
-    then
-        exit 0
-    fi
-fi
-
-info_msg "- Holdings: ${HOLDINGS} ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures create --pid_type hold --schema 'http://ils.rero.ch/schemas/holdings/holding-v0.0.1.json' ${HOLDINGS} --append ${CREATE_LAZY} ${DONT_STOP}
-eval ${PREFIX} invenio utils reindex -t hold --yes-i-know --no-info
+info_msg "- Holdings: ${CSV_PATH}/hold_metadata.csv"
+eval ${PREFIX} invenio fixtures bulk_load hold ${CSV_PATH}/hold_metadata.csv --reindex --verbose
 if [ ${INDEX_PARALLEL} -gt 0 ]; then
     eval ${PREFIX} invenio utils runindex -d -c ${INDEX_PARALLEL} --raise-on-error
 fi
@@ -387,11 +242,8 @@ if [ ${INDEX_PARALLEL} -gt 0 ]; then
     eval ${PREFIX} invenio utils reindex_missing -t hold -v
 fi
 
-info_msg "- Items: ${ITEMS} ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures create --pid_type item --schema 'http://ils.rero.ch/schemas/items/item-v0.0.1.json' ${ITEMS} --append ${CREATE_LAZY} ${DONT_STOP}
-
-# index items
-eval ${PREFIX} invenio utils reindex -t item --yes-i-know --no-info
+info_msg "- Items: ${CSV_PATH}/item_metadata.csv"
+eval ${PREFIX} invenio fixtures bulk_load item ${CSV_PATH}/item_metadata.csv --reindex --verbose
 if [ ${INDEX_PARALLEL} -gt 0 ]; then
     eval ${PREFIX} invenio utils runindex -d -c ${INDEX_PARALLEL} --raise-on-error
 fi
@@ -422,8 +274,7 @@ if [ ${INDEX_PARALLEL} -gt 0 ]; then
 fi
 
 info_msg "- Local fields ${DATA_PATH}/local_fields.json ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures create --pid_type lofi ${DATA_PATH}/local_fields.json --append ${CREATE_LAZY} ${DONT_STOP}
-eval ${PREFIX} invenio utils reindex -t lofi --yes-i-know --no-info
+eval ${PREFIX} invenio fixtures bulk_load lofi ${CSV_PATH}/lofi_metadata.csv --reindex --verbose
 
 # create serials patterns
 info_msg "Serials patterns: ${DATA_PATH}/patterns.json"
@@ -436,18 +287,15 @@ eval ${PREFIX} invenio utils reindex -t coll --yes-i-know --no-info
 # # ACQUISITION
 # create library budgets
 info_msg "Library budgets: ${DATA_PATH}/budgets.json ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures create --pid_type budg ${DATA_PATH}/budgets.json --append  ${CREATE_LAZY} ${DONT_STOP}
-eval ${PREFIX} invenio utils reindex -t budg --yes-i-know --no-info
+eval ${PREFIX} invenio fixtures bulk_load budg ${CSV_PATH}/budg_metadata.csv --reindex --verbose
 
 # create acquisition accounts
 info_msg "Acquisition accounts: ${DATA_PATH}/acq_accounts.json ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures create --pid_type acac ${DATA_PATH}/acq_accounts.json --append  ${CREATE_LAZY} ${DONT_STOP}
-eval ${PREFIX} invenio utils reindex -t acac --yes-i-know --no-info
+eval ${PREFIX} invenio fixtures bulk_load acac ${CSV_PATH}/acac_metadata.csv --reindex --verbose
 
 # create resource templates
 info_msg "Resource templates:"
-eval ${PREFIX} invenio fixtures create --pid_type tmpl ${DATA_PATH}/templates.json --append  ${CREATE_LAZY} ${DONT_STOP}
-eval ${PREFIX} invenio utils reindex -t tmpl --yes-i-know --no-info
+eval ${PREFIX} invenio fixtures bulk_load tmpl ${CSV_PATH}/tmpl_metadata.csv --reindex --verbose
 
 if [ ${INDEX_PARALLEL} -gt 0 ]; then
     eval ${PREFIX} invenio utils runindex -d -c ${INDEX_PARALLEL} --raise-on-error
@@ -463,7 +311,6 @@ eval ${PREFIX} invenio fixtures create_loans ${DATA_PATH}/loans.json
 
 # process notifications
 eval ${PREFIX} invenio notifications process
-
 
 # create token access for monitoring
 # if the environement variable INVENIO_RERO_ACCESS_TOKEN_MONITORING is not set
@@ -502,26 +349,9 @@ else
     msg "\tinvenio oaiharvester harvest -n ebooks -a max=100 -q"
 fi
 
-if ${ES_MAPPING}
-then
-    info_msg "ES mappings:"
-    invenio utils dump_es_mappings -o tmp/mapping_after_setup.txt
-    error_msg "ES mapping differences:"
-    diff --suppress-common-lines --side-by-side tmp/mapping_before_setup.txt tmp/mapping_after_setup.txt
-fi
 
 info_msg "- Load Virtua operation logs: ${DATA_PATH}/operation_logs.json"
 eval ${PREFIX} invenio fixtures migrate_virtua_operation_logs ${DATA_PATH}/operation_logs.json  ${CREATE_LAZY} ${DONT_STOP}
-
-# load legacy circulation transactions from Virtua
-info_msg "Checkout transactions: ${DATA_PATH}/checkouts.json ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures load_virtua_transactions ${DATA_PATH}/checkouts.json -t checkout
-
-info_msg "Request transactions: ${DATA_PATH}/requests.json ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures load_virtua_transactions ${DATA_PATH}/requests.json -t request
-
-info_msg "Fine transactions: ${DATA_PATH}/fines.json ${CREATE_LAZY} ${DONT_STOP}"
-eval ${PREFIX} invenio fixtures load_virtua_transactions ${DATA_PATH}/fines.json -t fine
 
 date
 success_msg "Perfect ${PROGRAM}! See you soon…"

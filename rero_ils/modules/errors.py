@@ -38,10 +38,6 @@ class MissingRequiredParameterError(RecordsError):
     """Exception raised when required parameter is missing."""
 
 
-class RecordValidationError(RecordsError):
-    """Exception raised when record is not validated."""
-
-
 class RegularReceiveNotAllowed(Exception):
     """Holdings of type serials and irregular frequency."""
 

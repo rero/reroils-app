@@ -25,7 +25,6 @@ import pytest
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 
-from rero_ils.modules.errors import RecordValidationError
 from rero_ils.modules.ill_requests.api import ILLRequest
 from rero_ils.modules.ill_requests.models import ILLRequestNoteStatus
 
@@ -69,7 +68,7 @@ def test_extended_validation(app, ill_request_martigny_data_tmp):
     data['copy'] = True
     if 'pages' in data:
         del data['pages']
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         ILLRequest.validate(ILLRequest(data))
 
     # test on 'notes' field :: have 2 note of the same type is disallowed
@@ -79,7 +78,7 @@ def test_extended_validation(app, ill_request_martigny_data_tmp):
         'content': 'dummy content'
     }]
     ILLRequest.validate(ILLRequest(data))
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         data['notes'].append({
             'type': ILLRequestNoteStatus.PUBLIC_NOTE,
             'content': 'second dummy note'

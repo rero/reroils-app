@@ -27,9 +27,9 @@ import ciso8601
 import jinja2
 import pytest
 from invenio_accounts.testutils import login_user_via_session
+from jsonschema.exceptions import ValidationError
 
 from rero_ils.modules.api import IlsRecordError
-from rero_ils.modules.errors import RecordValidationError
 from rero_ils.modules.holdings.api import Holding
 from rero_ils.modules.holdings.models import HoldingNoteTypes
 from rero_ils.modules.items.api import Item
@@ -338,7 +338,7 @@ def test_holding_validate_next_expected_date(
     del holding['patterns']['next_expected_date']
     # test will fail when the serial holding has no field
     # next_expected_date for the regular frequency
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         Holding.create(
             data=holding,
             delete_pid=False,
@@ -598,7 +598,7 @@ def test_holding_notes(client, librarian_martigny,
     holding['notes'].append(
         {'type': HoldingNoteTypes.CLAIM, 'content': 'new cliam note'}
     )
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         holding.update(holding, dbcommit=True, reindex=True)
     holding['notes'] = holding.notes[:-1]
 

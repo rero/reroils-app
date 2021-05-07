@@ -25,11 +25,11 @@ from flask import current_app
 from flask_babelex import gettext as _
 from flask_login import current_user
 from invenio_circulation.proxies import current_circulation
+from jsonschema.exceptions import ValidationError
 from werkzeug.local import LocalProxy
 
 from .models import PatronIdentifier, PatronMetadata
 from ..api import IlsRecord, IlsRecordsIndexer, IlsRecordsSearch
-from ..errors import RecordValidationError
 from ..fetchers import id_fetcher
 from ..libraries.api import Library
 from ..minters import id_minter
@@ -161,7 +161,7 @@ class Patron(IlsRecord):
                     break
         self._validate_emails()
         if validation_message is not True:
-            raise RecordValidationError(validation_message)
+            raise ValidationError(validation_message)
         return json
 
     def _validate_emails(self):
@@ -173,10 +173,10 @@ class Patron(IlsRecord):
         patron = self.get('patron')
         user = self._get_user_by_user_id(self.get('user_id'))
         if patron and patron.get('communication_channel') == 'email'\
-           and user.email is None\
-           and patron.get('additional_communication_email') is None:
-            raise RecordValidationError('At least one email should be defined '
-                                        'for an email communication channel.')
+                and user.email is None\
+                and patron.get('additional_communication_email') is None:
+            raise ValidationError('At least one email should be defined '
+                                  'for an email communication channel.')
 
     @classmethod
     def create(cls, data, id_=None, delete_pid=False,

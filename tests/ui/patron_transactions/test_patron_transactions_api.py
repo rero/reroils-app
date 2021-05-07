@@ -41,16 +41,18 @@ def test_patron_transaction_create(
 
     db.session.rollback()
 
+    next_pid = PatronTransaction.provider.identifier.next()
     patron_transaction['status'] = 'open'
     record = PatronTransaction.create(patron_transaction, delete_pid=True)
+    next_pid += 1
     assert record == patron_transaction
-    assert record.get('pid') == '2'
+    assert record.get('pid') == str(next_pid)
 
-    pttr = PatronTransaction.get_record_by_pid('2')
+    pttr = PatronTransaction.get_record_by_pid(str(next_pid))
     assert pttr == patron_transaction
 
     fetched_pid = fetcher(pttr.id, pttr)
-    assert fetched_pid.pid_value == '2'
+    assert fetched_pid.pid_value == str(next_pid)
     assert fetched_pid.pid_type == 'pttr'
 
 

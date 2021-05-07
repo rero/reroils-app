@@ -27,7 +27,6 @@ from jsonschema.exceptions import ValidationError
 
 from rero_ils.modules.circ_policies.api import DUE_SOON_REMINDER_TYPE, \
     OVERDUE_REMINDER_TYPE
-from rero_ils.modules.errors import RecordValidationError
 
 
 def test_required(circ_policy_schema, circ_policy_martigny_data_tmp):
@@ -149,7 +148,7 @@ def test_circ_policy_reminders(circ_policy_schema,
     cipo['reminders'].append(due_soon_reminder)
     validate(cipo, circ_policy_schema)
     # Tow "DUE_SOON" reminder is disallow
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         due_soon_reminder_2 = deepcopy(due_soon_reminder)
         due_soon_reminder_2['days_delay'] = 5
         cipo['reminders'].append(due_soon_reminder_2)
@@ -164,7 +163,7 @@ def test_circ_policy_reminders(circ_policy_schema,
         'communication_channel': 'mail',
         'template': 'email/overdue'
     }
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         overdue_reminder1 = deepcopy(overdue_reminder)
         overdue_reminder2 = deepcopy(overdue_reminder)
         overdue_reminder2['template'] = 'email/overdue2'
@@ -193,21 +192,21 @@ def test_circ_policy_overdue_fees(circ_policy_schema,
     cipo.validate()
 
     # two intervals with no upper limit
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         invalid_overdue_data = deepcopy(overdue_data)
         del invalid_overdue_data['intervals'][2]['to']
         cipo['overdue_fees'] = invalid_overdue_data
         cipo.validate()
 
     # two intervals with conflict on lower interval limit
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         invalid_overdue_data = deepcopy(overdue_data)
         invalid_overdue_data['intervals'][2]['from'] = 4
         cipo['overdue_fees'] = invalid_overdue_data
         cipo.validate()
 
     # two intervals with conflict on upper interval limit
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         invalid_overdue_data = deepcopy(overdue_data)
         invalid_overdue_data['intervals'][0]['to'] = 7
         cipo['overdue_fees'] = invalid_overdue_data

@@ -26,10 +26,10 @@ from datetime import datetime
 import pytest
 from flask import url_for
 from invenio_accounts.testutils import login_user_via_session
+from jsonschema.exceptions import ValidationError
 from utils import get_json, postdata
 
 from rero_ils.modules.documents.api import Document
-from rero_ils.modules.errors import RecordValidationError
 from rero_ils.modules.holdings.api import Holding
 from rero_ils.modules.items.api import Item
 from rero_ils.modules.items.models import ItemIssueStatus, ItemStatus
@@ -310,7 +310,7 @@ def test_pattern_validate_next_expected_date(
     del holding['patterns']['next_expected_date']
     # test will fail when the serial holding has no field
     # next_expected_date for the regular frequency
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         Holding.create(
             data=holding,
             delete_pid=False,
@@ -386,7 +386,7 @@ def test_irregular_issue_creation_update_delete_api(
     created_item.update(data=item, dbcommit=True, reindex=True)
     # Validation error if you try to update an issue with no holdings links
     item.pop('holding')
-    # with pytest.raises(RecordValidationError):
+    # with pytest.raises(ValidationError):
     created_item.update(data=item, dbcommit=True, reindex=True)
     # no errors when deleting an irregular issue
     pid = created_item.pid

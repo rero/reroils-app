@@ -23,7 +23,6 @@ import pytest
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 
-from rero_ils.modules.errors import RecordValidationError
 from rero_ils.modules.utils import get_ref_for_pid
 
 
@@ -100,13 +99,13 @@ def test_limits(patron_type_schema, patron_type_tmp):
         }
     }
     validate(data, patron_type_schema)
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         data['limits']['checkout_limits']['library_limit'] = 40
         validate(data, patron_type_schema)  # valid for JSON schema
         data.validate()  # invalid against extented_validation rules
 
     data['limits']['checkout_limits']['library_limit'] = 15
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         lib_ref = get_ref_for_pid('lib', 'dummy')
         data['limits']['checkout_limits']['library_exceptions'] = [
             {'library': {'$ref': lib_ref}, 'value': 15}
@@ -114,7 +113,7 @@ def test_limits(patron_type_schema, patron_type_tmp):
         validate(data, patron_type_schema)  # valid for JSON schema
         data.validate()  # invalid against extented_validation rules
 
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         data['limits']['checkout_limits']['library_exceptions'] = [
             {'library': {'$ref': lib_ref}, 'value': 5},
             {'library': {'$ref': lib_ref}, 'value': 7}

@@ -23,10 +23,10 @@ from copy import deepcopy
 
 import mock
 import pytest
+from jsonschema.exceptions import ValidationError
 
 from rero_ils.modules.circ_policies.api import CircPolicy, \
     circ_policy_id_fetcher
-from rero_ils.modules.errors import RecordValidationError
 
 
 def test_no_default_policy(app):
@@ -89,7 +89,7 @@ def test_circ_policy_create(circ_policy_martigny_data_tmp,
             }
         }]
     }
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         cipo = CircPolicy.create(cipo_data, delete_pid=False)
 
 

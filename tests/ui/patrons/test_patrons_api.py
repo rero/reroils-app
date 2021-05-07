@@ -25,8 +25,8 @@ from datetime import datetime
 import pytest
 from invenio_accounts.models import User
 from invenio_userprofiles import UserProfile
+from jsonschema.exceptions import ValidationError
 
-from rero_ils.modules.errors import RecordValidationError
 from rero_ils.modules.patrons.api import Patron, PatronsSearch, \
     patron_id_fetcher
 from rero_ils.utils import create_user_from_data
@@ -56,7 +56,7 @@ def test_patron_create(app, roles, lib_martigny, librarian_martigny_data_tmp,
 
     wrong_librarian_martigny_data_tmp = deepcopy(librarian_martigny_data_tmp)
     wrong_librarian_martigny_data_tmp.pop('libraries')
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         ptrn = Patron.create(
             wrong_librarian_martigny_data_tmp,
             dbcommit=True,
@@ -81,7 +81,7 @@ def test_patron_create(app, roles, lib_martigny, librarian_martigny_data_tmp,
             '$ref': 'https://ils.rero.ch/api/patron_transactions/xxx'
         },
     }]
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         ptrn = Patron.create(
             wrong_librarian_martigny_data_tmp,
             dbcommit=True,
@@ -99,6 +99,7 @@ def test_patron_create(app, roles, lib_martigny, librarian_martigny_data_tmp,
         delete_pid=False
     )
     user = User.query.filter_by(id=ptrn.get('user_id')).first()
+    user_id = ptrn.get('user_id')
     assert user
     assert user.active
     for field in [
@@ -190,7 +191,7 @@ def test_patron_create_without_email(app, roles, patron_type_children_martigny,
 
     # comminication channel require at least one email
     patron_martigny_data_tmp['patron']['communication_channel'] = 'email'
-    with pytest.raises(RecordValidationError):
+    with pytest.raises(ValidationError):
         ptrn = Patron.create(
             patron_martigny_data_tmp,
             dbcommit=True,

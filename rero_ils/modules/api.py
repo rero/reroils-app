@@ -40,11 +40,11 @@ from invenio_records.api import Record
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_search import current_search
 from invenio_search.api import RecordsSearch
+from jsonschema.exceptions import ValidationError
 from kombu.compat import Consumer
 from sqlalchemy import text
 from sqlalchemy.orm.exc import NoResultFound
 
-from .errors import RecordValidationError
 from .utils import extracted_data_from_ref
 
 
@@ -139,7 +139,7 @@ class IlsRecord(Record):
                 not_required=self.pids_exist_check.get('not_required', {})
             ) or True
         if validation_message is not True:
-            raise RecordValidationError(validation_message)
+            raise ValidationError(validation_message)
         return json
 
     def extended_validation(self, **kwargs):
@@ -432,6 +432,13 @@ class IlsRecord(Record):
     def organisation_pid(self):
         """Get organisation pid for circulation policy."""
         return extracted_data_from_ref(self.get('organisation'))
+
+    @classmethod
+    def get_metadata_identifier_names(cls):
+        """Get metadata and identifier table names."""
+        metadata = cls.model_cls.__tablename__
+        identifier = cls.provider.identifier
+        return metadata, identifier
 
 
 class IlsRecordsIndexer(RecordIndexer):

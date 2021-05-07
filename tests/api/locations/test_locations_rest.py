@@ -21,14 +21,12 @@ import json
 from copy import deepcopy
 
 import mock
-import pytest
 from flask import url_for
 from invenio_accounts.testutils import login_user_via_session
 from utils import VerifyRecordPermissionPatch, flush_index, get_json, \
     postdata, to_relative_url
 
 from rero_ils.modules.documents.views import item_library_pickup_locations
-from rero_ils.modules.errors import RecordValidationError
 from rero_ils.modules.locations.api import Location, LocationsSearch
 
 
@@ -314,12 +312,15 @@ def test_location_secure_api_create(client, lib_fully, lib_martigny,
     if 'pickup_name' in fake_location_data:
         del fake_location_data['pickup_name']
     fake_location_data['is_pickup'] = True
-    with pytest.raises(RecordValidationError):
-        res, _ = postdata(
-            client,
-            post_entrypoint,
-            fake_location_data
-        )
+    res, _ = postdata(
+        client,
+        post_entrypoint,
+        fake_location_data
+    )
+    assert get_json(res) == {
+        'status': 400,
+        'message': 'Validation error: Pickup location name field is required..'
+    }
 
     # Martigny
     del loc_public_martigny_data['pid']
