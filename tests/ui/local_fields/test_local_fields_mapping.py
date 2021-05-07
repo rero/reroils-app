@@ -23,17 +23,18 @@ from rero_ils.modules.local_fields.api import LocalField, LocalFieldsSearch
 
 
 def test_local_field_es_mapping(
-        es_clear, db, org_martigny, document, local_field_martigny_data):
+        es, db, org_martigny, document, local_field_martigny_data):
     """Test local field elasticsearch mapping."""
     search = LocalFieldsSearch()
     mapping = get_mapping(search.Meta.index)
     assert mapping
-    LocalField.create(
+    lf = LocalField.create(
         local_field_martigny_data,
         dbcommit=True,
         reindex=True,
         delete_pid=True)
     assert mapping == get_mapping(search.Meta.index)
+    lf.delete(force=True, dbcommit=True, delindex=True)
 
 
 def test_libraries_search_mapping(
@@ -41,13 +42,8 @@ def test_libraries_search_mapping(
     """Test local field search mapping."""
     search = LocalFieldsSearch()
 
-    c = search.query(
-        'query_string', query='Auteur'
-    ).count()
-    assert c == 2
-
-    c = search.query('query_string', query='Bibliographie').count()
-    assert c == 1
+    assert search.query('query_string', query='Auteur').count() == 2
+    assert search.query('query_string', query='Bibliographie').count() == 1
 
     pids = [r.pid for r in search.query(
          'match', fields__field_2='students').source(['pid']).scan()]

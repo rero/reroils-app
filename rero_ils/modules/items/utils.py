@@ -48,3 +48,22 @@ def item_location_retriever(item_pid):
         # if last_location:
         #     return last_location.pid
         return item.get_owning_pickup_location_pid()
+
+
+def exists_available_item(items=[]):
+    """Check if at least one item of the list are available.
+
+    Caution: `items` param couldn't be a generator otherwise the
+    :param items: the items to check. Either as a list of item pids, either as
+                  a list of item resources.
+    :return True if one item is available; false otherwise.
+    """
+    from rero_ils.modules.items.api import Item
+    for item in items:
+        if isinstance(item, str):  # `item` seems to be an item pid
+            item = Item.get_record_by_pid(item)
+        if not isinstance(item, Item):
+            raise ValueError('All items should be Item resource.')
+        if item.available:
+            return True
+    return False

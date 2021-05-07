@@ -33,9 +33,11 @@ def enrich_holding_data(sender, json=None, record=None, index=None,
     """
     if index.split('-')[0] == HoldingsSearch.Meta.index:
         # ES search reduces number of requests for organisation and library.
-        es_loc = next(LocationsSearch().filter(
-            'term', pid=json['location']['pid']
-        ).scan())
+        es_loc = next(
+            LocationsSearch()
+            .filter('term', pid=json['location']['pid'])
+            .scan()
+        )
         json['organisation'] = {
             'pid': es_loc.organisation.pid
         }

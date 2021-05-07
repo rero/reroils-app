@@ -42,6 +42,14 @@ class HoldingMetadata(db.Model, RecordMetadataBase):
     __tablename__ = 'holding_metadata'
 
 
+class HoldingTypes:
+    """Class to list all possible holding types."""
+
+    ELECTRONIC = 'electronic'
+    SERIAL = 'serial'
+    STANDARD = 'standard'
+
+
 class HoldingNoteTypes:
     """Class to list all holdings possible note types."""
 

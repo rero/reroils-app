@@ -33,12 +33,13 @@ from jinja2 import Environment
 
 from rero_ils.modules.items.models import ItemIssueStatus
 
-from .models import HoldingIdentifier, HoldingMetadata
+from .models import HoldingIdentifier, HoldingMetadata, HoldingTypes
 from ..api import IlsRecord, IlsRecordsIndexer
 from ..documents.api import Document
 from ..errors import MissingRequiredParameterError, RegularReceiveNotAllowed
 from ..fetchers import id_fetcher
 from ..items.api import Item, ItemsSearch
+from ..items.utils import exists_available_item
 from ..locations.api import Location
 from ..minters import id_minter
 from ..organisations.api import Organisation
@@ -143,23 +144,21 @@ class Holding(IlsRecord):
         document = Document.get_record_by_pid(document_pid)
         if not document:
             return _('Document does not exist {pid}.'.format(pid=document_pid))
-        is_serial = self.holdings_type == 'serial'
 
-        if is_serial:
+        if self.is_serial:
             patterns = self.get('patterns', {})
             if patterns and \
                 patterns.get('frequency') != 'rdafr:1016' \
                     and not patterns.get('next_expected_date'):
                 return _(
                     'Must have next expected date for regular frequencies.')
-        is_electronic = self.holdings_type == 'electronic'
-        if document.harvested ^ is_electronic:
+        if document.harvested ^ self.is_electronic:
             msg = _('Electronic Holding is not attached to the correct \
                     document type. document: {pid}')
             return _(msg.format(pid=document_pid))
         # the enumeration and chronology optional fields are only allowed for
         # serial or electronic holdings
-        if not is_serial ^ is_electronic:
+        if not self.is_serial ^ self.is_electronic:
             fields = [
                 'enumerationAndChronology', 'notes', 'index', 'missing_issues',
                 'supplementaryContent', 'acquisition_status',
@@ -180,12 +179,12 @@ class Holding(IlsRecord):
     @property
     def is_serial(self):
         """Shortcut to check if holding is a serial holding record."""
-        return self.holdings_type == 'serial'
+        return self.holdings_type == HoldingTypes.SERIAL
 
     @property
-    def holding_is_serial(self):
-        """Shortcut to check if holding is a serial holding record."""
-        return self.holdings_type == 'serial'
+    def is_electronic(self):
+        """Shortcut to check if holding is a electronic record."""
+        return self.holdings_type == HoldingTypes.ELECTRONIC
 
     @property
     def holdings_type(self):
@@ -220,10 +219,9 @@ class Holding(IlsRecord):
     @property
     def available(self):
         """Get availability for holding."""
-        items = []
-        for item_pid in Item.get_items_pid_by_holding_pid(self.pid):
-            items.append(Item.get_record_by_pid(item_pid))
-        return Holding.isAvailable(items)
+        if self.is_electronic:
+            return True
+        return self._exists_available_child()
 
     @property
     def max_number_of_claims(self):
@@ -271,13 +269,11 @@ class Holding(IlsRecord):
                  if note.get('type') == note_type]
         return next(iter(notes), None)
 
-    @classmethod
-    def isAvailable(cls, items):
-        """."""
-        for item in items:
-            if item.available:
-                return True
-        return False
+    def _exists_available_child(self):
+        """Check if at least one child of this holding is available."""
+        return exists_available_item(
+            Item.get_items_pid_by_holding_pid(self.pid)
+        )
 
     @property
     def get_items_count_by_holding_pid(self):
@@ -299,7 +295,6 @@ class Holding(IlsRecord):
         holding = cls.get_record_by_pid(holding_pid)
         if holding:
             return holding.holdings_type
-        return None
 
     @classmethod
     def get_holdings_pid_by_document_pid(cls, document_pid):
@@ -587,26 +582,22 @@ class Holding(IlsRecord):
                 {'$ref': get_ref_for_pid('org', self.organisation_pid)}
         }
         data.update(forced_data)
-
         return data
 
     def receive_regular_issue(self, item=None, dbcommit=False, reindex=False):
         """Receive the next expected regular issue for the holdings record."""
         # receive is allowed only on holdings of type serials and regular
         # frequency
-        if self.holdings_type != 'serial' or self.get(
-                'patterns', {}).get('frequency') == 'rdafr:1016':
+        if self.holdings_type != HoldingTypes.SERIAL \
+           or self.get('patterns', {}).get('frequency') == 'rdafr:1016':
             raise RegularReceiveNotAllowed()
 
         issue_display, expected_date = self._get_next_issue_display_text(
                     self.get('patterns'))
-
         data = self._prepare_issue_record(
             item=item, issue_display=issue_display,
             expected_date=expected_date)
-        pid = self.pid
-        issue = Item.create(data=data, dbcommit=dbcommit, reindex=reindex)
-        return issue
+        return Item.create(data=data, dbcommit=dbcommit, reindex=reindex)
 
 
 def get_holding_pid_by_doc_location_item_type(
@@ -640,9 +631,10 @@ def get_holdings_by_document_item_type(
 
 def create_holding(
         document_pid=None, location_pid=None, item_type_pid=None,
-        electronic_location=None, holdings_type=None, patterns=None,
-        enumerationAndChronology=None, supplementaryContent=None, index=None,
-        missing_issues=None, call_number=None, second_call_number=None,
+        electronic_location=None, holdings_type=HoldingTypes.STANDARD,
+        patterns=None, enumerationAndChronology=None,
+        supplementaryContent=None, index=None, missing_issues=None,
+        call_number=None, second_call_number=None,
         notes=[], vendor_pid=None, acquisition_status=None,
         acquisition_expected_end_date=None, acquisition_method=None,
         general_retention_policy=None, completeness=None,
@@ -653,7 +645,7 @@ def create_holding(
     :param location_pid: the location pid.
     :param item_type_pid: the item type pid.
     :param electronic_location: the location for online items.
-    :param holdings_type: the type of holdings record.
+    :param holdings_type: the type of holdings record (default is 'standard')
     :param patterns: the patterns and chronology for the holdings.
     :param enumerationAndChronology: the Enumeration and Chronology.
     :param supplementaryContent: the Supplementary Content.
@@ -678,53 +670,47 @@ def create_holding(
             "One of the parameters 'document_pid' "
             "or 'location_pid' or 'item_type_pid' is required."
         )
-    data = {}
-    # add mandatory holdings fields
-    data['$schema'] = get_schema_for_resource('hold')
-    data['_masked'] = masked
-    data['location'] = {'$ref': get_ref_for_pid('loc', location_pid)}
-    data['circulation_category'] = {
-        '$ref': get_ref_for_pid('itty', item_type_pid)}
-    data['document'] = {'$ref': get_ref_for_pid('doc', document_pid)}
-
-    if vendor_pid:
-        data['vendor'] = {'$ref': get_ref_for_pid('vndr', vendor_pid)}
-
-    if not holdings_type:
-        holdings_type = 'standard'
-    data['holdings_type'] = holdings_type
-
-    # add optional holdings fields if given
-    holdings_fields = [
-        {'key': 'enumerationAndChronology', 'value': enumerationAndChronology},
-        {'key': 'supplementaryContent', 'value': supplementaryContent},
-        {'key': 'index', 'value': index},
-        {'key': 'missing_issues', 'value': missing_issues},
-        {'key': 'notes', 'value': notes},
-        {'key': 'call_number', 'value': call_number},
-        {'key': 'second_call_number', 'value': second_call_number},
-        {'key': 'acquisition_status', 'value': acquisition_status},
-        {'key': 'acquisition_method', 'value': acquisition_method},
-        {'key': 'completeness', 'value': completeness},
-        {'key': 'issue_binding', 'value': issue_binding},
-        {'key': 'composite_copy_report', 'value': composite_copy_report},
-        {'key': 'general_retention_policy', 'value': general_retention_policy},
-        {'key': 'acquisition_expected_end_date',
-            'value': acquisition_expected_end_date}
-    ]
-    for field in holdings_fields:
-        value = field['value']
-        if value:
-            data[field['key']] = field['value']
-
+    data = {
+        '$schema': get_schema_for_resource('hold'),
+        '_masked': masked,
+        'holdings_type': holdings_type,
+        'location': {
+            '$ref': get_ref_for_pid('loc', location_pid)
+        },
+        'circulation_category': {
+            '$ref': get_ref_for_pid('itty', item_type_pid)
+        },
+        'document': {
+            '$ref': get_ref_for_pid('doc', document_pid)
+        },
+        'enumerationAndChronology': enumerationAndChronology,
+        'supplementaryContent': supplementaryContent,
+        'index': index,
+        'missing_issues': missing_issues,
+        'notes': notes,
+        'call_number': call_number,
+        'second_call_number': second_call_number,
+        'acquisition_status': acquisition_status,
+        'acquisition_method': acquisition_method,
+        'completeness': completeness,
+        'issue_binding': issue_binding,
+        'composite_copy_report': composite_copy_report,
+        'general_retention_policy': general_retention_policy,
+        'acquisition_expected_end_date': acquisition_expected_end_date,
+    }
+    data = {k: v for k, v in data.items() if v}  # clean data from None/empty
     if electronic_location:
         data['electronic_location'] = [electronic_location]
-
-    if patterns and holdings_type == 'serial':
+    if vendor_pid:
+        data['vendor'] = {'$ref': get_ref_for_pid('vndr', vendor_pid)}
+    if patterns and holdings_type == HoldingTypes.SERIAL:
         data['patterns'] = patterns
-    holding = Holding.create(
-        data, dbcommit=True, reindex=True, delete_pid=True)
-    return holding
+    return Holding.create(
+        data,
+        dbcommit=True,
+        reindex=True,
+        delete_pid=True
+    )
 
 
 class HoldingsIndexer(IlsRecordsIndexer):

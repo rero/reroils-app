@@ -82,7 +82,7 @@ def test_patterns_quarterly_one_level(holding_lib_martigny_w_patterns):
 def test_receive_regular_issue(holding_lib_martigny_w_patterns):
     """Test holdings receive regular issues."""
     holding = holding_lib_martigny_w_patterns
-    assert holding.holding_is_serial
+    assert holding.is_serial
     issue = holding.receive_regular_issue(dbcommit=True, reindex=True)
     # test holdings call number inheriting
     assert issue.issue_inherited_first_call_number == \

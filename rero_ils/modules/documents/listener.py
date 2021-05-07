@@ -41,12 +41,14 @@ def enrich_document_data(sender, json=None, record=None, index=None,
         # HOLDINGS
         holdings = []
         document_pid = record['pid']
-        es_holdings = HoldingsSearch().filter(
-            'term', document__pid=document_pid
-        ).scan()
+        es_holdings = HoldingsSearch()\
+            .filter('term', document__pid=document_pid)\
+            .scan()
         for holding in es_holdings:
-            data = {
-                'pid': holding.pid,
+            holding = holding.to_dict()
+            holding_obj = Holding.get_record_by_pid(holding['pid'])
+            hold_data = {
+                'pid': holding['pid'],
                 'location': {
                     'pid': holding['location']['pid'],
                 },
@@ -61,31 +63,29 @@ def enrich_document_data(sender, json=None, record=None, index=None,
             # Index additional holdings fields into the document record
             holdings_fields = [
                 'call_number', 'second_call_number', 'index',
-                'enumerationAndChronology', 'supplementaryContent'
+                'enumerationAndChronology', 'supplementaryContent',
+                'local_fields'
             ]
-            dict_holding = holding.to_dict()
             for field in holdings_fields:
-                if dict_holding.get(field):
-                    data[field] = dict_holding.get(field)
+                if field in holding:
+                    hold_data[field] = holding.get(field)
             # Index holdings notes
-            notes = [
-                note['content'] for note in dict_holding.get(
-                    'notes', []
-                ) if note
-            ]
+            notes = [n['content'] for n in holding.get('notes', []) if n]
             if notes:
-                data['notes'] = notes
-            # Index holdings local fields
-            if 'local_fields' in holding:
-                data['local_fields'] = dict_holding['local_fields']
+                hold_data['notes'] = notes
 
             # Index items attached to each holdings record
-            es_items = list(
-                ItemsSearch().filter('term', holding__pid=holding.pid).scan()
-            )
+            es_items = ItemsSearch()\
+                .filter('term', holding__pid=holding['pid'])\
+                .scan()
+            items = []
             for item in es_items:
                 item = item.to_dict()
-                item_record = {
+
+                item_obj = Item.get_record_by_pid(item['pid'])
+                items.append(item_obj)
+
+                item_data = {
                     'pid': item['pid'],
                     'barcode': item['barcode'],
                     'status': item['status'],
@@ -93,7 +93,7 @@ def enrich_document_data(sender, json=None, record=None, index=None,
                     'local_fields': item.get('local_fields'),
                     'call_number': item.get('call_number')
                 }
-                item_record = {k: v for k, v in item_record.items() if v}
+                item_data = {k: v for k, v in item_data.items() if v}
 
                 # item acquisition part.
                 #   We need to store the acquisition data of the items into the
@@ -102,7 +102,7 @@ def enrich_document_data(sender, json=None, record=None, index=None,
                 #   'nested' structure.
                 acq_date = item.get('acquisition_date')
                 if acq_date:
-                    item_record['acquisition'] = {
+                    item_data['acquisition'] = {
                         'organisation_pid': holding['organisation']['pid'],
                         'library_pid': holding['library']['pid'],
                         'location_pid': holding['location']['pid'],
@@ -116,22 +116,20 @@ def enrich_document_data(sender, json=None, record=None, index=None,
                     if n['type'] in ItemNoteTypes.PUBLIC
                 ]
                 if public_notes_content:
-                    item_record['notes'] = public_notes_content
+                    item_data['notes'] = public_notes_content
 
                 # related collection
                 #   index the collection title and description
-                item_obj = Item.get_record_by_pid(item['pid'])
                 for collection in item_obj.in_collection():
                     coll_data = {
                         'title': collection.get('title'),
                         'description': collection.get('description')
                     }
                     coll_data = {k: v for k, v in coll_data.items() if v}
-                    item_record.setdefault('collections', []).append(coll_data)
-
-                data.setdefault('items', []).append(item_record)
-            data['available'] = Holding.isAvailable(es_items)
-            holdings.append(data)
+                    item_data.setdefault('collections', []).append(coll_data)
+                hold_data.setdefault('items', []).append(item_data)
+            hold_data['available'] = holding_obj.available
+            holdings.append(hold_data)
 
         if holdings:
             json['holdings'] = holdings

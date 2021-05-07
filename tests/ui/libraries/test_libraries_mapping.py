@@ -22,37 +22,30 @@ from utils import get_mapping
 from rero_ils.modules.libraries.api import LibrariesSearch, Library
 
 
-def test_library_es_mapping(es_clear, db, lib_martigny_data, org_martigny):
+def test_library_es_mapping(es, db, lib_martigny_data, org_martigny):
     """Test library elasticsearch mapping."""
     search = LibrariesSearch()
     mapping = get_mapping(search.Meta.index)
     assert mapping
-    Library.create(
+    lib = Library.create(
         lib_martigny_data, dbcommit=True, reindex=True, delete_pid=True)
     assert mapping == get_mapping(search.Meta.index)
+    lib.delete(force=True, dbcommit=True, delindex=True)
 
 
 def test_libraries_search_mapping(app, libraries_records):
     """Test library search mapping."""
     search = LibrariesSearch()
 
-    c = search.query(
+    assert search.query(
         'query_string', query='Fully Library Restricted Space'
-    ).count()
-    assert c == 4
+    ).count() == 4
+    assert search.query('query_string', query='bibliothèque').count() == 1
+    assert search.query('query_string', query='library AND Martigny').count() \
+           == 1
+    assert search.query('match', name='Aproz').count() == 1
 
-    c = search.query('query_string', query='bibliothèque').count()
-    assert c == 1
-
-    c = search.query('query_string', query='library AND Martigny').count()
-    assert c == 1
-
-    c = search.query('match', name='Sion').count()
-    assert c == 1
-
-    c = search.query('match', name='Aproz').count()
-    assert c == 1
-
-    pids = [r.pid for r in search.query(
-         'match', name='Sion').source(['pid']).scan()]
+    es_query = search.query('match', name='Sion').source(['pid']).scan()
+    pids = [hit.pid for hit in es_query]
+    assert len(pids) == 1
     assert 'lib4' in pids

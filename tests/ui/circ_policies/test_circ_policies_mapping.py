@@ -43,13 +43,9 @@ def test_circ_policies_search_mapping(app, circulation_policies):
 
     c = search.query('query_string', query='policy').count()
     assert c == 4
-
     c = search.query('match', name='default').count()
     assert c == 2
-
-    c = search.query('match', description='temporary').count()
-    assert c == 1
-
-    pids = [r.pid for r in search.query(
-         'match', name='temporary').source(['pid']).scan()]
+    es_query = search.query('match', name='temporary').source(['pid']).scan()
+    pids = [hit.pid for hit in es_query]
+    assert len(pids) == 1
     assert 'cipo3' in pids

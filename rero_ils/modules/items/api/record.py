@@ -24,6 +24,7 @@ from flask_babelex import gettext as _
 
 from ..utils import item_pid_to_object
 from ...api import IlsRecord
+from ...holdings.models import HoldingTypes
 from ...item_types.api import ItemType
 from ...libraries.api import Library
 from ...locations.api import Location
@@ -218,7 +219,7 @@ class ItemRecord(IlsRecord):
 
         if (
             mode == 'create' and record.get('holding')) or (
-            old_holding_type in ['serial', 'electronic']
+            old_holding_type in [HoldingTypes.SERIAL, HoldingTypes.ELECTRONIC]
         ):
             return record
 

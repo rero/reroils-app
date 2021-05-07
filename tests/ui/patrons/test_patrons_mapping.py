@@ -23,7 +23,7 @@ from rero_ils.modules.patrons.api import PatronsSearch
 
 
 def test_patron_es_mapping(
-        roles, es_clear, lib_martigny, librarian_martigny_data_tmp):
+        roles, es, lib_martigny, librarian_martigny_data_tmp):
     """Test patron elasticsearch mapping."""
     search = PatronsSearch()
     mapping = get_mapping(search.Meta.index)
@@ -35,21 +35,12 @@ def test_patron_search_mapping(app, patrons_records, librarian_saxon):
     """Test patron search mapping."""
     search = PatronsSearch()
 
-    c = search.query('query_string', query='Roduit').count()
-    assert c == 1
+    assert search.query('query_string', query='Roduit').count() == 1
+    assert search.query('match', first_name='Eric').count() == 1
+    assert search.query('match', last_name='Moret').count() == 1
+    assert search.query('match', first_name='Elena').count() == 1
 
-    c = search.query('match', first_name='Eric').count()
-    assert c == 1
-
-    c = search.query('match', last_name='Moret').count()
-    assert c == 1
-
-    c = search.query('match', first_name='Eléna').count()
-    assert c == 1
-
-    c = search.query('match', first_name='Elena').count()
-    assert c == 1
-
-    pids = [r.pid for r in search.query(
-         'match', first_name='Eléna').source(['pid']).scan()]
+    eq_query = search.query('match', first_name='Eléna').source(['pid']).scan()
+    pids = [hit.pid for hit in eq_query]
+    assert len(pids) == 1
     assert librarian_saxon.pid in pids

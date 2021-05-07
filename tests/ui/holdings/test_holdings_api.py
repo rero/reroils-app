@@ -29,22 +29,25 @@ from rero_ils.modules.holdings.api import Holding, HoldingsSearch
 from rero_ils.modules.holdings.api import holding_id_fetcher as fetcher
 
 
-def test_holding_es_mapping(es, db, holding_lib_martigny,
-                            holding_lib_martigny_data):
+def test_holding_es_mapping(es, db, loc_public_martigny,
+                            item_type_standard_martigny,
+                            document, holding_lib_martigny_data):
     """Test holding elasticsearch mapping."""
     search = HoldingsSearch()
     mapping = get_mapping(search.Meta.index)
     assert mapping
-    Holding.create(
+    holding = Holding.create(
         holding_lib_martigny_data,
         dbcommit=True,
         reindex=True,
         delete_pid=True
     )
     assert mapping == get_mapping(search.Meta.index)
+    # clean created data
+    holding.delete(force=True, dbcommit=True, delindex=True)
 
 
-def test_holding_create(db, es_clear, document, org_martigny,
+def test_holding_create(db, es, document, org_martigny,
                         loc_public_martigny, item_type_standard_martigny,
                         holding_lib_martigny_data):
     """Test holding creation."""
@@ -62,11 +65,30 @@ def test_holding_create(db, es_clear, document, org_martigny,
     assert fetched_pid.pid_type == 'hold'
 
     search = HoldingsSearch()
-    holding = next(search.filter('term', pid=holding.pid).scan())
-    holding_record = Holding.get_record_by_pid(holding.pid)
+    es_hit = next(search.filter('term', pid=holding.pid).source('pid').scan())
+    holding_record = Holding.get_record_by_pid(es_hit.pid)
     assert holding_record.organisation_pid == org_martigny.get('pid')
     # holdings does not exist
     assert not Holding.get_holdings_type_by_holding_pid('toto')
+
+    # clean created data
+    holding.delete(force=True, dbcommit=True, delindex=True)
+
+
+def test_holding_holding_type(holding_lib_martigny_w_patterns,
+                              holding_lib_martiny_electronic):
+    """Test holdings type."""
+    assert holding_lib_martigny_w_patterns.is_serial
+    assert holding_lib_martiny_electronic.is_electronic
+
+
+def test_holding_availability(holding_lib_martiny_electronic,
+                              holding_lib_martigny, item_lib_martigny):
+    """Test holding availability."""
+    # An electronic holding is always available despite if no item are linked
+    assert holding_lib_martiny_electronic.available
+    # The availability of other holdings type depends of children availability
+    assert holding_lib_martigny.available == item_lib_martigny.available
 
 
 def test_holding_extended_validation(client,
@@ -99,9 +121,9 @@ def test_holding_extended_validation(client,
     })
     with pytest.raises(RecordValidationError):
         holding_tmp.validate()
+    del holding_tmp['notes']
 
     # 2. holding type electronic
-
     # 2.1. test holding type electronic attached to wrong document type
     holding_tmp['holdings_type'] = 'electronic'
     with pytest.raises(RecordValidationError):
