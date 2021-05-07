@@ -113,9 +113,6 @@
           "type": "bf:Title"
         }
       ],
-      "translatedFrom": [
-        ""
-      ],
       "type": [
         {
           "main_type": "docmaintype_book",
@@ -137,9 +134,6 @@
     "visibility": "public",
     "template_type": "documents",
     "data": {
-      "abstracts": [
-        ""
-      ],
       "contribution": [
         {
           "role": [
@@ -692,9 +686,6 @@
           "type": "bf:Title"
         }
       ],
-      "translatedFrom": [
-        ""
-      ],
       "type": [
         {
           "main_type": "docmaintype_book",
@@ -716,9 +707,6 @@
     "visibility": "public",
     "template_type": "documents",
     "data": {
-      "abstracts": [
-        ""
-      ],
       "contribution": [
         {
           "role": [
@@ -1271,9 +1259,6 @@
           "type": "bf:Title"
         }
       ],
-      "translatedFrom": [
-        ""
-      ],
       "type": [
         {
           "main_type": "docmaintype_book",
@@ -1295,9 +1280,6 @@
     "visibility": "public",
     "template_type": "documents",
     "data": {
-      "abstracts": [
-        ""
-      ],
       "contribution": [
         {
           "role": [

@@ -1165,36 +1165,6 @@ def test_marc21_to_title_245_with_parallel_title_and_246():
     ]
 
 
-# titleProper: [730$a repetitive]
-def test_marc21_to_titlesProper():
-    """Test dojson marc21titlesProper."""
-
-    marc21xml = """
-    <record>
-      <datafield tag="730" ind1="1" ind2="0">
-        <subfield code="a">proper title</subfield>
-      </datafield>
-    </record>
-    """
-    marc21json = create_record(marc21xml)
-    data = marc21.do(marc21json)
-    assert data.get('titlesProper') == ['proper title']
-
-    marc21xml = """
-    <record>
-      <datafield tag="730" ind1=" " ind2=" ">
-        <subfield code="a">proper title</subfield>
-      </datafield>
-      <datafield tag="730" ind1=" " ind2=" ">
-         <subfield code="a">other proper title</subfield>
-       </datafield>
-    </record>
-    """
-    marc21json = create_record(marc21xml)
-    data = marc21.do(marc21json)
-    assert data.get('titlesProper') == ['proper title', 'other proper title']
-
-
 # languages: 008 and 041 [$a, repetitive]
 def test_marc21_to_language():
     """Test dojson marc21languages."""
@@ -2919,8 +2889,6 @@ def test_marc21_to_summary():
         "label": [{"value": "This book is about"}],
         "source": "source"
     }]
-    # TODO: remove legacy code for abstracts (next line)
-    assert data.get('abstracts') == ['This book is about']
 
     marc21xml = """
     <record>
@@ -2944,8 +2912,6 @@ def test_marc21_to_summary():
                     'language': 'und-hani'
                 }]
     }]
-    # TODO: remove legacy code for abstracts (next line)
-    assert data.get('abstracts') == ['Za wen fen wei si bu fen lu ru']
 
 
 def test_marc21_to_intended_audience():

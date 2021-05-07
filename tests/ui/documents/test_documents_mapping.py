@@ -57,18 +57,7 @@ def test_document_search_mapping(app, document_records):
     count = search.query('query_string', query='maison').count()
     assert count == 1
 
-    count = search.query('query_string', query='scene').count()
-    assert count == 1
-
-    query = MultiMatch(query='scène', fields=['abstracts.fre'])
-    count = search.query(query).count()
-    assert count == 1
-
     count = search.query('query_string', query='Körper').count()
-    assert count == 1
-
-    query = MultiMatch(query='Körper', fields=['abstracts.ger'])
-    count = search.query(query).count()
     assert count == 1
 
     count = search.query('query_string', query='Chamber Secrets').count()
