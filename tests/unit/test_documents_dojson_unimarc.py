@@ -1462,8 +1462,8 @@ def test_unimarc_partOf_with_link(document_with_issn):
 
 
 # abstract: [330$a repetitive]
-def test_unimarc_abstract():
-    """Test dojson abstract."""
+def test_unimarc_summary():
+    """Test dojson summary."""
 
     unimarcxml = """
     <record>
@@ -1474,7 +1474,8 @@ def test_unimarc_abstract():
     """
     unimarcjson = create_record(unimarcxml)
     data = unimarc.do(unimarcjson)
-    assert data.get('abstracts') == ["This book is about"]
+    assert data.get('summary') == [
+        {'label': [{'value': 'This book is about'}]}]
 
 
 # identifiers:isbn: 010$a

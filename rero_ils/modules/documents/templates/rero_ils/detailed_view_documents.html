@@ -97,13 +97,6 @@
     {% endfor %}
     {% endif %}
 
-    <!-- ABSTRACT -->
-    {% if record.abstracts|length > 0 %}
-    <div class="pt-2">
-    {{ div_list(record.abstracts) }}
-    </div>
-    {% endif %}
-
     <!-- SUBJECTS -->
     {% if record.subjects %}
     <div class="pt-2">

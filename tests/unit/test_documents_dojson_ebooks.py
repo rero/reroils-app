@@ -250,29 +250,6 @@ def test_marc21_to_notes():
     ]
 
 
-def test_marc21_to_abstracts():
-    """Test abstracts transformation.
-
-    Test abstracts in multiples fields 520.
-    """
-    marc21xml = """
-    <record>
-      <datafield tag="520" ind1=" " ind2=" ">
-        <subfield code="a">Il fait si chaud à Paris l’après-midi</subfield>
-        </datafield>
-      <datafield tag="520" ind1=" " ind2=" ">
-        <subfield code="a">Promenade à Paris</subfield>
-        </datafield>
-    </record>
-    """
-    marc21json = create_record(marc21xml)
-    data = marc21.do(marc21json)
-    assert data.get('abstracts') == [
-        'Il fait si chaud à Paris l’après-midi',
-        'Promenade à Paris'
-    ]
-
-
 def test_marc21_to_edition_statement_one_field_250():
     """Test dojson edition statement.
     - 1 edition designation and 1 responsibility from field 250

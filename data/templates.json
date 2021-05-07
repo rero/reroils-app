@@ -137,9 +137,6 @@
     "visibility": "public",
     "template_type": "documents",
     "data": {
-      "abstracts": [
-        ""
-      ],
       "contribution": [
         {
           "role": [
@@ -716,9 +713,6 @@
     "visibility": "public",
     "template_type": "documents",
     "data": {
-      "abstracts": [
-        ""
-      ],
       "contribution": [
         {
           "role": [
@@ -1295,9 +1289,6 @@
     "visibility": "public",
     "template_type": "documents",
     "data": {
-      "abstracts": [
-        ""
-      ],
       "contribution": [
         {
           "role": [
