@@ -519,11 +519,19 @@ RECORDS_REST_ENDPOINTS = dict(
             ),
             'application/rero+json': (
                 'rero_ils.modules.documents.serializers:json_doc_response'
+            ),
+            'application/xml+dc': (
+                'rero_ils.modules.documents.serializers:json_dc_response'
+            ),
+            'application/xml+marc': (
+                'rero_ils.modules.documents.serializers:xml_marcxml_response'
             )
         },
         record_serializers_aliases={
             'json': 'application/json',
-            'rero': 'application/rero+json'
+            'rero': 'application/rero+json',
+            'dc': 'application/xml+dc',
+            'marcxml': 'application/xml+marc'
         },
         search_serializers={
             'application/json': (
@@ -532,10 +540,23 @@ RECORDS_REST_ENDPOINTS = dict(
             'application/rero+json': (
                 'rero_ils.modules.documents.serializers:json_doc_search'
             ),
+            'application/xml+dc': (
+                'rero_ils.modules.documents.serializers:json_dc_search'
+            ),
+            'application/xml+marc': (
+                'rero_ils.modules.documents.serializers:xml_marcxml_search'
+            ),
+            'application/xml+marc+sru': (
+                'rero_ils.modules.documents.serializers:xml_marcxmlsru_search'
+            )
+
         },
         search_serializers_aliases={
             'json': 'application/json',
-            'rero': 'application/rero+json'
+            'rero': 'application/rero+json',
+            'dc': 'application/xml+dc',
+            'marcxml': 'application/xml+marc',
+            'marcxmlsru': 'application/xml+marc+sru'
         },
         record_loaders={
             'application/marcxml+xml':
@@ -2629,6 +2650,11 @@ RERO_IMPORT_REST_ENDPOINTS = dict(
         import_size=50
     )
 )
+
+# SRU
+# ====
+SRU_NUMBER_OF_RECORDS = 100
+SRU_MAXIMUM_RECORDS = 1000
 
 # SIP2
 # ====

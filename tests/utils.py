@@ -25,6 +25,7 @@ from datetime import datetime, timezone
 import jsonref
 import mock
 import requests
+import xmltodict
 from flask import url_for
 from invenio_accounts.testutils import login_user_via_session, \
     login_user_via_view
@@ -73,6 +74,15 @@ def login_user_for_view(client, user):
 def get_json(response):
     """Get JSON from response."""
     return json.loads(response.get_data(as_text=True))
+
+
+def get_xml_dict(response, ordered=False):
+    """Get XML from response."""
+    if ordered:
+        return xmltodict.parse(response.get_data(as_text=True))
+    return json.loads(json.dumps(
+        xmltodict.parse(response.get_data(as_text=True))
+    ))
 
 
 def get_csv(response):

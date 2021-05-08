@@ -154,7 +154,6 @@ def app_config(app_config):
     app_config['CELERY_BROKER_URL'] = 'memory://'
     app_config['RATELIMIT_STORAGE_URL'] = 'memory://'
     app_config['CACHE_TYPE'] = 'simple'
-    app_config['SEARCH_ELASTIC_HOSTS'] = None
     app_config['DB_VERSIONING'] = True
     app_config['CELERY_CACHE_BACKEND'] = "memory"
     app_config['CELERY_RESULT_BACKEND'] = "cache"

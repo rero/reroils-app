@@ -271,15 +271,18 @@ class ItemRecord(IlsRecord):
         return data
 
     @classmethod
-    def get_items_pid_by_holding_pid(cls, holding_pid):
+    def get_items_pid_by_holding_pid(cls, holding_pid, with_masked=True):
         """Returns item pids from holding pid."""
         from . import ItemsSearch
-        results = ItemsSearch() \
+        es_query = ItemsSearch() \
             .params(preserve_order=True)\
             .filter('term', holding__pid=holding_pid) \
             .sort({'pid': {"order": "asc"}}) \
-            .source(['pid']).scan()
-        for item in results:
+            .source(['pid'])
+        if not with_masked:
+            es_query = es_query.filter(
+                'bool', must_not=[Q('term', _masked=True)])
+        for item in es_query.scan():
             yield item.pid
 
     @property

@@ -54,6 +54,7 @@ from .patron_transaction_events.listener import \
 from .patron_transactions.listener import enrich_patron_transaction_data
 from .patrons.listener import create_subscription_patron_transaction, \
     enrich_patron_data, update_from_profile
+from .sru.views import SRUDocumentsSearch
 from .users.views import UsersCreateResource, UsersResource
 from ..filter import empty_data, format_date_filter, jsondumps, node_assets, \
     text_to_id, to_pretty_json
@@ -93,6 +94,7 @@ class REROILSAPP(object):
         app.extensions['rero-ils'] = self
         self.register_import_api_blueprint(app)
         self.register_users_api_blueprint(app)
+        self.register_sru_api_blueprint(app)
         # import logging
         # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
@@ -150,6 +152,21 @@ class REROILSAPP(object):
             """Catch validation errors."""
             return JSONSchemaValidationError(error=error).get_response()
 
+        app.register_blueprint(api_blueprint)
+
+    def register_sru_api_blueprint(self, app):
+        """Imports bluprint initialization."""
+        api_blueprint = Blueprint(
+            'api_sru',
+            __name__
+        )
+        sru_documents_search = SRUDocumentsSearch.as_view(
+            f'documents',
+        )
+        api_blueprint.add_url_rule(
+            '/sru/documents',
+            view_func=sru_documents_search
+        )
         app.register_blueprint(api_blueprint)
 
     def init_config(self, app):

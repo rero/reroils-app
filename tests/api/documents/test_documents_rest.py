@@ -23,9 +23,10 @@ from datetime import datetime, timedelta
 import mock
 from flask import url_for
 from invenio_accounts.testutils import login_user_via_session
-from utils import VerifyRecordPermissionPatch, get_json, mock_response, \
-    postdata
+from utils import VerifyRecordPermissionPatch, get_json, get_xml_dict, \
+    mock_response, postdata
 
+from rero_ils.modules.documents.api import Document
 from rero_ils.modules.documents.utils import clean_text, get_remote_cover
 from rero_ils.modules.documents.views import can_request, \
     item_library_pickup_locations
@@ -607,4 +608,83 @@ def test_get_remote_cover(mock_get_cover, app):
     assert cover == {
         'success': True,
         'image': 'https://i.test.com/images/P/XXXXXXXXXX_.jpg'
+    }
+
+
+def test_documents_get_dc(
+    client, document_ref, contribution_person_data, rero_json_header,
+):
+    """Test record get with format=dc."""
+    api_url = url_for('invenio_records_rest.doc_item', pid_value='doc2',
+                      format='dc')
+    res = client.get(api_url)
+    assert res.status_code == 200
+    xml_dict = get_xml_dict(res)
+    record = xml_dict.get('record')
+    record_data = {
+        '@xmlns:dc': 'http://purl.org/dc/elements/1.1/',
+        '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+        '@xsi:schemaLocation': 'https://www.loc.gov/standards/sru '
+                               'https://www.loc.gov/standards/sru/'
+                               'recordSchemas/dc-schema.xsd',
+        'dc:date': '2011',
+        'dc:identifier': [
+            'bf:Local|doc2',
+            'bf:Local|R007153123(RERO)',
+            'bf:Isbn|9786039012641',
+            'bf:Local|FRBNF452959140000002(BNF)',
+            'uri|http://catalogue.bnf.fr/ark:/12148/cb45295914f'
+        ],
+        'dc:language': 'ara',
+        'dc:publisher': 'Maktabat al-qanūn wa al-iqtiṣād',
+        'dc:title': 'al-Wajīz fī niẓām khidmat al-afrād al-sʿūdī',
+        'dc:type': 'book, text / other book'
+    }
+    assert record == record_data
+
+    api_url = url_for('invenio_records_rest.doc_list', format='dc')
+    res = client.get(api_url)
+    assert res.status_code == 200
+    records = get_xml_dict(res)
+    assert records['searchRetrieveResponse']['numberOfRecords'] == str(
+        Document.count())
+
+
+def test_documents_get_marcxml(
+    client, document_ref, contribution_person_data, rero_json_header,
+):
+    """Test record get with format=marcxml."""
+    api_url = url_for('invenio_records_rest.doc_item', pid_value='doc2',
+                      format='marcxml')
+    res = client.get(api_url)
+    assert res.status_code == 200
+    xml_dict = get_xml_dict(res)
+    record = xml_dict.get('record')
+    assert 'leader' in record
+    assert 'controlfield' in record
+    assert record['controlfield'] == [{
+        '#text': 'doc2',
+        '@tag': '001'
+    }, {
+        '#text': '000000|2011||||xx#|||||||||||||||||ara|c',
+        '@tag': '008'
+    }]
+    assert 'datafield' in record
+
+    api_url = url_for('invenio_records_rest.doc_list', format='marcxml')
+    res = client.get(api_url)
+    assert res.status_code == 200
+    xml_dict = get_xml_dict(res)
+    assert 'collection' in xml_dict
+
+    api_url = url_for('invenio_records_rest.doc_list', format='marcxmlsru')
+    res = client.get(api_url)
+    assert res.status_code == 200
+    xml_dict = get_xml_dict(res)
+    assert 'searchRetrieveResponse' in xml_dict
+    search_rr = xml_dict['searchRetrieveResponse']
+    assert search_rr.get('echoedSearchRetrieveRequest') == {
+        'recordPacking': 'XML',
+        'recordSchema': 'info:sru/schema/1/marcxml-v1.1-light',
+        'resultSetTTL': '0'
     }
