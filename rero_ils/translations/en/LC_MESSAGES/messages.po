@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: rero-ils 0.9.1\n"
 "Report-Msgid-Bugs-To: igor.milhit@rero.ch\n"
 "POT-Creation-Date: 2021-05-05 07:06+0200\n"
-"PO-Revision-Date: 2021-05-06 05:13+0000\n"
-"Last-Translator: Nicolas Prongué <n.prongue@outlook.com>\n"
+"PO-Revision-Date: 2021-05-08 08:33+0000\n"
+"Last-Translator: ManaDeweerdt <anne-marie.deweerdt@uclouvain.be>\n"
 "Language-Team: English <https://hosted.weblate.org/projects/rero_plus/"
 "rero-ils/en/>\n"
 "Language: en\n"
@@ -6919,7 +6919,7 @@ msgstr "Local identifier"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_genre_form-v0.0.1.json:118
 msgid "rero-rameau"
-msgstr "rero-rameau"
+msgstr "RERO-RAMEAU"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_identified_by-v0.0.1.json:3
 msgid "Identifiers"

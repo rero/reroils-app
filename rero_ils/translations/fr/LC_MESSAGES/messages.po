@@ -21,7 +21,7 @@ msgstr ""
 "Project-Id-Version: rero-ils 0.9.1\n"
 "Report-Msgid-Bugs-To: igor.milhit@rero.ch\n"
 "POT-Creation-Date: 2021-05-05 07:06+0200\n"
-"PO-Revision-Date: 2021-05-06 12:27+0000\n"
+"PO-Revision-Date: 2021-05-08 08:33+0000\n"
 "Last-Translator: ManaDeweerdt <anne-marie.deweerdt@uclouvain.be>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/rero_plus/"
 "rero-ils/fr/>\n"
@@ -6933,7 +6933,7 @@ msgstr "Identifiant local"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_genre_form-v0.0.1.json:118
 msgid "rero-rameau"
-msgstr ""
+msgstr "RERO-RAMEAU"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_identified_by-v0.0.1.json:3
 msgid "Identifiers"
@@ -7329,7 +7329,7 @@ msgstr "Dès 2 ans"
 #: rero_ils/modules/documents/jsonschemas/documents/document_intended_audience-v0.0.1.json:381
 #: rero_ils/modules/documents/jsonschemas/documents/document_intended_audience-v0.0.1.json:393
 msgid "undefined"
-msgstr ""
+msgstr "indéfini"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_issuance-v0.0.1.json:3
 msgid "Mode of issuance"
@@ -7452,7 +7452,7 @@ msgstr "langue"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_note-v0.0.1.json:4
 msgid "(MARC 500, 510, 530, 545, 555, 580)"
-msgstr ""
+msgstr "(MARC 500, 510, 530, 545, 555, 580)"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_note-v0.0.1.json:20
 msgid "Type of note"
@@ -7472,11 +7472,11 @@ msgstr "Autres caractéristiques matérielles"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_note-v0.0.1.json:45
 msgid "cited_by"
-msgstr ""
+msgstr "Cité par"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_original_language-v0.0.1.json:3
 msgid "Language of representative expression"
-msgstr ""
+msgstr "Langue d'expression représentative"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_original_language-v0.0.1.json:4
 msgid "Language of original work (MARC 041$h)"
@@ -7760,11 +7760,11 @@ msgstr ""
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:50
 msgid "Example: 25000"
-msgstr ""
+msgstr "Exemple : 25000"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:54
 msgid "Vertical scale"
-msgstr ""
+msgstr "Échelle verticale"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:59
 msgid "Example: 250"
@@ -7772,62 +7772,68 @@ msgstr "Exemple : 250"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:64
 msgid "Scale designation (MARC 255$a)"
-msgstr ""
+msgstr "Désignation de l'échelle (MARC 255$a)"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:68
 msgid "Example: Scale 1:25 000"
-msgstr ""
+msgstr "Exemple : Échelle 1:25 000"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:78
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:82
 msgid "Cartographic data"
-msgstr ""
+msgstr "Données cartographiques"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:91
 msgid "Coordinates"
-msgstr ""
+msgstr "Coordonnées"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:107
 msgid "Longitude"
-msgstr ""
+msgstr "Longitude"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:108
 msgid ""
 "Enter one value, or two values (westernmost then easternmost) separated "
 "by a space."
 msgstr ""
+"Entrez une valeur, ou deux valeurs (la plus à l'ouest puis la plus à l'est) "
+"séparées par un espace."
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:112
 msgid "Example: W1800000 E1800000"
-msgstr ""
+msgstr "Exemple : W1800000 E1800000"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:116
 msgid "Latitude"
-msgstr ""
+msgstr "Latitude"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:117
 msgid ""
 "Enter one value, or two values (northernmost then southernmost) separated"
 " by a space."
 msgstr ""
+"Entrez une valeur, ou deux valeurs (la plus au nord puis la plus au sud) "
+"séparées par un espace."
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:121
 msgid "Example: N0251500 N0221000"
-msgstr ""
+msgstr "Exemple : N0251500 N0221000"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:125
 msgid "Declination"
-msgstr ""
+msgstr "Déclinaison"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:126
 msgid ""
 "Use the format hdddmmss (hemisphere-degrees-minutes-seconds). Enter one "
 "value, or two values separated by a space."
 msgstr ""
+"Utilisez le format hdddmmss (hemisphere-degrees-minutes-seconds). Saisissez "
+"une valeur, ou deux valeurs séparées par un espace."
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:130
 msgid "Example: N0300000"
-msgstr ""
+msgstr "Exemple : N0300000"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:134
 msgid "Right ascension"
@@ -7838,34 +7844,36 @@ msgid ""
 "Use the format hhmmss (hour-minute-seconds). Enter one value, or two "
 "values separated by a space."
 msgstr ""
+"Utilisez le format hhmmss (heure-minute-seconde). Saisissez une valeur, ou "
+"deux valeurs séparées par un espace."
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:139
 msgid "Example: 021800"
-msgstr ""
+msgstr "Exemple : 021800"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:145
 msgid "Projection"
-msgstr ""
+msgstr "Projection"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:149
 msgid "Chamberlin trimetric projection"
-msgstr ""
+msgstr "Projection trimétrique de Chamberlin"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:153
 msgid "Equinox"
-msgstr ""
+msgstr "Equinoxe"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:154
 msgid "Enter only a year (yyyy) or year and month (yyyy.mm)."
-msgstr ""
+msgstr "Saisissez uniquement une année (aaaa) ou l'année et le mois (aaaa.mm)."
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_scale_cartographic-v0.0.1.json:158
 msgid "Example: 1950"
-msgstr ""
+msgstr "Exemple : 1955"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_sequence_numbering-v0.0.1.json:3
 msgid "Numbering of sequence"
-msgstr ""
+msgstr "Numérotation de la séquence"
 
 #: rero_ils/modules/documents/jsonschemas/documents/document_sequence_numbering-v0.0.1.json:4
 msgid ""
